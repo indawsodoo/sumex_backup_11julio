@@ -35,3 +35,7 @@
 [submodule "OCA/web"]
 	path = OCA/web
 	url = https://github.com/OCA/web
+[submodule "OCA/sale-workflow"]
+	path = OCA/sale-workflow
+	url = git@github.com:OCA/sale-workflow.git
+	branch = 14.0
