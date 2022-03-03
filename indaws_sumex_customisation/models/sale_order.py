@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 
 
 class SaleOrder(models.Model):
@@ -19,15 +20,18 @@ class SaleOrder(models.Model):
                 show_warnning = False
                 error = ''
                 for line in item.order_line:
-                    product_tmpl_id = line.product_id.product_tmpl_id
-                    margen = (line.price_unit / (product_tmpl_id.standard_price / 100)) - 100
+                    product_id = line.product_id
+                    if product_id.standard_price > 0:
+                        margen = (line.price_unit / (product_id.standard_price / 100)) - 100
+                    else:
+                        raise UserError(_("El producto "+product_id.display_name+" No tiene establecido el costo.\nPor Favor establesca el costo del producto para poder continuar con el proceso."))
                     limit_margin_sale = self.env["ir.config_parameter"].search([('key', '=', 'min_margin_sale')]).value
                     if limit_margin_sale and margen > float(limit_margin_sale):
                         show_warnning = True
-                        error = 'El producto '+product_tmpl_id.name+' a superado el margen establecido en los ajustes de ventas.'
+                        error = 'El producto '+product_id.name+' a superado el margen establecido en los ajustes de ventas.'
                     elif margen < item.partner_id.min_margin or margen > item.partner_id.max_margin:
                         show_warnning = True
-                        error = 'El producto '+product_tmpl_id.name+' esta por fuera de los limites del margen establecidos en el cliente.'
+                        error = 'El producto '+product_id.name+' esta por fuera de los limites del margen establecidos en el cliente.'
                     item.check_price_line = True
                 if show_warnning:
                     item.show_warnning = show_warnning
