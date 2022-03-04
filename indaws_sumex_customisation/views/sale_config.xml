@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+      <data>
+        <record id="sale_config_sumex_form_view" model="ir.ui.view">
+            <field name="name">Margen Global</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="sale.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <data>
+                   <xpath expr="//div[@id='auth_signup_documents']" position="after">
+                       <div class="col-12 col-lg-6 o_setting_box" id="margen_global_sumex">
+                           <div class="o_setting_right_pane">
+                               <span class ="o_form_label">Margen global</span>
+                               <div class ="content-group">
+                                   <div class ="text-muted mb8">
+                                       Un producto / servicio no puede vender nunca por debajo de este margen:
+                                   </div>
+                                   <label for="min_margin_sale"/>
+                                   <field name ="min_margin_sale"/>
+                               </div>
+                           </div>
+                       </div>
+                   </xpath>
+                </data>
+            </field>
+        </record>
+    </data>
+</odoo>
