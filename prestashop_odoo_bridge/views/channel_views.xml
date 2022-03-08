@@ -7,10 +7,10 @@
             <field name="model">multi.channel.sale</field>
             <field name="inherit_id" ref="odoo_multi_channel_sale.multi_channel_view_form" />
             <field name="arch" type="xml">
-                 <xpath expr="(//page[@name = 'credentials']//div[hasclass('o_setting_right_pane')]//div[hasclass('text-primary')]//field[@name='url'])" position ="attributes">
+                 <xpath expr="//page[@name='credentials']//field[@name='url']" position ="attributes">
                     <attribute name="attrs">{'required':[('channel','=','prestashop')]}</attribute>
                 </xpath>
-                <xpath expr="(//page[@name = 'credentials']//div[hasclass('o_setting_right_pane')]//div[hasclass('text-primary')]//field[@name='api_key'])" position ="attributes">
+                <xpath expr="//page[@name='credentials']//field[@name='api_key']" position ="attributes">
                     <attribute name="attrs">{'required':[('channel','=','prestashop')]}</attribute>
                 </xpath>
                 <xpath expr="//page[@name = 'configuration']" position="after">
