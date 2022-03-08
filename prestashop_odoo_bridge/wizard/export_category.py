@@ -18,21 +18,20 @@ class ExportPrestashopCategories(models.TransientModel):
 
     def action_prestashop_export_category(self):
         return self.export_button()
-    
+
     def action_prestashop_update_category(self):
         return self.update_button()
 
     def prestashop_create_category(self, prestashop, channel, record, initial_record_id, p_cat_id,
-                meta_description='', meta_keywords='', with_product=False):
-        cat_id = record.id
+                meta_description='', meta_keywords='', with_product = False):
         cat_name = record.name
         cat_data = None
         try:
             cat_data = prestashop.get(
                 'categories', options={'schema': 'blank'})
         except Exception as e:
-            return [0, '\r\nCategory Id:%s ;Error in Creating blank schema for categories.Detail : %s' % (str(cat_id), str(e)), False]
-        if cat_data:
+            _logger.info("Error in getting Blank Category Schema : %r",str(e))
+        else:
             if type(cat_data['category']['name']['language']) == list:
                 for i in range(len(cat_data['category']['name']['language'])):
                     cat_data['category']['name']['language'][i]['value'] = cat_name
@@ -51,7 +50,7 @@ class ExportPrestashopCategories(models.TransientModel):
                 cat_data['category']['meta_keywords']['language']['value'] = meta_keywords
                 cat_data['category']['meta_title']['language']['value'] = record.name
             cat_data['category']['is_root_category'] = '0'
-            cat_data['category']['id_parent'] = p_cat_id 
+            cat_data['category']['id_parent'] = p_cat_id
             cat_data['category']['active'] = '1'
             try:
                 returnid = prestashop.add('categories', cat_data)
@@ -59,21 +58,11 @@ class ExportPrestashopCategories(models.TransientModel):
                 _logger.info('Category Data Not Exported::::::::::::: %r ::::::::::::::::', [
                              str(e), record.id, cat_data])
                 if channel.debug == "enable":
-                    raise UserError('Category Data Not Exported ==> %r ', [
-                             str(e), record.id, cat_data])
-                return False
-            if record.id !=initial_record_id:
-                self.env['channel.category.mappings'].create(
-                        {
-                            'channel_id': channel.id,
-                            'ecom_store': channel.channel,
-                            'leaf_category': True,
-                            'category_name': record.id,
-                            'odoo_category_id': record.id,
-                            'store_category_id': returnid,
-                            'operation': 'export',
-                        })
-            return returnid
+                    raise UserError('Category Data Not Exported :- {} '.format(str(e)))
+            else:
+                if record.id !=initial_record_id or with_product:
+                    channel.create_category_mapping(record, returnid)
+                return returnid
 
     def prestashop_export_now(self, record, initial_record_id):
         result_list = [False, ""]
@@ -81,14 +70,13 @@ class ExportPrestashopCategories(models.TransientModel):
         channel = self._context.get('channel_id')
         prestashop = self._context.get('prestashop')
         cat_id = self.prestashop_sync_category(
-            channel, prestashop, record, initial_record_id, with_product=with_product)
+            channel, prestashop, record, initial_record_id, with_product)
         if cat_id:
-            remote_object = CreateRemoteObject(cat_id)
-            result_list = [True, remote_object]
+            result_list = [True, {"id":cat_id}]
         return result_list
 
-    def prestashop_sync_category(self, channel, prestashop, record, initial_record_id, with_product=False):
-        p_cat_id = 1
+    def prestashop_sync_category(self, channel, prestashop, record, initial_record_id, with_product):
+        p_cat_id = 2
         res = ""
         parent_id = record.parent_id
         if parent_id.id:
@@ -103,11 +91,11 @@ class ExportPrestashopCategories(models.TransientModel):
                     "prestashop": prestashop,
                 }).prestashop_export_now(record.parent_id, initial_record_id)
                 if p_cat_id[0]:
-                    p_cat_id = p_cat_id[1].id
+                    p_cat_id = p_cat_id[1].get("id")
             else:
                 p_cat_id = is_parent_mapped.store_category_id
         res = self.prestashop_create_category(
-            prestashop, channel, record, initial_record_id, p_cat_id, with_product=with_product)
+            prestashop, channel, record, initial_record_id, p_cat_id,with_product = with_product)
         return res
 
     def prestashop_update_now(self,record,remote_id):
@@ -121,7 +109,7 @@ class ExportPrestashopCategories(models.TransientModel):
         return result_list
 
     def sync_mapped_category(self,channel,prestashop,record,remote_id):
-        p_cat_id = 1
+        p_cat_id = 2
         res = ""
         parent_id = record.parent_id
         if parent_id.id:
@@ -143,16 +131,8 @@ class ExportPrestashopCategories(models.TransientModel):
                     "channel_id":channel,
                 }).prestashop_export_now(parent_id,parent_id.id)
                 if p_cat_id[0]:
-                    p_cat_id = p_cat_id[1].id
-                    self.env["channel.category.mappings"].create({
-                    'channel_id': channel.id,
-                    'ecom_store': channel.channel,
-                    'leaf_category': False,
-                    'category_name': parent_id.id,
-                    'odoo_category_id': parent_id.id,
-                    'store_category_id': p_cat_id,
-                    'operation': 'export',
-                })
+                    p_cat_id = p_cat_id[1].get("id")
+                    channel.create_category_mapping(parent_id, p_cat_id)
         res = self._update_category(
             prestashop, channel, record, p_cat_id,remote_id)
         return res
@@ -162,12 +142,10 @@ class ExportPrestashopCategories(models.TransientModel):
         cat_name = record.name
         cat_data = None
         try:
-            cat_data = prestashop.get(
-                'categories',remote_id)
+            cat_data = prestashop.get('categories',remote_id)
         except Exception as e:
             _logger.info("Category Id:%s ;Error in getting schema for categories.Detail : %s" %(cat_id,str(e)))
-            return False
-        if cat_data:
+        else:
             cat_data["category"].pop("level_depth")
             cat_data["category"].pop("nb_products_recursive")
             if type(cat_data['category']['name']['language']) == list:
@@ -181,7 +159,7 @@ class ExportPrestashopCategories(models.TransientModel):
                 cat_data['category']['link_rewrite']['language']['value'] = channel._get_link_rewrite(
                     zip, cat_name)
                 cat_data['category']['meta_title']['language']['value'] = record.name
-            cat_data['category']['id_parent'] = p_cat_id 
+            cat_data['category']['id_parent'] = p_cat_id
             cat_data['category']['active'] = '1'
             try:
                 returnid = prestashop.edit('categories', remote_id, cat_data)
@@ -189,13 +167,6 @@ class ExportPrestashopCategories(models.TransientModel):
                 _logger.info('Category Data Not updated::::::::::::: %r ::::::::::::::::', [
                              str(e), record.id, cat_data])
                 if self.channel_id.debug == "enable":
-                    raise UserError('Category Data Not updated::::::::::::: %r ::::::::::::::::', [
-                             str(e), record.id, cat_data])
-                return False
-            return remote_id
-
-class CreateRemoteObject:
-
-    def __init__(self, id):
-        self.id = id
-    
+                    raise UserError('Category Data Not updated :- {}'.format(str(e)))
+            else:
+                return remote_id

@@ -10,8 +10,6 @@ from . import import_partner
 from . import import_category
 from . import import_shipping
 from . import import_operation
-
 from . import export_attributes_value
 from . import export_product
 from . import export_category
-from . import export_operation
