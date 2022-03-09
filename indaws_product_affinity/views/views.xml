@@ -1,0 +1,48 @@
+<odoo>
+  <data>
+     <record id="product_template_affinity_view" model="ir.ui.view">
+        <field name="name">product.template.affinity.costs.view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <page name="purchase" position="after">
+                <page name="affinity" string="Campos extra">
+                    <group>
+                        <field name="unidades_cs" />
+                        <field name="vol_cl"/>
+                        <field name="avb_porcentaje"/>
+                        <field name="type_ref"/>
+                        <field name="grado_plato"/>
+                        <field name="peso_kg_botella"/>
+                        <field name="cajas_palet"/>
+                        <field name="cajas_capa"/>
+                        <field name="capas_palet"/>
+                        <field name="botellas_palet"/>
+                        <field name="peso_kg_caja"/>
+                        <field name="peso_kg_palet"/>
+                        <field name="largo_mm_caja"/>
+                        <field name="ancho_mm_caja"/>
+                        <field name="alto_mm_caja"/>
+                        <field name="cod_excise"/>
+                        <field name="cod_tiba"/>
+                        <field name="grupo_cotizacion"/>
+                        <field name="iiee_precinta_spain"/>
+                        <field name="iiee_precinta_canario"/>
+                        <field name="iiee_precinta_portugal"/>
+                    </group>
+                </page>
+            </page>
+        </field>
+        </record>
+            <record id="view_product_template_label_tree_" model="ir.ui.view">
+            <field name="name">product.template.label.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="stock.view_stock_product_template_tree"/>
+            <field name="arch" type="xml">
+                <field name="qty_available" position="after">
+                    <field name="label" optional="show"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

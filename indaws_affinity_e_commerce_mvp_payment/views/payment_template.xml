@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="products_add_to_cart_indaws" inherit_id="website_sale.products_add_to_cart">
+        <xpath expr="//t[@t-if='product_variant_id']/a[hasclass('a-submit')]" position="attributes">
+            <attribute name="class">btn btn-secondary a-submit not_product_page new_add_to_cart</attribute>
+            <attribute name="t-if">
+                uid and uid &gt; 0
+            </attribute>
+        </xpath>
+    </template>
+
+    <template id="payment_confirmation_inherit" inherit_id="website_sale.confirmation">
+        <xpath expr="//div[hasclass('oe_cart')]//table//tbody//tr" position="before">
+            <t t-if="order.payment_term_id.line_ids.filtered(lambda line: line.value == 'percent')">
+                <tr>
+                    <td class="text-left" width="200">
+                        <span>Payment Terms :</span>
+                    </td>
+                    <td colspan="3" class="text-right" width="100">
+                        <strong t-field="order.payment_term_id.name"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="text-left" width="100">
+                        <span>Por favor realizar el siguiente pago para proceder con el pedido :</span>
+                    </td>
+                    <td colspan="2" class="text-right" width="100">
+                        <strong t-field="order.deposit_calc"
+                                t-options="{'widget': 'monetary', 'display_currency': order.pricelist_id.currency_id}"/>
+                    </td>
+                </tr>
+            </t>
+        </xpath>
+    </template>
+    <template id="payment_inherit_indaws" inherit_id="website_sale.payment">
+        <xpath expr="//div[hasclass('col-12','col-xl-auto','order-xl-2')]" position="replace">
+            <div class="col-12 col-xl-auto order-xl-2">
+                <t t-call="website_sale.cart_summary"/>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

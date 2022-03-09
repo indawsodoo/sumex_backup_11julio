@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--  Header search bar  -->
+    <template id="header_search_ept" inherit_id="website_sale.website_sale_products_search_box">
+        <xpath expr="//form" position="attributes">
+            <attribute name="t-att-action">'/shop'</attribute>
+        </xpath>
+<!--        <xpath expr="//div[@role='search']//input[hasclass('search-query')]" position="before">-->
+            <!-- add get_parent_category() and  ept-parent-category selection for cateogry wise search. @Author : Angel Patel (24/09/2020) -->
+<!--            <t t-set="ept_cat" t-value="request.env['website'].sudo().get_parent_category()"/>-->
+<!--            <div class="te_advanced_search_div dropdown">-->
+<!--                <a role="button" href="#" class="btn btn-primary dropdown-toggle ept-parent-category"-->
+<!--                   id="ept-parent-category" name="category" data-toggle="dropdown" aria-haspopup="true"-->
+<!--                   aria-expanded="true">-->
+<!--                    <span class="category_img_span"></span>-->
+<!--                    <span class="span_category">All</span>-->
+<!--                    <span class="caret"></span>-->
+<!--                </a>-->
+<!--                <div class="dropdown-menu" aria-labelledby="ept-parent-category">-->
+<!--                    <t t-foreach="ept_cat" t-as="cat">-->
+<!--                        <a t-att-value="cat.get('id')" t-esc="cat.get('name')" class="dropdown-item ept-category-a"></a>-->
+<!--                    </t>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </xpath>-->
+    </template>
+
+    <template id="website_header_search_ept" inherit_id="website.website_search_box">
+        <xpath expr="//input[@name='search']" position="attributes">
+            <attribute name="data-limit">5</attribute>
+            <attribute name="data-display-description">true</attribute>
+            <attribute name="data-display-price">true</attribute>
+            <attribute name="data-display-image">true</attribute>
+        </xpath>
+        <xpath expr="//div[@role='search']" position="attributes">
+            <attribute name="t-attf-class" remove="#{_classes}" separator=" "/>
+        </xpath>
+        <xpath expr="//div[@role='search']" position="replace">
+            <t t-if="is_shop or is_product">
+                <t t-set="action"
+                   t-value="keep('/shop'+ ('/category/'+slug(category)) if category else None, search=0)"/>
+            </t>
+            <t t-if="attrib_values">
+                <t t-foreach="attrib_values" t-as="a">
+                    <input type="hidden" name="attrib" t-att-value="'%s-%s' % (a[0], a[1])"/>
+                </t>
+            </t>
+            <t t-if="is_shop or is_product">
+                <form t-attf-class="o_wsale_products_searchbar_form o_wait_lazy_js #{_classes}"
+                      t-att-action="action if action else '/shop'" method="get">
+                    <t>$0</t>
+                    <input name="order" type="hidden" class="o_wsale_search_order_by" value=""/>
+                    <t t-raw="0"/>
+                </form>
+            </t>
+            <t t-else="">
+                <form t-attf-class="o_wsale_products_searchbar_form o_wait_lazy_js #{_classes}" action="/shop"
+                      method="get">
+                    <t>$0</t>
+                    <input name="order" type="hidden" class="o_wsale_search_order_by" value=""/>
+                    <t t-raw="0"/>
+                </form>
+            </t>
+            <t t-set="search" t-value="False"/>
+        </xpath>
+    </template>
+
+</odoo>

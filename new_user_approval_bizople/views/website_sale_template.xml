@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<!-- <template id="product_price_alert" inherit_id="website_sale.products">
+		<xpath expr="//div[hasclass('mt-3')]" position="before">
+			<div t-if="website.user_id == user_id" class="mt16 mb16">
+			<div class="alert alert-danger text-center alert-dismissible fade show"
+				role="alert">
+				<button type="button" class="close fa fa-times" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true"></span>
+				</button>
+				<a href="/web/login" class="alert-link">
+					<strong>Please Login</strong>
+					to see Product Price
+				</a>
+			</div>
+			</div>
+		</xpath>
+	</template> -->
+
+<!--	<template id="product_price" inherit_id="website_sale.product_price">-->
+<!--		<xpath expr="//div[@itemprop='offers']" position="attributes">-->
+<!--			<attribute name="t-if">-->
+<!--				uid and uid &gt; 0-->
+<!--			</attribute>-->
+<!--		</xpath>-->
+<!--	</template>-->
+
+<!--	<template id="products_item" inherit_id="website_sale.products_item">-->
+<!--		<xpath expr="//div[@itemprop='offers']" position="attributes">-->
+<!--			<attribute name="t-if">-->
+<!--				uid and uid &gt; 0-->
+<!--			</attribute>-->
+<!--		</xpath>-->
+<!--	</template>-->
+	<template id="custom_product_price_for_cart" inherit_id="website_sale.total" priority="300">
+        <xpath expr="//tr[@id='order_total_untaxed']//td[2]//span" position="attributes">
+           <attribute name="t-if">
+				uid and uid &gt; 0
+			</attribute>
+        </xpath>
+		<xpath expr="//tr[@id='order_total_taxes']//td[2]//span" position="attributes">
+           <attribute name="t-if">
+				uid and uid &gt; 0
+			</attribute>
+        </xpath>
+		<xpath expr="//tr[@id='order_total']//td[2]" position="attributes">
+           <attribute name="t-if">
+				uid and uid &gt; 0
+			</attribute>
+        </xpath>
+    </template>
+
+	<template id="custom_product_price_ept" inherit_id="website_sale.product_price" priority="300">
+        <xpath expr="//div[hasclass('product_price')]" position="attributes">
+           <attribute name="t-if">
+				uid and uid &gt; 0
+			</attribute>
+        </xpath>
+    </template>
+
+	<template id="custom_products_item" inherit_id="website_sale.products_item" priority="300">
+		<xpath expr="//div[hasclass('product_price')]" position="attributes">
+			<attribute name="t-if">
+				uid and uid &gt; 0
+			</attribute>
+		</xpath>
+		<xpath expr="//div[hasclass('o_wsale_product_btn')]" position="attributes">
+			<attribute name="t-if">
+				uid and uid &gt; 0
+			</attribute>
+		</xpath>
+	</template>
+
+	<template id="products_indaws_plus_minus_template_inherit" inherit_id="indaws_affinity_e_commerce_mvp_payment.products_indaws_plus_minus_template" priority="300">
+		<xpath expr="//div[hasclass('css_quantity')]" position="attributes">
+			<attribute name="t-if">
+				uid and uid &gt; 0
+			</attribute>
+		</xpath>
+	</template>
+
+	<template id="custom_header_cart_link" inherit_id="website_sale.header_cart_link" priority="300">
+        <xpath expr="//li[contains(@t-attf-class, 'o_wsale_my_cart')]" position="attributes">
+            <attribute name="t-if">
+				uid and uid &gt; 0
+			</attribute>
+        </xpath>
+    </template>
+
+<!--	<template id="address_custom_inherit" inherit_id="website_sale.address" priority="300">-->
+<!--        <xpath expr="//div[hasclass('justify-content-between')]/a[hasclass('btn-primary')]" position="attributes">-->
+<!--            <attribute name="t-if">-->
+<!--				uid and uid &gt; 0-->
+<!--			</attribute>-->
+<!--		</xpath>-->
+<!--    </template>-->
+
+	<template id="products_item_addtocart" inherit_id="website_sale.product">
+		<xpath expr="//a[@id='add_to_cart']" position="attributes">
+			<attribute name="t-if">
+				uid and uid &gt; 0
+			</attribute>
+		</xpath>
+		<xpath expr="//div[hasclass('js_product')]" position="attributes">
+			<attribute name="t-if">
+				uid and uid &gt; 0
+			</attribute>
+		</xpath>
+		<xpath expr="//div[@id='product_details']/h1" position="after">
+			<div t-if="website.user_id == user_id">
+				<div class="alert alert-danger text-center alert-dismissible"
+					role="alert">
+					<button type="button" class="close fa fa-times" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true"></span>
+				</button>
+					<a href="/web/login" class="alert-link">
+						<strong>Please Login</strong>
+						to see Product Price
+					</a>
+				</div>
+			</div>
+		</xpath>
+	</template>
+
+	<template id="add_to_wishlist_inherit" inherit_id="website_sale_wishlist.add_to_wishlist">
+		<xpath expr="//button[hasclass('o_add_wishlist')]" position="replace">
+			<button t-if="product_variant_id and uid and uid &gt; 0" type="button" role="button" class="btn btn-secondary o_add_wishlist" t-att-disabled='in_wish or None' title="Add to Wishlist" t-att-data-product-template-id="product.id" t-att-data-product-product-id="product_variant_id" data-action="o_wishlist"><span class="fa fa-heart" role="img" aria-label="Add to wishlist"></span></button>
+		</xpath>
+    </template>
+</odoo>
