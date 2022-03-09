@@ -15,13 +15,14 @@ class WkWizardMessage(models.TransientModel):
     def operation_back(self):
         ctx = dict(self._context or {})
         _logger.info("======================: %r", self._context)
-        partial = self.env['import.operation'].browse(ctx.get('active_id'))
+        active_model = ctx.get('active_model')
+        partial = self.env[active_model].browse(ctx.get('active_id'))
         ctx['active_id'] = False
         ctx['default_channel_id'] = False
         return {'name': "Import Operation",
                 'view_mode': 'form',
                 'view_id': False,
-                'res_model': 'import.operation',
+                'res_model': active_model,
                 'res_id': partial.id,
                 'type': 'ir.actions.act_window',
                 'nodestroy': True,

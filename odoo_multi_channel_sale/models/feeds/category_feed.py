@@ -20,19 +20,6 @@ class CategoryFeed(models.Model):
     parent_id = fields.Char('Store Parent ID')
     leaf_category = fields.Boolean('Leaf Category')
 
-    @api.model
-    def _create_feeds(self, category_data_list):
-        success_ids, error_ids = [], []
-        self = self.contextualize_feeds('category')
-        for category_data in category_data_list:
-            feed = self._create_feed(category_data)
-            if feed:
-                self += feed
-                success_ids.append(category_data.get('store_id'))
-            else:
-                error_ids.append(category_data.get('store_id'))
-        return success_ids, error_ids, self
-
     def _create_feed(self, category_data):
         channel_id = category_data.get('channel_id')
         store_id = str(category_data.get('store_id'))
@@ -92,8 +79,8 @@ class CategoryFeed(models.Model):
         vals.pop('description', None)
         vals.pop('website_message_ids', '')
         vals.pop('message_follower_ids', '')
-
-        match = self._context.get('category_mappings').get(
+        context = dict(self._context or {})
+        match = context.get('category_mappings', {}).get(
             channel_id.id, {}).get(self.store_id)
         if match:
             match = self.env['channel.category.mappings'].browse(match)

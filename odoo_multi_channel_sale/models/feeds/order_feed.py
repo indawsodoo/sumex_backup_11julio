@@ -16,7 +16,6 @@ OrderFields = [
 	'name',
 	'store_id',
 	'store_source',
-
 	'partner_id',
 	'order_state',
 	'carrier_id',
@@ -98,22 +97,8 @@ class OrderFeed(models.Model):
 	)
 	line_ids = fields.One2many('order.line.feed','order_feed_id',string='Line Ids')
 
-	@api.model
-	def _create_feeds(self,order_data_list):
-		success_ids,error_ids = [],[]
-		self = self.contextualize_feeds('order')
-		for order_data in order_data_list:
-			order_feed = self._create_feed(order_data)
-			if order_feed:
-				self += order_feed
-				success_ids.append(order_data.get('store_id'))
-			else:
-				error_ids.append(order_data.get('store_id'))
-		return success_ids,error_ids,self
-
 	def _create_feed(self,order_data):
-		channel_id = order_data.get('channel_id')
-		store_id = str(order_data.get('store_id'))
+		channel_id, store_id = order_data.get('channel_id'), str(order_data.get('store_id'))
 		feed_id = self._context.get('order_feeds').get(channel_id,{}).get(store_id)
 # Todo(Pankaj Kumar): Change feed field from state_id,country_id to state_code,country_code
 		order_data['invoice_state_id'] = order_data.pop('invoice_state_code',False)
@@ -141,12 +126,11 @@ class OrderFeed(models.Model):
 			return feed
 
 	@api.model
-	def _get_order_line_vals(self,vals,carrier_id,channel_id):
+	def _get_order_line_vals(self, vals, carrier_id, channel_id):
 		message = ''
 		status=True
 		lines = []
-		line_ids = vals.pop('line_ids')
-		line_name = vals.pop('line_name')
+		line_ids, line_name = vals.pop('line_ids'), vals.pop('line_name')
 		line_price_unit = vals.pop('line_price_unit')
 		if line_price_unit:
 			line_price_unit = parse_float(line_price_unit)
@@ -162,7 +146,7 @@ class OrderFeed(models.Model):
 				line_price_unit = line_id.line_price_unit
 				if line_price_unit:
 					line_price_unit = parse_float(line_price_unit)
-				if line_id.line_source =='delivery':
+				if line_id.line_source =='delivery' and type(carrier_id) is not str:
 					product_id = carrier_id.product_id
 				elif line_id.line_source =='discount':
 					if not channel_id.discount_product_id:
@@ -177,7 +161,6 @@ class OrderFeed(models.Model):
 						channel_id,
 						line_id.line_product_default_code,
 						line_id.line_product_barcode,
-
 					)
 					product_id = product_res.get('product_id')
 					if product_res.get('message'):
@@ -194,7 +177,7 @@ class OrderFeed(models.Model):
 						is_delivery = line_id.line_source =='delivery',
 						product_uom=product_uom_id,
 					)
-					line['tax_id'] = self.get_taxes_ids(line_id.line_taxes,channel_id)
+					line['tax_id'] = self.get_taxes_ids(line_id.line_taxes)
 					####ADD TAX
 					lines += [(0,0,line)]
 				else:
@@ -221,7 +204,7 @@ class OrderFeed(models.Model):
 					product_uom_qty=(line_product_uom_qty),
 					product_uom=product_id.uom_id.id,
 				)
-				line['tax_id'] = self.get_taxes_ids(line_taxes,channel_id)
+				line['tax_id'] = self.get_taxes_ids(line_taxes)
 				####ADD TAX
 				lines += [(0,0,line)]
 			else:
@@ -234,66 +217,74 @@ class OrderFeed(models.Model):
 			status =status
 		)
 
-	def  get_taxes_ids(self,line_taxes,channel_id):
-		if line_taxes:
-			line_taxes=eval(line_taxes)
-			if line_taxes:
-				tax_record=self.env['account.tax']
-				tax_mapping_obj= self.env['channel.account.mappings']
-				tax_list=[]
-				domain=[]
-				channel=str(self.channel)
-				for tax in line_taxes:
-					name=""
-					tax_type="percent"
-					inclusive=False
-					if tax.get('name'):
-						name = tax['name']
-					else:
-						name = channel+"_"+str(channel_id.id)+"_"+str(float(tax['rate']))
-					if tax.get('include_in_price'):
-						inclusive=tax['include_in_price']
-						# domain += [('include_in_price','=',tax['include_in_price'])]
-					if tax.get('tax_type'):
-						tax_type=tax['tax_type']
-						domain += [('tax_type','=',tax['tax_type'])]
-					domain += [('store_tax_value_id','=',(tax['rate']))]
-					tax_rec = channel_id._match_mapping(tax_mapping_obj,domain)
-					if tax_rec:
-						# tax_rec.tax_name.price_include = inclusive
-						tax_list.append(tax_rec.tax_name.id)
-					else:
-						tax_dict={
-						  'name'            : name,
-						  'amount_type'     : tax_type,
-						  'price_include'   : inclusive,
-						  'amount'          : float(tax['rate']),
+	def get_taxes_ids(self, taxes):
+		if not taxes:
+			return False
+		tx_ids = []
+		for tax in eval(taxes):
+			tx_rate = float(tax.get('rate',tax.get('tax_rate',tax.get('value'))))
+			tx_type = tax.get('type',tax.get('tax_type','percent'))
+			domain = [('channel_id','=',self.channel_id.id),('store_tax_value_id','=',tx_rate),('tax_type','=',tx_type)]
+			tx_inclusive = None
+			if 'included_in_price' in tax:
+				tx_inclusive = tax['included_in_price']
+			elif 'include_in_price' in tax:
+				tx_inclusive = tax['include_in_price']
+			elif 'inclusive' in tax:
+				tx_inclusive = tax['inclusive']
+			elif 'included' in tax:
+				tx_inclusive = tax['included']
+			if tx_inclusive is not None:
+				domain.append(('include_in_price','=',tx_inclusive))
+			_logger.info("======domain========%r",domain)
+			mapping = self.env['channel.account.mappings'].search(domain,limit=1)
+			_logger.info("======mapping========%r",mapping)
+			if mapping:
+				tx_ids.append(mapping.tax_name.id)
+			else:
+				domain = [('amount','=',tx_rate),('amount_type','=',tx_type)]
+				if tx_inclusive is not None:
+					domain.append(('price_include','=',tx_inclusive))
+					tx_inclusive = self.channel_id.default_tax_type == 'include'
+				tx_name = tax.get('name',tax.get('tax_name'))
+				if tx_name:
+					domain.append(('name','=',tx_name))
+				else:
+					tx_name = f"{self.channel_id.channel}_{self.channel_id.id}_{tx_rate}"
+				tx = self.env['account.tax'].search(domain,limit=1)
+				if not tx:
+					tx = self.env['account.tax'].create(
+						{
+						  'name'            : tx_name,
+						  'amount_type'     : tx_type,
+						  'price_include'   : tx_inclusive,
+						  'amount'          : tx_rate,
 						}
-						tax_id = tax_record.search([('name','=',tax_dict['name'])],limit=1)
-						if not tax_id:
-							tax_id=tax_record.create(tax_dict)
-						tax_map_vals={
-						  'channel_id'      : channel_id.id,
-						  'tax_name'        : tax_id.id,
-						  'store_tax_value_id' : tax_id.amount,
-						  'tax_type'        : tax_id.amount_type,
-						  'include_in_price': tax_id.price_include,
-						  'odoo_tax_id'     : tax_id.id,
-						}
-						channel_id._create_mapping(tax_mapping_obj,tax_map_vals)
-						tax_list.append(tax_id.id)
-				return [(6,0,tax_list)]
-		return False
+					)
+				tx_ids.append(tx.id)
+				self.env['channel.account.mappings'].create(
+					{
+						'channel_id'        : self.channel_id.id,
+						'store_tax_value_id': str(tx_rate),
+						'tax_type'          : tx_type,
+						'include_in_price'  : tx_inclusive,
+						'tax_name'          : tx.id,
+						'odoo_tax_id'       : tx.id,
+					}
+				)
+		_logger.info("============tx_ids=========%r",tx_ids)
+		return [(6,0,tx_ids)]
+
 	@api.model
 	def get_order_date_info(self,channel_id,vals):
 		date_order = None
 		confirmation_date = None
 		date_invoice = None
-		date_order_res =  channel_id.om_format_date_time(vals.pop('date_order'))
+		date_order_res =  channel_id.om_format_date(vals.pop('date_order'))
 		if date_order_res.get('om_date_time'):
 			date_order = date_order_res.get('om_date_time')
 
-		confirmation_date_res =  channel_id.om_format_date_time(vals.pop('confirmation_date'))
+		confirmation_date_res =  channel_id.om_format_date(vals.pop('confirmation_date'))
 		if confirmation_date_res.get('om_date_time'):
 			confirmation_date = confirmation_date_res.get('om_date_time')
 
@@ -357,15 +348,16 @@ class OrderFeed(models.Model):
 
 
 		if state=='done':
-			carrier_id = vals.pop('carrier_id','')
+			carrier_id = vals.pop('carrier_id', '')
 
 			if carrier_id:
-				carrier_res = self.get_carrier_id(carrier_id,channel_id=channel_id)
+				carrier_res = self.get_carrier_id(carrier_id, channel_id=channel_id)
 				message += carrier_res.get('message')
 				carrier_id = carrier_res.get('carrier_id')
 				if carrier_id:
 					vals['carrier_id'] = carrier_id.id
-			order_line_res = self._get_order_line_vals(vals,carrier_id,channel_id)
+			order_line_res = self._get_order_line_vals(vals, carrier_id, channel_id)
+			_logger.info("======order_line_res=====%r",order_line_res)
 			message += order_line_res.get('message','')
 			if not order_line_res.get('status'):
 				state = 'error'
@@ -418,6 +410,7 @@ class OrderFeed(models.Model):
 			if state == 'done':
 				try:
 					order_state = vals.pop('order_state')
+					_logger.info("==============vals========%r",vals)
 					erp_id = self.env['sale.order'].create(vals)
 					message += self.env['multi.channel.skeleton']._SetOdooOrderState(erp_id,channel_id,order_state,self.payment_method,date_invoice=date_invoice,confirmation_date=confirmation_date)
 					message  += '<br/> Order %s successfully evaluated'%(self.store_id)

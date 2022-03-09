@@ -65,7 +65,6 @@
 							<field name="name"/>
 							<field name="store_journal_name"/>
 							<field name="journal_code"/>
-							<field name="operation"/>
 							<field name="odoo_journal_id" invisible="1"/>
 						</group>
 					</sheet>

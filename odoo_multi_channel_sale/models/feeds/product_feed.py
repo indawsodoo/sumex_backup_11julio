@@ -30,19 +30,6 @@ class ProductFeed(models.Model):
 		inverse_name = 'feed_templ_id'
 	)
 
-	@api.model
-	def _create_feeds(self,product_data_list):
-		success_ids,error_ids = [],[]
-		self = self.contextualize_feeds('product')
-		for product_data in product_data_list:
-			feed = self._create_feed(product_data)
-			if feed:
-				self += feed
-				success_ids.append(product_data.get('store_id'))
-			else:
-				error_ids.append(product_data.get('store_id'))
-		return success_ids,error_ids,self
-
 	def _create_feed(self,product_data):
 		variant_data_list = product_data.pop('variants')
 		channel_id = product_data.get('channel_id')
@@ -113,7 +100,8 @@ class ProductFeed(models.Model):
 		prod_env = self.env['product.product']
 		message  = ''
 		context  = dict(self._context or {})
-		context.update({'channel_id': channel_id.id})
+		if 'channel_id' not in context:
+			context.update({'channel_id': channel_id})
 		context.update({'channel': channel_id.channel})
 
 		variant_objs = self.env['product.variant.feed'].browse(variant_ids)
@@ -188,7 +176,8 @@ class ProductFeed(models.Model):
 	def _create_product_line(self,variant,template_id,store_id,location_id,channel_id):
 		context  = dict(self._context or {})
 		prod_env = self.env['product.product']
-		context.update({'channel_id': channel_id.id})
+		if 'channel_id' not in context:
+			context.update({'channel_id': channel_id})
 		context.update({'channel': channel_id.channel})
 
 		message = ''
@@ -315,17 +304,15 @@ class ProductFeed(models.Model):
 
 	def import_product(self,channel_id):
 		self.ensure_one()
-		message = ""
-		create_id = None
-		update_id = None
-		context = dict(self._context)
+		message, create_id, update_id = "", None, None
+		context = dict(self._context or {})
 		context.update({
 			'pricelist':channel_id.pricelist_name.id,
 			'lang':channel_id.language_id.code,
 		})
 		vals = EL(self.read(self.get_product_fields()))
 		store_id = vals.pop('store_id')
-
+		vals['wk_length'] = vals.pop('length',0)
 		state = 'done'
 		if not vals.get('name'):
 			message += "<br/>Product without name can't evaluated"
