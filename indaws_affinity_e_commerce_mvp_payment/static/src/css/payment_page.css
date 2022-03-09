@@ -1,0 +1,14 @@
+
+.o_header_affixed {
+    opacity: 0 !important;
+    position: sticky;
+    top: 0px !important;
+}
+.o_top_fixed_element.o_header_affixed {
+    opacity: 1 !important;
+    transition: opacity 0.6s ease-out !important;
+}
+
+.input-group-prepend, .input-group-append{
+    height: fit-content !important;
+}

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="products_indaws_plus_minus_template"
+              inherit_id="website_sale.products_item"
+              active="True" customize_show="True"
+              name="Product Indaws" priority="203">
+
+        <xpath expr="//div[hasclass('product_price')]" position="replace">
+            <div class="product_price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                <del t-attf-class="text-danger mr-2 {{'' if combination_info['has_discounted_price'] else 'd-none'}}"
+                     style="white-space: nowrap;" t-esc="combination_info['list_price']"
+                     t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                <span class="font_price_currency" t-if="combination_info['price']" t-esc="combination_info['price']"
+                      t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"
+                      style="font-size:2rem "/>
+                <span itemprop="price" style="display:none;font-size:2rem !important;"
+                      t-esc="combination_info['price']"/>
+                <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+            </div>
+        </xpath>
+<!--        <xpath expr="//div[hasclass('product_price')]" position="after">-->
+<!--            <div class="css_quantity input-group" contenteditable="false">-->
+<!--                <div class="input-group-prepend">-->
+<!--                    <a t-attf-href="#" class="btn btn-secondary js_add_cart_json_indaws_remove" aria-label="Remove one"-->
+<!--                       title="Remove one">-->
+<!--                        <i class="fa fa-minus"></i>-->
+<!--                    </a>-->
+<!--                    <span id="sh_descrement_qty_test" t-esc="product.sh_increment_qty" style="display:none;"/>-->
+<!--                </div>-->
+<!--                <input type="text" class="form-control quantity" data-min="1" name="add_qty"-->
+<!--                       t-att-value="product.sh_increment_qty" t-att-data-setqty="product.sh_increment_qty"/>-->
+<!--                <div class="input-group-append">-->
+<!--                    <a t-attf-href="#" class="btn btn-secondary float_left js_add_cart_json_indaws" aria-label="Add one"-->
+<!--                       title="Add one">-->
+<!--                        <i class="fa fa-plus"></i>-->
+<!--                    </a>-->
+<!--                    <span id="sh_increment_qty_test" t-esc="product.sh_increment_qty" style="display:none;"/>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </xpath>-->
+        <xpath expr="//div[hasclass('product_price')]" position="replace">
+            <div class="row">
+            <div class="product_price col-6" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                <del t-attf-class="text-danger mr-2 {{'' if combination_info['has_discounted_price'] else 'd-none'}}" style="white-space: nowrap;" t-esc="combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}" />
+                <span t-if="combination_info['price']" t-esc="combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                <span itemprop="price" style="display:none;" t-esc="combination_info['price']" />
+                <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name" />
+            </div>
+            <div class="css_quantity input-group col-6" contenteditable="false">
+                <div class="input-group-prepend">
+                    <a t-attf-href="#" class="btn btn-secondary js_add_cart_json_indaws_remove" aria-label="Remove one"
+                       title="Remove one">
+                        <i class="fa fa-minus"></i>
+                    </a>
+                    <span id="sh_descrement_qty_test" t-esc="product.sh_increment_qty" style="display:none;"/>
+                </div>
+                <input type="text" class="form-control quantity" data-min="1" name="add_qty"
+                       t-att-value="product.sh_increment_qty" t-att-data-setqty="product.sh_increment_qty"/>
+                <div class="input-group-append">
+                    <a t-attf-href="#" class="btn btn-secondary float_left js_add_cart_json_indaws" aria-label="Add one"
+                       title="Add one">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                    <span id="sh_increment_qty_test" t-esc="product.sh_increment_qty" style="display:none;"/>
+                </div>
+            </div>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('o_wsale_product_btn')]" position="after">
+<!--            <t t-if="uid and uid &gt; 0">-->
+                <div>
+                    <div>
+                        <div class="mb-n2 mt-1" style="display: inline-block;width: 100%;">
+                            <p class="disponibles" style="width: 49%;float: left;">Disponibles</p>
+                            <p align="right" class="botellas_palet" id="botellas_palet" style="width: 50%;float: left;">
+                                <t t-esc="product.uom_id.sudo().name"/>
+                            </p>
+                        </div>
+                        <t t-set="count" t-value="1"/>
+                        <t t-set="count_en" t-value="1"/>
+                        <t t-foreach="list(set(product.sudo().stock_available_website.split('\n')))" t-as="val_vart">
+                            <div class="mb-n2" style="display: inline-block;width: 100%;" t-if="'En Stock' in val_vart">
+                                <t t-if="count_en == 1">
+                                    <p style="width: 49%;float: left;">En Stock</p>
+                                    <t t-set="en_stock" t-value="val_vart.split('En Stock')[0]"/>
+                                    <p align="right" id="botellas_palet"
+                                       style="width: 50%;float: left;">
+                                        <t t-esc="en_stock.split('.')[0]"/>
+                                    </p>
+                                </t>
+                                <t t-set="count_en" t-value="count_en+1"/>
+                            </div>
+                        </t>
+                        <t t-if="count_en == 1">
+                            <div class="mb-n2" style="display: inline-block;width: 100%;">
+                                <p style="width: 49%;float: left;height: 27px;"></p>
+                                <p align="right" id="botellas_palet"
+                                   style="width: 50%;float: left;height: 27px;">
+                                    <t></t>
+                                </p>
+                                <t t-set="count_en" t-value="count_en+1"/>
+                            </div>
+                        </t>
+                        <t t-foreach="list(product.sudo().stock_available_website.split('\n'))" t-as="val_vart">
+                            <t t-if="count &lt;= 1">
+                                <div class="mb-n2" style="display: inline-block;width: 100%;"
+                                     t-if="' Disponible:' in val_vart">
+                                    <t t-set="en_stock_date"
+                                       t-value="val_vart.split(product.uom_id.name + ' Disponible:')[0]"/>
+                                    <t t-set="en_date"
+                                       t-value="val_vart.split(product.uom_id.name + ' Disponible:')[-1]"/>
+                                    <p style="width: 49%;float: left;">
+                                        <t t-esc="en_date"/>
+                                    </p>
+                                    <p align="right" id="botellas_palet"
+                                       style="width: 50%;float: left;">
+                                        <t t-esc="en_stock_date.split('.')[0]"/>
+                                    </p>
+                                    <t t-set="count" t-value="count+1"/>
+                                </div>
+                            </t>
+                        </t>
+                        <t t-if="count == 1">
+                            <div class="mb-n2" style="display: inline-block;width: 100%;">
+
+                                <p style="width: 49%;float: left;height: 27px;"></p>
+                                <p align="right" id="botellas_palet"
+                                   style="width: 50%;float: left;height: 27px;">
+                                    <t></t>
+                                </p>
+
+                                <t t-set="count" t-value="count+1"/>
+                            </div>
+                        </t>
+                    </div>
+<!--                    <span>Botellas/palet :</span>-->
+<!--                    <span id="botellas_palet" t-esc="product.botellas_palet"/>-->
+                </div>
+            <!-- </t> -->
+        </xpath>
+    </template>
+</odoo>
