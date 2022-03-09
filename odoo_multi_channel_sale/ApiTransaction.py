@@ -58,21 +58,28 @@ class Transaction:
 					s_ids,e_ids,feeds = [], [], False
 					data_list, kw = getattr(
 						self.instance, 'import_{}'.format(self.channel))(object, **kw), kw
+					_logger.info(f'~~D~d~{data_list} feeds committed~~~~')
 					kw = data_list[1] if isinstance(data_list, tuple) else kw
 					data_list = [] if data_list in [None, False, ''] or len(data_list) < 1 else data_list[0]
 					if data_list and type(data_list) is list:
 						kw['last_id'] = data_list[-1].get('store_id')
-					objectmapping = self.getFeedObjectDictionary()
-					if object in objectmapping:
-						s_ids,e_ids,feeds = self.env[objectmapping.get(object)].with_context(
-							channel_id=self.instance
-						)._create_feeds(data_list)
-					elif object == 'product.attribute':
-						_logger.info(f'~~~~{data_list} feeds committed~~~~')
-						data_list = data_list.get('create_ids', []) if data_list.get('create_ids') else data_list.get('update_ids', [])
-						msg = "<div class='alert alert-success' role='alert'><h3 class='alert-heading'><i class='fa fa-smile-o'/>  Congratulations !</h3><hr><span class='badge badge-pill badge-success'>Success</span>All attributes are synced along with the <span class='font-weight-bold'> {} attribute sets</span></div>".format(len(data_list)) if data_list else "<div class='alert alert-danger' role='alert'>Attributes are failed to import.</div>"
+					
+					_logger.info(f'~~D~~{data_list} feeds committed~~~~')
+					_logger.info(f'~~Dsd~~{kw} feeds committed~~~~')
+					if data_list:
+						objectmapping = self.getFeedObjectDictionary()
+						if object in objectmapping:
+							s_ids,e_ids,feeds = self.env[objectmapping.get(object)].with_context(
+								channel_id=self.instance
+							)._create_feeds(data_list)
+						elif object == 'product.attribute':
+							_logger.info(f'~~~~{data_list} feeds committed~~~~')
+							data_list = data_list.get('create_ids', []) if data_list.get('create_ids') else data_list.get('update_ids', [])
+							msg = "<div class='alert alert-success' role='alert'><h3 class='alert-heading'><i class='fa fa-smile-o'/>  Congratulations !</h3><hr><span class='badge badge-pill badge-success'>Success</span>All attributes are synced along with the <span class='font-weight-bold'> {} attribute sets</span></div>".format(len(data_list)) if data_list else "<div class='alert alert-danger' role='alert'>Attributes are failed to import.</div>"
+						else:
+							raise Exception('Invalid object type')
 					else:
-						raise Exception('Invalid object type')
+						raise Exception(kw.get('message'))
 
 					#NOTE: To handle api_limit==1 infinity loop
 					if kw.get('page_size', 0) == 1:
@@ -140,7 +147,9 @@ class Transaction:
 				)
 			operation = 'exported'
 			for record in self.env[object].browse(local_ids):
+				_logger.info("====START=====[record]====%r",record)
 				res,remote_object = getattr(self.instance,'export_{}'.format(self.channel))(record)
+				_logger.info("====END=====[res,remote_object]====%r",[res,remote_object])
 				if res:
 					self.create_mapping(record,remote_object)
 					success_ids.append(record.id)

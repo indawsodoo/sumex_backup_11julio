@@ -48,61 +48,14 @@ class ProductProduct(models.Model):
 	)
 
 	def write(self, vals):
+		res = True
 		for record in self:
-			mapping_ids = record.channel_mapping_ids
-			vals = record.pre_product_write(vals, mapping_ids)
-			mapping_ids.write({'need_sync': 'yes'})
+			mapping_objs = record.channel_mapping_ids
+			vals = self.env['multi.channel.sale']._core_pre_post_write(record, 'pre', 'product', mapping_objs, vals)
+			mapping_objs.write({'need_sync': 'yes'})
 			res = super(ProductProduct, record).write(vals)
-			record.post_product_write(vals, mapping_ids)
+			self.env['multi.channel.sale']._core_pre_post_write(record, 'post', 'product', mapping_objs, vals)
 		return res
-
-	def pre_product_write(self, vals, mapping_ids):
-		r""" Adds functionality to modify product Vals
-			Return vals
-		"""
-
-		_channel_ids = self.env['multi.channel.sale']
-		for product_mapping in mapping_ids:
-			channel_id = product_mapping.channel_id
-			_channel_ids |= channel_id
-			if hasattr(channel_id,'%s_mapped_pre_product_write'%channel_id.channel):
-				vals.update(getattr(
-					channel_id,'%s_mapped_pre_product_write'%channel_id.channel
-				)(self, product_mapping, vals) or vals)
-
-		channel_ids = self.env['multi.channel.sale'].search([
-						('state','=','validate'),
-						('id', 'not in', _channel_ids.ids)])
-		for channel_id in channel_ids:
-			if hasattr(channel_id,'%s_pre_product_write'%channel_id.channel):
-				vals.update(getattr(
-					channel_id,'%s_pre_product_write'%channel_id.channel
-				)(self, vals) or vals)
-		return vals
-
-	def post_product_write(self, vals, mapping_ids):
-		r"""Adds functionality after product write is called
-			Return True
-		"""
-
-		_channel_ids = self.env['multi.channel.sale']
-		for product_mapping in mapping_ids:
-			channel_id = product_mapping.channel_id
-			_channel_ids |= channel_id
-			if hasattr(channel_id,'%s_mapped_post_product_write'%channel_id.channel):
-				vals.update(getattr(
-					channel_id,'%s_mapped_post_product_write'%channel_id.channel
-				)(self, product_mapping, vals) or vals)
-
-		channel_ids = self.env['multi.channel.sale'].search([
-						('state','=','validate'),
-						('id', 'not in', _channel_ids.ids)])
-		for channel_id in channel_ids:
-			if hasattr(channel_id,'%s_post_product_write'%channel_id.channel):
-				vals.update(getattr(
-					channel_id,'%s_post_product_write'%channel_id.channel
-				)(self, vals) or vals)
-		return True
 
 	@api.model
 	def check_for_new_price(self,template_id,value_id,price_extra):
@@ -133,7 +86,7 @@ class ProductProduct(models.Model):
 
 		attribute_mapping = self.env['channel.attribute.mappings'].search(
 			[
-				('channel_id','=',context.get('channel_id')),
+				('channel_id','=',context.get('channel_id').id),
 				('store_attribute_id','=',store_attribute_id)
 			],
 			limit=1
@@ -158,7 +111,7 @@ class ProductProduct(models.Model):
 					'store_attribute_name': attribute_id.get('name'),
 					'attribute_name'      : product_attribute_id,
 					'odoo_attribute_id'   : product_attribute_id,
-					'channel_id'          : context.get('channel_id'),
+					'channel_id'          : context.get('channel_id').id,
 					'ecom_store'          : context.get('channel')
 				}
 			)
@@ -172,7 +125,7 @@ class ProductProduct(models.Model):
 
 		attribute_value_mapping = self.env['channel.attribute.value.mappings'].search(
 			[
-				('channel_id','=',context.get('channel_id')),
+				('channel_id','=',context.get('channel_id').id),
 				('store_attribute_value_id','=',store_attribute_value_id),
 				('attribute_value_name.attribute_id','=',product_attribute_id)
 			],
@@ -206,7 +159,7 @@ class ProductProduct(models.Model):
 					'store_attribute_value_name': attribute_id.get('value'),
 					'attribute_value_name'      : product_attribute_value_id,
 					'odoo_attribute_value_id'   : product_attribute_value_id,
-					'channel_id'                : context.get('channel_id'),
+					'channel_id'                : context.get('channel_id').id,
 					'ecom_store'                : context.get('channel')
 				}
 			)

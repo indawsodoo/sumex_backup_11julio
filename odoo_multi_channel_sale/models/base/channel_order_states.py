@@ -44,12 +44,10 @@ class ChannelOrderStates(models.Model):
     @api.constrains('channel_id', 'default_order_state')
     def _check_default_order_state(self):
         for rec in self:
-            domain = [
+            if len(self.search([
                 ('default_order_state', '=', True),
-                ('channel_id', '=', rec.channel_id.id),
-                # ('id','!=',rec.id),
-            ]
-            if len(self.search(domain)) > 1:
+                ('channel_id', '=', rec.channel_id.id)
+            ])) > 1:
                 raise ValidationError(
                     "Only one state  can be default at once !")
 

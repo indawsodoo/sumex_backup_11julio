@@ -14,7 +14,6 @@ _logger = getLogger(__name__)
 ShippingFields = [
 	'name',
 	'shipping_carrier',
-	'description',
 	'is_international',
 	'description',
 	'store_id',
@@ -36,15 +35,27 @@ class ShippingFeed(models.Model):
 	@api.model
 	def get_shiping_carrier(self,carrier_name,channel_id=None):
 		channel_id  = channel_id or self.channel_id
-		return self.env['delivery.carrier'].search(
+		carrierObj = self.env['delivery.carrier'].search(
 			[('name','=',carrier_name)], limit=1
-		) or self.env['delivery.carrier'].create(
-			{
-				'name'        : carrier_name,
-				'fixed_price' : 0,
-				'product_id'  : channel_id.delivery_product_id.id
-			}
 		)
+		if not carrierObj:
+			product_id = channel_id.delivery_product_id
+			if product_id:
+				product_id = product_id.id
+			else:
+				product_id = self.env['product.product'].create({
+					'name': f"{channel_id.name}_shipping",
+					'type':'service'
+				})
+				if product_id:
+					product_id = product_id.id
+					channel_id.delivery_product_id = product_id
+			carrierObj = self.env['delivery.carrier'].create({
+							'name'        : carrier_name,
+							'fixed_price' : 0,
+							'product_id'  : product_id 	
+						})
+		return carrierObj
 
 	def get_shiping_carrier_mapping(self,channel_id,shipping_service_id):
 		mapping_id = channel_id.match_carrier_mappings(shipping_service_id)
@@ -57,19 +68,6 @@ class ShippingFeed(models.Model):
 				store_id = shipping_service_id
 			)
 			return self.create_shipping_mapping(channel_id,carrier_id.id,vals)
-
-	@api.model
-	def _create_feeds(self, shipping_data_list):
-		success_ids, error_ids = [], []
-		self = self.contextualize_feeds('shipping')
-		for shipping_data in shipping_data_list:
-			feed = self._create_feed(shipping_data)
-			if feed:
-				self += feed
-				success_ids.append(shipping_data.get('store_id'))
-			else:
-				error_ids.append(shipping_data.get('store_id'))
-		return success_ids, error_ids, self
 
 	@api.model
 	def _create_feed(self, shipping_data):
@@ -116,6 +114,7 @@ class ShippingFeed(models.Model):
 		state          = 'done'
 		carrier_id     = False
 		vals           = EL(self.read(self.get_shipping_fields()))
+		_logger.info("=========vals=========: %r", vals)
 
 		shipping_carrier = vals.pop('shipping_carrier')
 		if not vals.get('name'):
@@ -139,9 +138,14 @@ class ShippingFeed(models.Model):
 			('shipping_service_id','=',vals.get('store_id'))
 		]
 		match = self.env['channel.shipping.mappings'].search(map_domain,limit=1)
+		_logger.info("=========carrier_id=========: %r", carrier_id)
 		if state == 'done':
 			if match:
-				res        = match.write(vals)
+				res = match.write({
+							'shipping_service':vals.get('name', match.shipping_service),
+							'international_shipping': vals.get('is_international', False),
+							'shipping_service_id'   : vals.get('store_id', match.shipping_service_id)
+				})
 				mapping_id = match
 				update_id  = mapping_id
 				if res:
@@ -171,8 +175,10 @@ class ShippingFeed(models.Model):
 			action_on   = 'shipping',
 			action_type = 'import',
 		)
+		_logger.info("=========self=========: %r", self)
 		for record in self:
 			res         = record.import_item()
+			_logger.info("=========res=========: %r", res)
 			message    += res.get('message','')
 			mapping_id  = res.get('mapping_id')
 			update_id   = res.get('update_id')
@@ -187,6 +193,7 @@ class ShippingFeed(models.Model):
 				sync_vals['ecomstore_refrence'] = mapping_id.shipping_service_id
 				sync_vals['odoo_id']            = mapping_id.odoo_shipping_carrier
 			sync_vals['summary'] = message
+			_logger.info("=========sync_vals=========: %r", sync_vals)
 			record.channel_id._create_sync(sync_vals)
 		if self._context.get('get_mapping_ids'):
 			return dict(
