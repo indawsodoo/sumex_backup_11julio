@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_banner_video_form" model="ir.ui.view">
+        <field name="name">product.template.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='barcode']" position="after">
+                <field name="all_attribute_value_ids" widget="many2many_tags"/>
+                <field name="is_catalog"/>
+                <field name="catalog_product_id"
+                       context="{'get_catalog_product': 1, 'active_id': id}"
+                       attrs="{'required': [('is_catalog', '=', True)], 'invisible': [('is_catalog', '=', False)]}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
