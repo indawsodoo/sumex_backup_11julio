@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <menuitem
+        id="sumex_apps_imports_csv_menu_root"
+        name="Sumex Imports Csv"
+        web_icon="odoo14_sumex_apps_imports_csv,static/description/icon.png"
+    />
+
+    <record model="ir.actions.act_window" id="sumex_apps_imports_csv_action">
+        <field name="name">Sumex Imports CSV</field>
+        <field name="res_model">sumex_apps_imports_csv</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+        id="sumex_apps_imports_csv_menu"
+        name="Sumex Imports Csv"
+        action="sumex_apps_imports_csv_action"
+        parent="sumex_apps_imports_csv_menu_root"
+    />
+
+    <record model="ir.actions.act_window" id="sumex_apps_imports_csv_logger_action">
+        <field name="name">Sumex Imports CSV Logger</field>
+        <field name="res_model">sumex_apps_imports_csv_logger</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+        id="sumex_apps_imports_csv_logger_menu"
+        name="Sumex Imports Csv Logger"
+        action="sumex_apps_imports_csv_logger_action"
+        parent = "sumex_apps_imports_csv_menu_root"
+    />
+
+</odoo>

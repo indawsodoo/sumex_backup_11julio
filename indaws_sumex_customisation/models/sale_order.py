@@ -24,12 +24,13 @@ class SaleOrder(models.Model):
                     if product_id.standard_price > 0:
                         margen = (line.price_unit / (product_id.standard_price / 100)) - 100
                     else:
-                        raise UserError(_("El producto "+product_id.display_name+" No tiene establecido el costo.\nPor Favor establesca el costo del producto para poder continuar con el proceso."))
+                        if line.display_type != 'line_note' and line.display_type != 'line_section':
+                            raise UserError(_("El producto "+product_id.display_name+" No tiene establecido el costo.\nPor Favor establesca el costo del producto para poder continuar con el proceso."))
                     limit_margin_sale = self.env["ir.config_parameter"].search([('key', '=', 'min_margin_sale')]).value
-                    if limit_margin_sale and margen > float(limit_margin_sale):
+                    if limit_margin_sale and margen > float(limit_margin_sale) and (line.display_type != 'line_note' and line.display_type != 'line_section'):
                         show_warnning = True
                         error = 'El producto '+product_id.name+' a superado el margen establecido en los ajustes de ventas.'
-                    elif margen < item.partner_id.min_margin or margen > item.partner_id.max_margin:
+                    elif (margen < item.partner_id.min_margin or margen > item.partner_id.max_margin) and (line.display_type != 'line_note' and line.display_type != 'line_section'):
                         show_warnning = True
                         error = 'El producto '+product_id.name+' esta por fuera de los limites del margen establecidos en el cliente.'
                     item.check_price_line = True
@@ -57,7 +58,8 @@ class SaleOrder(models.Model):
         emails = ''
         for user in users:
             if user.has_group('sales_team.group_sale_manager'):
-                emails += '<'+user.email+'>,'
+                if user.email:
+                    emails += '<'+user.email+'>,'
         return emails[:-1]
 
 

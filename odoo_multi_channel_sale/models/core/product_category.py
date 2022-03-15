@@ -29,3 +29,8 @@ class ProductCategory(models.Model):
 			record.channel_mapping_ids.write({'need_sync': 'yes'})
 			res = super(ProductCategory, record).write(vals)
 		return res
+
+	def unlink(self):
+		for obj in self:
+			self.env['multi.channel.sale'].unlink_feeds_mapping(obj.channel_mapping_ids, obj)
+		return super(ProductCategory, self).unlink()

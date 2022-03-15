@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record model="ir.cron" id="cron_slider_styles_data_remove">
+    <field name="name">Remove Old Slider Data</field>
+    <field name="model_id" ref="emipro_theme_base.model_slider_styles"/>
+    <field name="state">code</field>
+    <field name="code">model._cron_slider_styles_data_remove()</field>
+    <field name="user_id" ref="base.user_root"/>
+    <field name="interval_number">10</field>
+    <field name="interval_type">minutes</field>
+    <field name="numbercall">-1</field>
+  </record>
+</odoo>

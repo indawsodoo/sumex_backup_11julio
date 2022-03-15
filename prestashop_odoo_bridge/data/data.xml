@@ -11,8 +11,8 @@
             <field name="channel">prestashop</field>
             <!-- <field name="discount_product_id" ref='odoo_multi_channel_sale.discount_product'/> -->
             <!-- <field name="sku_sequence_id" ref='odoo_multi_channel_sale.product_sequence_id'/> -->
-            <field name="prestashop_api_key">prestashop_api_key</field>
-            <field name="prestashop_base_uri">http://Your_prestashop_url/api</field>
+            <field name="api_key">api_key</field>
+            <field name="url">http://Your_prestashop_url/api</field>
              <field name="crm_team_id" ref='team_sales_prestashop'/>
         </record>
 

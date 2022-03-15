@@ -14,49 +14,10 @@
 # If not, see <https://store.webkul.com/license.html/>
 #################################################################################
 {
-  "name"                 :  "Odoo Multichannel Prestashop Connector",
-  "summary"              :  """The module facilitates Prestashop integration with Odoo. The user can configure Prestashop with Odoo and manage Prestashop orders, customers, products, etc in Odoo.
-  Multi Channel Prestashop Odoo Bridge
-Multi-Channel Prestashop Odoo Bridge
-Prestashop Odoo Bridge
-Multi Channel Prestashop Odoo Bridge(POB)
-Odoo Prestashop
-Prestashop Odoo Connector
-Odoo Prestashop connector
-Prestashop to odoo
-Odoo to Prestashop
-Prestashop connector
-Prestashop bridge
-Prestashop marketplace
-Manage orders
-Manage products
-Import products
-Import customers 
-Import orders
-Ebay to Odoo
-Odoo multi-channel bridge
-Multi channel connector
-Multi platform connector
-Multiple platforms bridge
-Connect Amazon with odoo
-Amazon bridge
-Flipkart Bridge
-Magento Odoo Bridge
-Odoo magento bridge
-Woocommerce odoo bridge
-Odoo woocommerce bridge
-Ebay odoo bridge
-Odoo ebay bridge
-Multi channel bridge
-Prestashop odoo bridge
-Odoo prestahop
-Akeneo bridge
-Marketplace bridge
-Multi marketplace connector
-Multiple marketplace platform
-  """,
+  "name"                 :  "Multi Channel Prestashop Odoo Bridge(POB)",
+  "summary"              :  """The module facilitates Prestashop integration with Odoo. The user can configure Prestashop with Odoo and manage Prestashop orders, customers, products, etc in Odoo.""",
   "category"             :  "Website",
-  "version"              :  "1.6.3",
+  "version"              :  "1.6.5",
   "sequence"             :  1,
   "author"               :  "Webkul Software Pvt. Ltd.",
   "license"              :  "Other proprietary",
@@ -64,7 +25,6 @@ Multiple marketplace platform
   "description"          :  """Multi Channel Prestashop Odoo Bridge
 Multi-Channel Prestashop Odoo Bridge
 Prestashop Odoo Bridge
-Multi Channel Prestashop Odoo Bridge(POB)
 Odoo Prestashop
 Prestashop Odoo Connector
 Odoo Prestashop connector
@@ -76,7 +36,7 @@ Prestashop marketplace
 Manage orders
 Manage products
 Import products
-Import customers 
+Import customers
 Import orders
 Ebay to Odoo
 Odoo multi-channel bridge
@@ -101,20 +61,21 @@ Multi marketplace connector
 Multiple marketplace platform""",
   "live_test_url"        :  "http://prestashop.webkul.com/pob/odoo_multichannel/en/content/6-prestashop-multichannel-odoo-bridge",
   "depends"              :  ['odoo_multi_channel_sale'],
+  "qweb": [
+        "views/inherit_multi_channel_template.xml",
+    ],
   "data"                 :  [
-                             'security/ir.model.access.csv',
-                             'data/data.xml',
-                             'views/dashboard.xml',
-                             'views/channel_views.xml',
-                             'wizard/import_operation.xml',
-                            #  'wizard/export_operation.xml',
+                            'security/ir.model.access.csv',
+                            'data/data.xml',
+                            'views/channel_views.xml',
+                            'wizard/import_operation.xml',
+                            'wizard/export_operation.xml',
                             ],
-  "qweb"                 :  ['views/inherit_multi_channel_template.xml'],
   "images"               :  ['static/description/Banner.gif'],
   "application"          :  True,
   "installable"          :  True,
   "auto_install"         :  False,
   "price"                :  99,
-  "currency"             :  "USD",
+  "currency"             :  "EUR",
   "external_dependencies":  {'python': ['html2text']},
 }

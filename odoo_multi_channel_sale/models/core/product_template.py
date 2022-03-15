@@ -11,9 +11,14 @@ class ProductTemplate(models.Model):
 	_inherit = 'product.template'
 
 	wk_parent_default_code = fields.Char('Parent Code')
-	length                 = fields.Float('Length')
+	wk_length              = fields.Float('Length')
 	width                  = fields.Float('Width')
 	height                 = fields.Float('Height')
+	prestashop_online 	   = fields.Boolean(
+		string='Prestashop product Online',
+		default=0,
+		help='Prestashop product Online Just After Export/Update.',
+	)
 
 	dimensions_uom_id = fields.Many2one(
 		comodel_name = 'uom.uom',
@@ -59,57 +64,14 @@ class ProductTemplate(models.Model):
 
 	def write(self, vals):
 		for record in self:
-			mapping_ids = record.channel_mapping_ids
-			vals = record.pre_template_write(vals, mapping_ids)
-			mapping_ids.write({'need_sync': 'yes'})
+			mapping_objs = record.channel_mapping_ids
+			vals = self.env['multi.channel.sale']._core_pre_post_write(record, 'pre', 'template', mapping_objs, vals)
+			mapping_objs.write({'need_sync': 'yes'})
 			res = super(ProductTemplate, record).write(vals)
-			record.post_template_write(vals, mapping_ids)
+			self.env['multi.channel.sale']._core_pre_post_write(record, 'post', 'template', mapping_objs, vals)
 		return res
 
-	def pre_template_write(self, vals, mapping_ids):
-		r""" Adds functionality to modify template Vals
-			Return vals
-		"""
-
-		_channel_ids = self.env['multi.channel.sale']
-		for template_mapping in mapping_ids:
-			channel_id = template_mapping.channel_id
-			_channel_ids |= channel_id
-			if hasattr(channel_id,'%s_mapped_pre_template_write'%channel_id.channel):
-				vals.update(getattr(
-					channel_id,'%s_mapped_pre_template_write'%channel_id.channel
-				)(self, template_mapping, vals) or vals)
-
-		channel_ids = self.env['multi.channel.sale'].search([
-						('state','=','validate'),
-						('id', 'not in', _channel_ids.ids)])
-		for channel_id in channel_ids:
-			if hasattr(channel_id,'%s_pre_template_write'%channel_id.channel):
-				vals.update(getattr(
-					channel_id,'%s_pre_template_write'%channel_id.channel
-				)(self, vals) or vals)
-		return vals
-
-	def post_template_write(self, vals, mapping_ids):
-		r"""Adds functionality after template write is called
-			Return True
-		"""
-
-		_channel_ids = self.env['multi.channel.sale']
-		for template_mapping in mapping_ids:
-			channel_id = template_mapping.channel_id
-			_channel_ids |= channel_id
-			if hasattr(channel_id,'%s_mapped_post_template_write'%channel_id.channel):
-				getattr(
-					channel_id,'%s_mapped_post_template_write'%channel_id.channel
-				)(self, template_mapping, vals)
-
-		channel_ids = self.env['multi.channel.sale'].search([
-						('state','=','validate'),
-						('id', 'not in', _channel_ids.ids)])
-		for channel_id in channel_ids:
-			if hasattr(channel_id,'%s_post_template_write'%channel_id.channel):
-				getattr(
-					channel_id,'%s_post_template_write'%channel_id.channel
-				)(self, vals)
-		return True
+	def unlink(self):
+		for obj in self:
+			self.env['multi.channel.sale'].unlink_feeds_mapping(obj.channel_mapping_ids, obj)
+		return super(ProductTemplate, self).unlink()

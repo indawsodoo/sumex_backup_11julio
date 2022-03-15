@@ -60,8 +60,6 @@ Legend
 	+[REM] removed the apitransaction file.
 	+[REM] removed the create remote object code.
 
-
-
-
-
+	-------------------------------Version 1.6.5 (04-01-2021) -----------------------------------
+	+[FIX] change object to dictionary for category id in export category process.
  

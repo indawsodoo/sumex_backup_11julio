@@ -4,8 +4,8 @@
 # See LICENSE file for full copyright and licensing details.
 # License URL : <https://store.webkul.com/license.html/>
 ##############################################################################
-from odoo import api,fields,models
 
+from odoo import api,fields,models
 import copy
 
 
@@ -78,6 +78,18 @@ class WkFeed(models.Model):
 		string  = 'Channel',
 	)
 
+	@api.model
+	def _create_feeds(self, data_list):
+		success_ids, error_ids = [], []
+		self = self.contextualize_feeds(self._name.split('.')[0])
+		for data in data_list:
+			feed = self._create_feed(data)
+			if feed:
+				self += feed
+				success_ids.append(data.get('store_id'))
+			else:
+				error_ids.append(data.get('store_id'))
+		return success_ids, error_ids, self
 
 	@api.model
 	def get_product_fields(self):
@@ -90,7 +102,6 @@ class WkFeed(models.Model):
 	def open_mapping_view(self):
 		self.ensure_one()
 		model = self._context.get('mapping_model')
-
 		action = {
 			'name'     : 'Mapping',
 			'type'     : 'ir.actions.act_window',
@@ -104,16 +115,7 @@ class WkFeed(models.Model):
 				( self._context.get('store_field'), '=', self.store_id),
 			]
 		)
-		if len(res) == 1:
-			action.update(
-				view_mode = 'form',
-				res_id = res.id,
-			)
-		else:
-			action.update(
-				view_mode = 'tree',
-				domain = [('id','in',res.ids)],
-			)
+		action.update(view_mode = 'form', res_id = res.id) if len(res) == 1 else action.update(view_mode = 'tree', domain = [('id','in',res.ids)])
 		return action
 
 	def set_feed_state(self,state='done'):
@@ -182,11 +184,11 @@ class WkFeed(models.Model):
 		)
 
 	@api.model
-	def get_extra_categ_ids(self,store_categ_ids,channel_id):
+	def get_extra_categ_ids(self, store_categ_ids, channel_id):
 		message = ''
 		categ_ids = []
 		for store_categ_id in store_categ_ids.strip(',').split(','):
-			res = self.get_categ_id(store_categ_id,channel_id)
+			res = self.get_categ_id(store_categ_id, channel_id)
 			message += res.get('message','')
 			categ_id = res.get('categ_id')
 			if categ_id:
@@ -250,20 +252,23 @@ class WkFeed(models.Model):
 		)
 
 	@api.model
-	def get_product_id(self,store_product_id,line_variant_ids,channel_id ,default_code=None,barcode=None):
+	def get_product_id(self, store_product_id, line_variant_ids, channel_id, default_code=None, barcode=None):
 		message = ''
-		domain = []
-		if default_code:
-			domain += [('default_code','=',default_code)]
-		if barcode:
-			domain += [('barcode','=',barcode)]
+
+		# Need to check significance of domain 
+
+		# domain = []
+		# if default_code:
+		# 	domain += [('default_code','=',default_code)]
+		# if barcode:
+		# 	domain += [('barcode','=',barcode)]
 		product_id = None
-		match = self._context.get('variant_mappings').get(channel_id.id,{}).get(store_product_id,{}).get(line_variant_ids)
+		match = self._context.get('variant_mappings').get(channel_id.id, {}).get(store_product_id, {}).get(line_variant_ids)
 		if match:
 			match = self.env['channel.product.mappings'].browse(match)
 			product_id = match.product_name
 		else:
-			feed = self._context.get('product_feeds').get(channel_id.id,{}).get(store_product_id)
+			feed = self._context.get('product_feeds').get(channel_id.id, {}).get(store_product_id)
 			feed = self.env['product.feed'].browse(feed)
 			product_variant_feed = feed.feed_variants.filtered(lambda self: self.store_id==line_variant_ids)
 			if feed:
@@ -292,7 +297,7 @@ class WkFeed(models.Model):
 		)
 
 	@api.model
-	def get_carrier_id(self,carrier_id,service_id=None,channel_id=None):
+	def get_carrier_id(self, carrier_id, service_id=None, channel_id=None):
 		message = ''
 		res_id = None
 		shipping_service_name = service_id or carrier_id

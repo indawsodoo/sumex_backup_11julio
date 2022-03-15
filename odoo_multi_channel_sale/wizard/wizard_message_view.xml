@@ -13,8 +13,9 @@
                         type  ="object"
                         name  ="operation_back"
                         class ="oe_highlight btn btn-dark fa fa-arrow-left"
+                        invisible="context.get('active_model') != 'import.operation'"
                     />
-                    <button string="Cancel" class="btn btn-danger" name="cancel" special="cancel"/>
+                    <button string="Close" class="btn btn-danger" name="cancel" special="cancel"/>
             </xpath>
         </field>
     </record>

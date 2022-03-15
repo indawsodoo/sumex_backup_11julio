@@ -17,7 +17,7 @@
   "name"                 :  "Odoo Multi-Channel Sale",
   "summary"              :  """The module is Multiple platform connector with Odoo. You can connect and manage various platforms in odoo with the help of Odoo multi-channel bridge.""",
   "category"             :  "Website",
-  "version"              :  "2.2.13",
+  "version"              :  "2.3.6",
   "sequence"             :  1,
   "author"               :  "Webkul Software Pvt. Ltd.",
   "license"              :  "Other proprietary",

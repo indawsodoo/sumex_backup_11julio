@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="sumex_apps_imports_csv_view_inherit_order_search" model="ir.ui.view">
+        <field name="name">sumex_apps_imports_csv_view_inherit_order_search</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter string="Creado por Sumex_apps_imports - SÍ" name="_created_from_sumex_apps_imports_csv_yes" domain="[('_created_from_sumex_apps_imports_csv','!=',False)]"/>
+                <filter string="Creado por Sumex_apps_imports - NO" name="_created_from_sumex_apps_imports_csv_no" domain="[('_created_from_sumex_apps_imports_csv','=',False)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="sumex_apps_imports_csv_view_inherit_order_tree" model="ir.ui.view">
+        <field name="name">sumex_apps_imports_csv_view_inherit_order_tree</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+
+            <field name='state' position="after">
+                <field name="_created_from_sumex_apps_imports_csv" readonly="1" optional="hide"/>
+            </field>
+
+        </field>
+    </record>
+
+    <record id="sumex_apps_imports_csv_view_inherit_order_form" model="ir.ui.view">
+        <field name="name">sumex_apps_imports_csv_view_inherit_order_form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <field name='payment_term_id' position="after">
+                <field name="_created_from_sumex_apps_imports_csv" readonly="1"/>
+            </field>
+
+
+        </field>
+    </record>
+
+</odoo>

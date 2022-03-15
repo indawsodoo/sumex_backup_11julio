@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<section class="oe_container oe_spaced">
+    <h2 class="oe_slogan" style="color:#875A7B;">Sumex Imports Csv</h2>
+</section>
+
+<section class="oe_container oe_spaced" >
+    <div class="oe_slogan">
+        <img style="height:60px" src="logo.png"/>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_spaced" style="padding-left: 64px; padding-right: 64px; font-size: 15px;">
+        
+    Módulo Interfaz de importaciones CSV.<br>
+    Este módulo facilita la importación de ficheros csv con la unica necesidad de implementar los importadores, como si estos fuesen pequeños plugins.<br>
+    <br>
+    Para añadir un nuevo importador, añadirlos a la lista del modelo <b>sumex_apps_imports_csv</b>:<br>
+    <pre>
+    import_names = [
+        ('sumex_apps_imports_csv_import_sage_clientes', 'Clientes de Sage'),
+        ('sumex_apps_imports_csv_import_compras_de_sage', 'Pedidos'),
+    ]</pre>
+        <i> Donde la parte izquierda de cada elemento se refiere al nombre de modelo del importador, y la parte derecha al texto descriptivo del importador.</i><br>
+    <br>
+    A continuación añadimos un nuevo modelo abstracto en la carpeta <i>"importadores"</i>, cuyo nombre será coincidente con el que añadimos en la lista anterior descrita.<br>
+    Ejemplo:<br>
+    <pre>
+    class sumex_apps_imports_csv_import_sage_clientes(models.AbstractModel):
+        import_fields = [
+        {'csv_column_name': 'Nombre', 'required': True, ...),    
+        {'csv_column_name': 'Provincia', 'required': True, ...),
+        {'csv_column_name': 'Pais', 'required': True, ...),
+        {'csv_column_name': 'CifEuropeo', 'required': True, ...)
+    ]</pre>
+    Donde import_fields configura el total de columnas del fichero csv, cuyo formato es (columna_nombre, requerido)<br>
+    <br>
+    Definiremos 2 métodos: <b>validate_row()</b>, <b>import_row()</b><br>
+    Ambos métodos tienen como retorno:<br>
+    &nbsp;&nbsp;&nbsp;- return {'info': '....'}<br>
+    &nbsp;&nbsp;&nbsp;- return {'warning': '....'}<br>
+    &nbsp;&nbsp;&nbsp;- return {'error': '....'}<br>
+    Estos notifican los mensajes al log y suman a los contadores de estos mismos.<br>
+    En el método [validate_row] solo el {'error'} condiciona la ejecución, haciendo que omita a [import_row]<br>
+    En el método [import_row] solo el {'error'} condiciona la ejecución, deteniendo la importación si el registro de importación está configurado para que así suceda.<br>
+    <br>
+    Ejemplo para validate_row:
+    <pre>
+    def validate_row(self, file_csv_content_row):
+        # Las validaciones generales de campos requeridos ya se realizan en el modelo de importaciones
+        if len(file_csv_content_row['Municipio']) < 5:  # Comprobar que el municipio tiene al menos 5 caracteres
+            return {'error': "En esta fila la columna '%s' no contiene un valor válido (se exige al menos 5 caracteres)" % 'Municipio'}
+        return</pre>
+
+    Ejemplo para import_row:
+    <pre>
+    def import_row(self, file_csv_header, file_csv_content_row):  
+
+        # buscar por Nombre y CifEuropeo
+        partner = self.env['res.partner'].search([
+            ('name', '=', file_csv_content_row['Nombre']),
+            ('vat', '=', file_csv_content_row['CifEuropeo']),
+        ])
+        if not partner:
+            partner = self.env['res.partner'].create({
+                'name': file_csv_content_row['Nombre'],
+                'vat': file_csv_content_row['CifEuropeo'],
+                'is_company': True,
+                '_created_from_sumex_apps_imports_csv': True
+            })
+
+        for field in [
+            ('Domicilio', 'street'),
+            ('Municipio', 'city'),
+            ('Telefono', 'phone'),
+            ('Telefono2', 'mobile'),
+            ('Email1', 'email'),
+            ('CodigoPostal', 'zip'),
+        ]:
+            field_csv = field[0]
+            field_odoo = field[1]
+            if field_csv in file_csv_content_row and file_csv_content_row[field_csv]:
+                setattr(partner, field_odoo, file_csv_content_row[field_csv])        
+</pre>
+    
+            
+    </div>
+</section>
+
+<section class="oe_container oe_spaced"></section>
+
+
+<section class="oe_container oe_spaced">
+    <h3 class="oe_slogan">Sumex S.A.</h3>
+</section>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="quick_view_template_123" inherit_id="website_sale.product" >
+        <xpath expr="//a[@id='add_to_cart']" position="before">
+<!--            <t t-if="uid and uid &gt; 0">-->
+            <div>
+                <t t-if="product.sudo().stock_available_website != ' '">
+                    <div>
+                        <t t-set="count" t-value="1"/>
+                        <t t-foreach="list(product.sudo().stock_available_website.split('\n'))" t-as="val_vart">
+                            <div style="display: inline-block;width: 100%;" t-if="'En Stock' in val_vart">
+
+                                <t t-set="en_stock" t-value="val_vart.split('En Stock')[0]"/>
+                                <p align="right" id="botellas_palet"
+                                   style="float: left;">
+                                    <t t-esc="en_stock.split('.')[0]"/> En Stock
+                                </p>
+                            </div>
+
+                            <div style="display: inline-block;width: 100%;" t-if="' Disponible:' in val_vart">
+                                <t t-if="count == 1">
+                                    <t t-set="en_stock_date"
+                                       t-value="val_vart.split(product.uom_id.name + ' Disponible:')[0]"/>
+                                    <t t-set="en_date"
+                                       t-value="val_vart.split(product.uom_id.name + ' Disponible:')[-1]"/>
+
+                                    <p align="right" id="botellas_palet"
+                                       style="float: left;">
+                                        <t t-esc="en_stock_date.split('.')[0]"/>
+                                    </p>
+                                    <p align="right" class="ml-1 mr-1" id="botellas_palet" style="float: left;">
+                                        <t t-esc="product.uom_id.name"/> Disponibles
+                                    </p>
+                                    <p style="float: left;">en
+                                        <t t-esc="en_date"/>
+                                    </p>
+                                </t>
+                                <t t-set="count" t-value="count+1"/>
+                            </div>
+
+
+                        </t>
+                    </div>
+                </t>
+                <br/>
+                <span>Botellas/palet :</span>
+                <span id="botellas_palet" t-esc="product.botellas_palet"/>
+<!--                <p>-->
+<!--                    <input type="text" name="description" placeholder="Line Comments"/>-->
+<!--                </p>-->
+            </div>
+<!--            </t>-->
+        </xpath>
+    </template>
+
+    
+<!--     <template id="theme_clarico_vega_wishlist" inherit_id="theme_clarico_vega.product_wishlist_ept">
+        <xpath expr="//table[@id='o_comparelist_table']" position="replace">
+        </xpath>    
+    </template> -->
+</odoo>

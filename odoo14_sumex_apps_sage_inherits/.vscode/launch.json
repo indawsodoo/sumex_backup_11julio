@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Remote Attach",
+            "type": "python",
+            "request": "attach",
+            "port": 3000,
+            "host": "localhost",
+            "justMyCode": false,
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "/home/odoo/addons_me/odoo14_sumex_apps_sage_inherits"
+                }
+            ]
+        }
+    ]
+}

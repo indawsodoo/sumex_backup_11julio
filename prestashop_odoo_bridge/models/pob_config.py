@@ -1,24 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #################################################################################
-#
 #   Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>)
 #    See LICENSE file for full copyright and licensing details.
 #################################################################################
 
 from odoo import api, fields, models, _
-from odoo import tools
-from .prestapi import PrestaShopWebService,PrestaShopWebServiceDict,PrestaShopWebServiceError,PrestaShopAuthenticationError
-from odoo.addons.odoo_multi_channel_sale.tools import extract_list as EL
-from odoo.addons.odoo_multi_channel_sale.tools import  _unescape
-
-from odoo.exceptions import UserError
 import re
 import base64
-import itertools
 import logging
 _logger     = logging.getLogger(__name__)
-
+from odoo.exceptions import UserError
+from .prestapi import PrestaShopWebService,PrestaShopWebServiceDict,PrestaShopWebServiceError,PrestaShopAuthenticationError
 
 Type = [
     ('simple','Simple Product'),
@@ -40,16 +33,10 @@ Boolean = [
 class MultiChannelSale(models.Model):
     _inherit = "multi.channel.sale"
 
-    prestashop_base_uri = fields.Char(
-        string = 'Base URI'
-    )
-    prestashop_api_key = fields.Char(
-        string = 'API Key'
-    )
     ps_language_id = fields.Char(
         'Prestashop Language Id',
         size = 2,
-        help="Prestashop's Default language Id "
+        help="Enter Prestashop's Default language Id "
     )
 
     default_tax_type = fields.Selection(
@@ -63,22 +50,11 @@ class MultiChannelSale(models.Model):
         string = 'Default Product Type',
         default = 'simple',
         required = 1,
+        help = _("Select default product type for prestashop end.")
     )
     ps_default_tax_rule_id = fields.Char(
         string = 'Default Tax Class ID',
         default = '0',
-        required = 1,
-    )
-    export_order_shipment = fields.Selection(
-        selection = Boolean,
-        string = 'Export  Order Shipment Over Prestashop',
-        default = '1',
-        required = 1,
-    )
-    export_order_invoice = fields.Selection(
-        selection = Boolean,
-        string = 'Export  Order Invoice Over Prestashop',
-        default = '1',
         required = 1,
     )
 
@@ -87,62 +63,75 @@ class MultiChannelSale(models.Model):
         result = super(MultiChannelSale, self).get_channel()
         result.append(("prestashop", "Prestashop"))
         return result
-    
+
+    @api.model
+    def _prestashop_get_product_images_vals(self, media):
+        vals = dict()
+        message = ''
+        data = None
+        image_url = media
+        if image_url:
+            prestashop = self._context['prestashop']
+            try:
+                data = prestashop.get(image_url)
+                image_data = base64.b64encode(data)
+            except Exception as e:
+                message += '<br/>%s'%(e)
+            else:
+                vals['image'] = image_data
+                return vals
+        return {'image':False}
+
     def get_core_feature_compatible_channels(self):
         vals = super().get_core_feature_compatible_channels()
         vals.append('prestashop')
         return vals
 
     def connect_prestashop(self):
-        message = '<br/> Credentials successfully validated.'
-        state = 'validate'
+        message = '<b>Connection Error: </b>'
         try:
             prestashop = PrestaShopWebServiceDict(
-                self.prestashop_base_uri, self.prestashop_api_key)
-            if prestashop:
-                languages = prestashop.get("languages", options = {'filter[active]':'1'})
-                if languages.get("languages",{}).get("language"):
-                    message = '<br/> Credentials successfully validated.'
+                self.url, self.api_key)
+            languages = prestashop.get("languages", options = {'filter[active]':'1'})
+            results = languages.get("languages",{}).get("language")
+            if isinstance(results,list):
+                language_ids = [result.get('attrs').get('id') for result  in results]
+                if self.ps_language_id not in language_ids:
+                    raise Exception("Invalid Prestashop Language Id")
+            elif not results.get('attrs').get('id'):
+                raise Exception("Invalid Prestashop Language Id")
+            message = '<b> Connection successfull !!! </b>'           
         except Exception as e:
-            message = 'Connection Error: '+str(e)+'\r\n'
-            state = 'error'
+            message += str(e)
             return False,message
         return True, message
 
-    def sync_order_feeds(self, vals, **kwargs):
-        for line_id in vals[0]['line_ids']:
-            line_id = line_id[2]
-            if line_id['line_source'] == "discount":
-                line_price = line_id['line_price_unit']
-                line_id['line_price_unit'] = line_price['total_discounts_tax_incl'] if self.default_tax_type == 'include'\
-                    else line_price['total_discounts_tax_excl']
-        res = super().sync_order_feeds(vals, **kwargs)
-        return res
+#-----------------------------------------Import Process --------------------------------------------------
 
     def import_prestashop(self, object, **kwargs):
+        kwargs.update(message = "No Records Found ...")
         prestashop = PrestaShopWebServiceDict(
-            self.prestashop_base_uri, self.prestashop_api_key)
+            self.url, self.api_key)
         data_list = []
-        kwargs["page_size"] = float('inf')
-        if prestashop:
-            if object == 'product.category':
-                data_list = self.import_prestashop_categories(
-                    prestashop, **kwargs)
-            elif object == 'res.partner':
-                data_list = self.import_prestashop_customers(
-                    prestashop, **kwargs)
-            elif object == 'product.template':
-                data_list = self.import_prestashop_products(
-                    prestashop, **kwargs)
-            elif object == 'sale.order':
-                data_list = self.import_prestashop_orders(prestashop, **kwargs)
-            elif object == "delivery.carrier":
-                data_list = self.import_prestashop_shippings(prestashop, **kwargs)
-            return data_list, kwargs
+        if object == 'product.category':
+            data_list = self.import_prestashop_categories(
+                prestashop, **kwargs)
+        elif object == 'res.partner':
+            data_list = self.import_prestashop_customers(
+                prestashop, **kwargs)
+        elif object == 'product.template':
+            data_list = self.import_prestashop_products(
+                prestashop, **kwargs)
+        elif object == 'sale.order':
+            data_list = self.import_prestashop_orders(
+                prestashop, **kwargs)
+        elif object == "delivery.carrier":
+            data_list = self.import_prestashop_shippings(
+                prestashop, **kwargs)
+        kwargs["page"] += kwargs.get("page_size")
+        return data_list, kwargs
 
     def import_prestashop_products(self, prestashop, **kwargs):
-        prestashop_object_id = kwargs.get('prestashop_object_id')
-        import_product_date = kwargs.get('prestashop_import_date_from')
         vals = dict(
             channel_id=self.id,
             operation='import',
@@ -150,14 +139,9 @@ class MultiChannelSale(models.Model):
         obj = self.env['import.prestashop.products'].create(vals)
         return obj.with_context({
             "prestashop": prestashop,
-            "prestashop_object_id": prestashop_object_id,
-            'prestashop_import_date_from': import_product_date
-
-        }).import_now()
+        }).import_now(**kwargs)
 
     def import_prestashop_categories(self, prestashop, **kwargs):
-        prestashop_object_id = kwargs.get('prestashop_object_id')
-        prestashop_import_date_from  = kwargs.get("prestashop_import_date_from")
         vals = dict(
             channel_id=self.id,
             operation='import',
@@ -165,13 +149,9 @@ class MultiChannelSale(models.Model):
         obj = self.env['import.prestashop.categories'].create(vals)
         return obj.with_context({
             "prestashop": prestashop,
-            "prestashop_object_id": prestashop_object_id,
-            "prestashop_import_date_from": prestashop_import_date_from,
-        }).import_now()
+        }).import_now(**kwargs)
 
     def import_prestashop_customers(self, prestashop, **kwargs):
-        prestashop_object_id = kwargs.get('prestashop_object_id')
-        import_customer_date = kwargs.get('prestashop_import_date_from')
         vals = dict(
             channel_id=self.id,
             operation='import',
@@ -179,12 +159,9 @@ class MultiChannelSale(models.Model):
         obj = self.env['import.prestashop.partners'].create(vals)
         return obj.with_context({
             "prestashop": prestashop,
-            "prestashop_object_id": prestashop_object_id,
-            "prestashop_import_date_from": import_customer_date,
-        }).import_now()
+        }).import_now(**kwargs)
 
     def import_prestashop_shippings(self, prestashop, **kwargs):
-        prestashop_object_id = kwargs.get('prestashop_object_id')
         vals = dict(
             channel_id=self.id,
             operation='import',
@@ -192,13 +169,9 @@ class MultiChannelSale(models.Model):
         obj = self.env['import.prestashop.shipping'].create(vals)
         return obj.with_context({
             "prestashop": prestashop,
-            "channel_id":self,
-            "prestashop_object_id": prestashop_object_id,
-        }).import_now()
-    
+        }).import_now(**kwargs)
+
     def import_prestashop_orders(self, prestashop, **kwargs):
-        prestashop_object_id = kwargs.get('prestashop_object_id')
-        import_order_date = kwargs.get('prestashop_import_date_from')
         vals = dict(
             channel_id=self.id,
             operation='import',
@@ -206,22 +179,21 @@ class MultiChannelSale(models.Model):
         obj = self.env['import.prestashop.orders'].create(vals)
         return obj.with_context({
             'prestashop': prestashop,
-            'prestashop_object_id': prestashop_object_id,
-            'prestashop_import_date_from': import_order_date
-        }).import_now()
+        }).import_now(**kwargs)
+
+#-----------------------------------------Export Process ---------------------------------------------
 
     def export_prestashop(self, record):
         prestashop = PrestaShopWebServiceDict(
-            self.prestashop_base_uri, self.prestashop_api_key)
+            self.url, self.api_key)
         data_list = []
-        if prestashop:
-            if record._name == 'product.category':
-                initial_record_id = record.id
-                data_list = self.export_prestashop_categories(
-                    prestashop, record, initial_record_id)
-            elif record._name == 'product.template':
-                data_list = self.export_prestashop_products(prestashop, record)
-            return data_list
+        if record._name == 'product.category':
+            initial_record_id = record.id
+            data_list = self.export_prestashop_categories(
+                prestashop, record, initial_record_id)
+        elif record._name == 'product.template':
+            data_list = self.export_prestashop_products(prestashop, record)
+        return data_list
 
     def export_prestashop_products(self, prestashop, record):
         vals = dict(
@@ -245,9 +217,11 @@ class MultiChannelSale(models.Model):
             'channel_id': self,
         }).prestashop_export_now(record, initial_record_id)
 
+# ------------------------------------------Update Process ----------------------------------------------
+
     def update_prestashop(self, record, get_remote_id):
         prestashop = PrestaShopWebServiceDict(
-            self.prestashop_base_uri, self.prestashop_api_key)
+            self.url, self.api_key)
         data_list = []
         if prestashop:
             remote_id = get_remote_id(record)
@@ -258,7 +232,7 @@ class MultiChannelSale(models.Model):
                 data_list = self.update_prestashop_products(
                     prestashop, record, remote_id)
             return data_list
-    
+
     def update_prestashop_categories(self,prestashop, record, initial_record_id,remote_id):
         vals = dict(
             channel_id=self.id,
@@ -269,7 +243,7 @@ class MultiChannelSale(models.Model):
             'prestashop': prestashop,
             'channel_id': self,
         }).prestashop_update_now(record, remote_id)
-        
+
     def update_prestashop_products(self, prestashop, record, remote_id):
         vals = dict(
             channel_id=self.id,
@@ -281,73 +255,76 @@ class MultiChannelSale(models.Model):
             'channel_id': self,
         }).prestashop_update_now(record, remote_id)
 
-    def prestashop_import_order_cron(self):
-        kw = dict(
-            object="sale.order",
-            prestashop_import_date_from=self.import_order_date
-        )
-        self.env["import.operation"].create({
-            "channel_id":self.id 
-        }).import_with_filter(**kw)
-        return True
-
-    def prestashop_import_product_cron(self):
-        kw = dict(
-            object="product.template",
-            prestashop_import_date_from=self.import_product_date
-        )
-        self.env["import.operation"].create({
-            "channel_id":self.id 
-        }).import_with_filter(**kw)
-        return True
-
-    def prestashop_import_partner_cron(self):
-        kw = dict(
-            object="res.partner",
-            prestashop_import_date_from=self.import_customer_date
-        )
-        self.env["import.operation"].create({
-            "channel_id":self.id 
-        }).import_with_filter(**kw)
-        return True
+#--------------------------------------------Import crons -----------------------------------------------
 
     def prestashop_import_category_cron(self):
+        _logger.info("+++++++++++Import Category Cron Started++++++++++++")
         kw = dict(
-            object="product.category",
+            object = "product.category",
+            page = 0,
+            from_cron = True
         )
         self.env["import.operation"].create({
-            "channel_id":self.id 
+            "channel_id":self.id ,
         }).import_with_filter(**kw)
-        return True
+
+    def prestashop_import_partner_cron(self):
+        _logger.info("+++++++++++Import Partner Cron Started++++++++++++")
+        kw = dict(
+            object = "res.partner",
+            page = 0,
+            prestashop_import_date_from=self.import_customer_date,
+            from_cron = True
+        )
+        self.env["import.operation"].create({
+            "channel_id":self.id ,
+        }).import_with_filter(**kw)
+
+    def prestashop_import_product_cron(self):
+        _logger.info("+++++++++++Import Product Cron Started++++++++++++")
+        kw = dict(
+            object = "product.template",
+            page = 0,
+            prestashop_import_date_from=self.import_product_date,
+            from_cron = True,
+        )
+        self.env["import.operation"].create({
+            "channel_id":self.id ,
+        }).import_with_filter(**kw)
+
+    def prestashop_import_order_cron(self):
+        _logger.info("+++++++++++Import Order Cron Started++++++++++++")
+        kw = dict(
+            object = "sale.order",
+            page = 0,
+            prestashop_import_date_from=self.import_order_date,
+            from_cron = True
+        )
+        self.env["import.operation"].create({
+            "channel_id":self.id ,
+        }).import_with_filter(**kw)
+
+#------------------------------------------------------------------------------------------------------------
 
     def sync_quantity_prestashop(self, mapping, qty):
         prestashop = PrestaShopWebServiceDict(
-            self.prestashop_base_uri, self.prestashop_api_key)
-        if self.auto_sync_stock:
-            pres_combination_id = mapping.store_variant_id
-            pres_product_id = mapping.store_product_id
-            if pres_product_id == pres_combination_id:
-                self.env['export.templates'].prestashop_update_quantity(prestashop,pres_product_id , qty)
-            else:
-                self.env['export.templates'].prestashop_update_quantity(prestashop,pres_product_id , qty,attribute_id = pres_combination_id)
-            return True
+            self.url, self.api_key)
+        pres_combination_id = mapping.store_variant_id
+        pres_product_id = mapping.store_product_id
+        if pres_product_id == pres_combination_id:
+            self.env['export.templates'].prestashop_update_quantity(prestashop,pres_product_id , qty)
+        else:
+            self.env['export.templates'].prestashop_update_quantity(prestashop,pres_product_id , qty,attribute_id = pres_combination_id)
 
-    @api.model
-    def _prestashop_get_product_images_vals(self, media):
-        vals = dict()
-        message = ''
-        data = None
-        image_url = media
-        if image_url:
-            prestashop = self._context['prestashop']
-            try:
-                data = prestashop.get(image_url)
-            except Exception as e:
-                message += '<br/>%s'%(e)
-            image_data = base64.b64encode(data)
-            vals['image'] = image_data
-            return vals
-        return {'image':False}
+    def sync_order_feeds(self, vals, **kwargs):
+        for line_id in vals[0]['line_ids']:
+            line_id = line_id[2]
+            if line_id['line_source'] == "discount":
+                line_price = line_id['line_price_unit']
+                line_id['line_price_unit'] = line_price['total_discounts_tax_incl'] if self.default_tax_type == 'include'\
+                    else line_price['total_discounts_tax_excl']
+        res = super().sync_order_feeds(vals, **kwargs)
+        return res
 
     def _get_link_rewrite(self, zip, string):
         if type(string) != str:
@@ -357,3 +334,46 @@ class MultiChannelSale(models.Model):
         string = string.replace(' ', '-').replace('/', '-')
         string = string.lower()
         return string
+
+    def prestashop_pre_cancel_order(self,sale_record, mapping_ids):
+        prestashop = PrestaShopWebServiceDict(self.url, self.api_key)
+        order_id = mapping_ids.store_order_id
+        if order_id:
+            try:
+                order_his_data = prestashop.get('order_histories', options = {'schema': 'blank'})
+                order_his_data['order_history'].update({
+                'id_order' : order_id,
+                'id_order_state' : 6
+                })
+                state_update = prestashop.add('order_histories', order_his_data)
+            except Exception as e:
+                _logger.info("Error in updating Cancellation Status ==> %r",format(str(e)))
+
+    def prestashop_pre_confirm_paid(self, invoice, mapping_ids):
+        prestashop = PrestaShopWebServiceDict(self.url, self.api_key)
+        order_id = mapping_ids.store_order_id
+        if order_id:
+            try:
+                order_his_data = prestashop.get('order_histories', options={'schema': 'blank'})
+                order_his_data['order_history'].update({
+                'id_order' : order_id,
+                'id_order_state' : 2
+                })
+                state_update = prestashop.add('order_histories?sendemail=1', order_his_data)
+            except Exception as e:
+                _logger.info("Error in updating Paid status : %r",str(e))
+
+    def prestashop_pre_do_transfer(self, stock_move_record, mapping_ids):
+        prestashop = PrestaShopWebServiceDict(self.url, self.api_key)
+        order_id = mapping_ids.store_order_id
+        if order_id:
+            try:
+                order_his_data = prestashop.get('order_histories',
+                    options={'schema': 'blank'})
+                order_his_data['order_history'].update({
+                'id_order' : order_id,
+                'id_order_state' : 4
+                })
+                state_update = prestashop.add('order_histories', order_his_data)
+            except Exception as e:
+                _logger.info("Error in updating shipping status : %r",str(e))

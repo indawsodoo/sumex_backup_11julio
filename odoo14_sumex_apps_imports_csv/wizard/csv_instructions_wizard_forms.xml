@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="sumex_apps_imports_csv_view_csv_instructions_wizard_form" model="ir.ui.view">
+        <field name="name">información de fichero CSV</field>
+        <field name="model">sumex_apps_imports_csv_instructions_wizard</field>
+        <field name="arch" type="xml">
+
+            <form>
+                <sheet>
+                    <group> 
+                        <field name="import_name" string="Tipo"/>
+                    </group>
+                    <field name="csv_instructions" string="" readonly="1" style='background-color: aliceblue;padding: 15px;margin-top: 10px;'/>
+                </sheet>
+
+                <footer></footer>
+            </form>
+
+        </field>
+    </record>
+
+    <record id="sumex_apps_imports_csv_view_csv_instructions_wizard_action_open" model="ir.actions.act_window">
+        <field name="name">información de fichero CSV</field>
+        <field name="res_model">sumex_apps_imports_csv_instructions_wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

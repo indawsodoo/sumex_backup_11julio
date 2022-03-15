@@ -1,0 +1,351 @@
+# -*- coding: utf-8 -*-
+
+"""
+	ESTE IMPORTADOR USA CAMPOS EXTENDIDOS EN EL MODULO 'sumex_apps_sage_inherits'
+"""
+
+from odoo import models
+
+
+class sumex_apps_imports_csv_import_sage_compras_cabeceras(models.AbstractModel):
+
+	_description = "modulo importador"
+
+	_import_fields = [
+
+		# Campos que participan en la importacion del modelo
+
+		# Campos que NO participan en la importacion del modelo, pero se incluyen a nivel informativo
+		{'csv_column_name': 'CodigoEmpresa', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigoempresa'},
+		{'csv_column_name': 'IdDelegacion', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_iddelegacion'},
+		{'csv_column_name': 'EjercicioPedido', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_ejerciciopedido'},
+		{'csv_column_name': 'SeriePedido', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_seriepedido'},
+		{'csv_column_name': 'NumeroPedido', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_numeropedido'},
+		{'csv_column_name': 'FechaPedido', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_fechapedido'},
+		{'csv_column_name': 'NumeroLineas', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_numerolineas'},
+		{'csv_column_name': 'CodigoProveedor', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigoproveedor'},
+		{'csv_column_name': 'SiglaNacion', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_siglanacion'},
+		{'csv_column_name': 'CifDni', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_cifdni'},
+		{'csv_column_name': 'CifEuropeo', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_cifeuropeo'},
+		{'csv_column_name': 'RazonSocial', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_razonsocial'},
+		{'csv_column_name': 'RazonSocial2', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_razonsocial2'},
+		{'csv_column_name': 'Nombre', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_nombre'},
+		{'csv_column_name': 'Domicilio', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_domicilio'},
+		{'csv_column_name': 'Domicilio2', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_domicilio2'},
+		{'csv_column_name': 'CodigoPostal', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigopostal'},
+		{'csv_column_name': 'CodigoMunicipio', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigomunicipio'},
+		{'csv_column_name': 'Municipio', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_municipio'},
+		{'csv_column_name': 'ColaMunicipio', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_colamunicipio'},
+		{'csv_column_name': 'CodigoProvincia', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigoprovincia'},
+		{'csv_column_name': 'Provincia', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_provincia'},
+		{'csv_column_name': 'CodigoNacion', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigonacion'},
+		{'csv_column_name': 'Nacion', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_nacion'},
+		{'csv_column_name': 'CodigoCondiciones', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigocondiciones'},
+		{'csv_column_name': 'FormadePago', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_formadepago'},
+		{'csv_column_name': 'NumeroPlazos', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_numeroplazos'},
+		{'csv_column_name': 'DiasPrimerPlazo', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_diasprimerplazo'},
+		{'csv_column_name': 'DiasEntrePlazos', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_diasentreplazos'},
+		{'csv_column_name': 'DiasFijos1', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_diasfijos1'},
+		{'csv_column_name': 'DiasFijos2', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_diasfijos2'},
+		{'csv_column_name': 'DiasFijos3', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_diasfijos3'},
+		{'csv_column_name': 'InicioNoPago', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_inicionopago'},
+		{'csv_column_name': 'FinNoPago', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_finnopago'},
+		{'csv_column_name': 'ControlarFestivos', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_controlarfestivos'},
+		{'csv_column_name': 'DiasRetroceso', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_diasretroceso'},
+		{'csv_column_name': 'MesesComerciales', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_mesescomerciales'},
+		{'csv_column_name': 'CodigoDefinicion_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigodefinicion'},
+		{'csv_column_name': 'CodigoContable', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigocontable'},
+		{'csv_column_name': 'RemesaHabitual', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_remesahabitual'},
+		{'csv_column_name': 'CodigoBanco', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigobanco'},
+		{'csv_column_name': 'CodigoAgencia', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigoagencia'},
+		{'csv_column_name': 'DC', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_dc'},
+		{'csv_column_name': 'CCC', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_ccc'},
+		{'csv_column_name': 'IBAN', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_iban'},
+		{'csv_column_name': 'CodigoProyecto', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigoproyecto'},
+		{'csv_column_name': 'CodigoSeccion', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigoseccion'},
+		{'csv_column_name': 'CodigoDepartamento', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigodepartamento'},
+		{'csv_column_name': 'CodigoTransaccion', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigotransaccion'},
+		{'csv_column_name': 'CodigoTipoEfecto', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigotipoefecto'},
+		{'csv_column_name': 'DomicilioRecibo', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_domiciliorecibo'},
+		{'csv_column_name': 'TarifaPrecio', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_tarifaprecio'},
+		{'csv_column_name': 'TarifaDescuento', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_tarifadescuento'},
+		{'csv_column_name': 'IndicadorIva', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_indicadoriva'},
+		{'csv_column_name': 'GrupoIva', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_grupoiva'},
+		{'csv_column_name': 'FinanciacionSobreBase_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_financiacionsobrebase'},
+		{'csv_column_name': 'PeriodicidadFacturas', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_periodicidadfacturas'},
+		{'csv_column_name': 'AgruparAlbaranes', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_agruparalbaranes'},
+		{'csv_column_name': 'MascaraPedido_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_mascarapedido'},
+		{'csv_column_name': 'Estado', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_estado'},
+		{'csv_column_name': 'StatusAnalitica', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_statusanalitica'},
+		{'csv_column_name': 'StatusAprobado', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_statusaprobado'},
+		{'csv_column_name': 'StatusListado', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_statuslistado'},
+		{'csv_column_name': 'StatusEstadis', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_statusestadis'},
+		{'csv_column_name': '%Descuento', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_percent_descuento'},
+		{'csv_column_name': '%ProntoPago', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_percent_prontopago'},
+		{'csv_column_name': '%Retencion', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_percent_retencion'},
+		{'csv_column_name': '%Financiacion', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_percent_financiacion'},
+		{'csv_column_name': '%Rappel', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_percent_rappel'},
+		{'csv_column_name': 'CodigoZona', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigozona'},
+		{'csv_column_name': 'CodigoCanal', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigocanal'},
+		{'csv_column_name': 'CodigoTransportista', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigotransportista'},
+		{'csv_column_name': 'TipoPortes', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_tipoportes'},
+		{'csv_column_name': 'ObservacionesProveedor', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_observacionesproveedor'},
+		{'csv_column_name': 'ObservacionesPedido', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_observacionespedido'},
+		{'csv_column_name': 'FechaNecesaria', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_fechanecesaria'},
+		{'csv_column_name': 'FechaRecepcion', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_fecharecepcion'},
+		{'csv_column_name': 'FechaTope', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_fechatope'},
+		{'csv_column_name': 'EnEuros_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_eneuros'},
+		{'csv_column_name': 'CodigoDivisa', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigodivisa'},
+		{'csv_column_name': 'CodigoIdioma_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigoidioma'},
+		{'csv_column_name': 'MantenerCambio_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_mantenercambio'},
+		{'csv_column_name': 'FactorCambio', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_factorcambio'},
+		{'csv_column_name': 'ImporteCambio', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importecambio'},
+		{'csv_column_name': 'ImporteCambioViejo_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importecambioviejo'},
+		{'csv_column_name': 'ImporteBruto', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importebruto'},
+		{'csv_column_name': 'ImporteBrutoDivisa_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importebrutodivisa'},
+		{'csv_column_name': 'ImporteBrutoPendiente', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importebrutopendiente'},
+		{'csv_column_name': 'ImporteDescuentoLineas', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importedescuentolineas'},
+		{'csv_column_name': 'ImporteDtoLineasDivisa_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importedtolineasdivisa'},
+		{'csv_column_name': 'ImporteNetoLineas', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importenetolineas'},
+		{'csv_column_name': 'ImporteNetoLineasDivisa_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importenetolineasdivisa'},
+		{'csv_column_name': 'ImporteNetoLineasPendiente', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importenetolineaspendiente'},
+		{'csv_column_name': 'ImporteDescuento', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importedescuento'},
+		{'csv_column_name': 'ImporteDescuentoDivisa_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importedescuentodivisa'},
+		{'csv_column_name': 'ImporteParcial', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importeparcial'},
+		{'csv_column_name': 'ImporteParcialDivisa_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importeparcialdivisa'},
+		{'csv_column_name': 'ImporteParcialPendiente', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importeparcialpendiente'},
+		{'csv_column_name': 'ImporteProntoPago', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importeprontopago'},
+		{'csv_column_name': 'ImporteProntoPagoDivisa_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importeprontopagodivisa'},
+		{'csv_column_name': 'BaseImponible', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_baseimponible'},
+		{'csv_column_name': 'BaseImponibleDivisa_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_baseimponibledivisa'},
+		{'csv_column_name': 'BaseImponiblePendiente', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_baseimponiblependiente'},
+		{'csv_column_name': 'TotalCuotaIva', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_totalcuotaiva'},
+		{'csv_column_name': 'TotalCuotaIvaDivisa_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_totalcuotaivadivisa'},
+		{'csv_column_name': 'TotalCuotaRecargo', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_totalcuotarecargo'},
+		{'csv_column_name': 'TotalCuotaRecargoDivisa_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_totalcuotarecargodivisa'},
+		{'csv_column_name': 'TotalIva', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_totaliva'},
+		{'csv_column_name': 'TotalIvaDivisa_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_totalivadivisa'},
+		{'csv_column_name': 'ImporteFinanciacion', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importefinanciacion'},
+		{'csv_column_name': 'ImporteFinanciacionDivisa_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importefinanciaciondivisa'},
+		{'csv_column_name': 'ImporteLiquido', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importeliquido'},
+		{'csv_column_name': 'ImporteLiquidoDivisa_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importeliquidodivisa'},
+		{'csv_column_name': 'ImporteRappel', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importerappel'},
+		{'csv_column_name': 'ImporteRappelDivisa_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_importerappeldivisa'},
+		{'csv_column_name': 'EjercicioFacturaOriginal', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_ejerciciofacturaoriginal'},
+		{'csv_column_name': 'SerieFacturaOriginal', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_seriefacturaoriginal'},
+		{'csv_column_name': 'NumeroFacturaOriginal', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_numerofacturaoriginal'},
+		{'csv_column_name': 'EjercicioOferta', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_ejerciciooferta'},
+		{'csv_column_name': 'SerieOferta', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_serieoferta'},
+		{'csv_column_name': 'NumeroOferta', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_numerooferta'},
+		{'csv_column_name': 'ReferenciaEdi_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_referenciaedi'},
+		{'csv_column_name': 'CodigoTerritorio', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigoterritorio'},
+		{'csv_column_name': 'AnaLote', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_analote'},
+		{'csv_column_name': 'AnaCapitulo', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_anacapitulo'},
+		{'csv_column_name': 'RetencionConIva_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_retencionconiva'},
+		{'csv_column_name': 'EjercicioExpediente', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_ejercicioexpediente'},
+		{'csv_column_name': 'SerieExpediente', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_serieexpediente'},
+		{'csv_column_name': 'NumeroExpediente', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_numeroexpediente'},
+		{'csv_column_name': 'CodigoContableANT_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigocontableant'},
+		{'csv_column_name': 'RemesaHabitualANT_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_remesahabitualant'},
+		{'csv_column_name': 'CondicionExportacion_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_condicionexportacion'},
+		{'csv_column_name': 'CodigoExportacion_', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_codigoexportacion'},
+		{'csv_column_name': 'NoFacturable', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_nofacturable'},
+		{'csv_column_name': 'SuPedido', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_supedido'},
+		{'csv_column_name': 'IdPedidoPro', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_idpedidopro'},
+		{'csv_column_name': 'SuContrato', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_sucontrato'},
+		{'csv_column_name': 'S_UsuarioCrea', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_s_usuariocrea'},
+		{'csv_column_name': 'S_NombreUsuario', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_s_nombreusuario'},
+		{'csv_column_name': 'FechaBLConfirmada', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_fechablconfirmada'},
+		{'csv_column_name': 'StatusWF', 'required_header_field': False, 'required_value': False, 'save_as_inherit_fieldname': '_sage_field_statuswf'},
+	]
+
+	def get_import_fields(self):
+
+		return self._import_fields
+
+	def hook_pre_process(self, company_id, file_csv_header, file_csv_content):
+
+		pass
+
+	def hook_post_process(self, company_id, file_csv_header, file_csv_content_row_dict, file_csv_content):
+
+		pass
+
+	def validate_row(self, file_csv_content_row_num, company_id, file_csv_content_row):
+
+		"""
+			El importador ya realiza automaticamente las validaciones de 'required_header_field' y 'required_value'file_csv_content_row
+			Aquí podemos validar el formato de valores y otras cuestiones
+
+			Este método "validate_row" es ejecutado en un bucle antes de realizar la importación
+			El formulario dispone de un botón de test, ese botón ejecuta este método "validate_row" sin realizar la importación, y el log recoge los resultados
+			Se puede retornar {'error':''} {'warning':''} o {'info':''} o simplemente nada.
+		"""
+
+		nombre_partner = file_csv_content_row['nombre']
+		nombre_partner_company = file_csv_content_row['razonsocial']
+		ciudad = self._get_ciudad(file_csv_content_row, 'municipio')
+		cif = self._get_cif(file_csv_content_row, 'cifeuropeo')
+		country = self._get_country(file_csv_content_row['nacion'])
+		state = self._get_state(country, file_csv_content_row['colamunicipio'])
+		cp = self._get_cp(file_csv_content_row, 'codigopostal')
+		msg_warning = "En esta fila la columna '%s' no contiene un valor válido, se omitirá el valor de este campo. (valor='%s')"
+		warnings = []
+
+		if not nombre_partner and not nombre_partner_company:
+			return {'error': "Nombre y RazonSocial no pueden ser nulos ambos"}
+
+		if not country:
+			real_value = file_csv_content_row['nacion']
+			warnings.append(msg_warning % ('nacion', real_value))
+
+		if not state:
+			real_value = file_csv_content_row['colamunicipio']
+			warnings.append(msg_warning % ('colamunicipio', real_value))
+
+		if not ciudad:
+			real_value = file_csv_content_row['municipio']
+			warnings.append(msg_warning % ('municipio', real_value))
+
+		if not cp:
+			real_value = file_csv_content_row['codigopostal']
+			warnings.append(msg_warning % ('codigopostal', real_value))
+
+		if not cif:
+			real_value = file_csv_content_row['cifeuropeo']
+			warnings.append(msg_warning % ('cifeuropeo', real_value))
+
+		if warnings:
+			return {'warning': ("; ").join(warnings)}
+
+		return True
+
+	def import_row(self, file_csv_content_row_num, company_id, file_csv_header, file_csv_content_row):
+
+		"""
+			Este método "import_row" es ejecutado en un bucle del objeto importador(sumex_apps_imports_csv)
+			El formulario dispone de un botón de test, ese botón ejecuta este método "validate_row" sin realizar la importación, y el log recoge los resultados
+			El retorno se asumirá como correcto al no ser que se retorne {'error':}
+		"""
+		
+		nombre_partner = file_csv_content_row['nombre'].title()
+		nombre_partner_company = file_csv_content_row['razonsocial'].title()
+		if nombre_partner_company:
+			nombre_partner = nombre_partner_company
+		ciudad = self._get_ciudad(file_csv_content_row, 'municipio')
+		vat = self._get_cif(file_csv_content_row, 'cifeuropeo')
+		country = self._get_country(file_csv_content_row['nacion'])
+		state = self._get_state(country, file_csv_content_row['colamunicipio'])
+		cp = self._get_cp(file_csv_content_row, 'codigopostal')
+		partner = self.env['sumex_apps_imports_csv_library'].sudo().get_or_create_partner(
+			is_company = False,
+			company_id = company_id,
+			nombre = nombre_partner,
+			parent_id = False,
+			vat = vat,
+			country_name = country,
+			state_name = state,
+			ciudad = ciudad,
+			cp = cp
+		)
+
+		if isinstance(partner, dict) and 'error' in partner:
+			return partner
+
+		order = self._get_order(company_id, file_csv_content_row)
+		if isinstance(order, dict) and 'error' in order:
+			return order
+		if not order:
+			order = self._create_order(company_id, file_csv_content_row, partner.id)
+		if isinstance(order, dict) and 'error' in order:
+			return order
+
+		dict_other_fields = {}
+		result = self.env['sumex_apps_imports_csv_library'].update_extendedd_fields(order, self._import_fields, file_csv_content_row, dict_other_fields)
+		if isinstance(result, dict) and 'error' in result:
+			return result
+
+		"""
+		Inserciones adicionales
+		"""
+		list_values = {}
+		changes = 0
+
+		# forma de pago
+		payment_term_name = file_csv_content_row['formadepago']
+		if payment_term_name:
+			payment_term = self.env['sumex_apps_imports_csv_library'].sudo().get_or_create_payment_term(payment_term_name)
+			list_values['payment_term_id'] = payment_term.id
+			changes += 1
+
+		# fecha de creacion
+		fecha_pedido = self._get_fecha_pedido(file_csv_content_row)
+		if fecha_pedido:
+			list_values['date_order'] = fecha_pedido
+			changes += 1
+
+		if changes:
+			try:
+				order.write(list_values)
+				order._cr.commit()
+			except Exception as e:
+				exception_msg = self.env['sumex_apps_imports_csv_library'].rollback_and_get_exception_msg(str(e))
+				return {'error': exception_msg}
+
+		return True
+
+	def _get_fecha_pedido(self, file_csv_content_row):
+		for fecha_campo in ['fechanecesaria', 'fechaentrega', 'fechatope']:
+			fecha_pedido = file_csv_content_row[fecha_campo]
+			if fecha_pedido:
+				fecha_pedido = self.env['sumex_apps_imports_csv_library'].get_sql_fecha(fecha_pedido)
+				if fecha_pedido:
+					return fecha_pedido
+
+	def _get_order(self, company_id, file_csv_content_row):
+
+		sage_numero_pedido = file_csv_content_row['numeropedido']
+		if not company_id:
+			company_id = self.env.user.company_id.id
+		try:
+			order = self.env['sale.order'].sudo().search([('_sage_field_numeropedido', '=', sage_numero_pedido), ('company_id', '=', company_id)], limit = 1)
+		except Exception as e:
+			exception_msg = self.env['sumex_apps_imports_csv_library'].rollback_and_get_exception_msg(str(e))
+			return {'error': exception_msg}
+		return order
+
+	def _create_order(self, company_id, file_csv_content_row, partner_id):
+
+		if not company_id:
+			company_id = self.env.user.company_id.id
+		try:
+			order = self.env['sale.order'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True).create({
+				'company_id': company_id,
+				'partner_id': partner_id,
+				# pricelist_id
+			})
+			order._cr.commit()
+		except Exception as e:
+			exception_msg = self.env['sumex_apps_imports_csv_library'].rollback_and_get_exception_msg(str(e))
+			return {'error': exception_msg}
+		return order
+
+	def _get_country(self, country_name):
+
+		return self.env['sumex_apps_imports_csv_library'].sudo().get_country(country_name)
+
+	def _get_state(self, country, state_name):
+
+		return self.env['sumex_apps_imports_csv_library'].sudo().get_state(country, state_name)
+
+	def _get_cp(self, file_csv_content_row, fieldname):
+
+		return self.env['sumex_apps_imports_csv_import_sage_clientes'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True).get_cp(file_csv_content_row, fieldname)
+
+	def _get_ciudad(self, file_csv_content_row, fieldname):
+
+		return self.env['sumex_apps_imports_csv_import_sage_clientes'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True).get_ciudad(file_csv_content_row, fieldname)
+
+	def _get_cif(self, file_csv_content_row, fieldname):
+
+		return self.env['sumex_apps_imports_csv_import_sage_clientes'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True).get_cif(file_csv_content_row, fieldname)

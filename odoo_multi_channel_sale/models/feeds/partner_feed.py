@@ -58,19 +58,6 @@ class PartnerFeed(models.Model):
 		required = True
 	)
 
-	@api.model
-	def _create_feeds(self,partner_data_list):
-		success_ids,error_ids = [],[]
-		self = self.contextualize_feeds('partner')
-		for partner_data in partner_data_list:
-			feed = self._create_feed(partner_data)
-			if feed:
-				self += feed
-				success_ids.append(partner_data.get('store_id'))
-			else:
-				error_ids.append(partner_data.get('store_id'))
-		return success_ids,error_ids,self
-
 	def _create_feed(self,partner_data):
 		contact_data_list = partner_data.pop('contacts',[])
 		channel_id = partner_data.get('channel_id')
