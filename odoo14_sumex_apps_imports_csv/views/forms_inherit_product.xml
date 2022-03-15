@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="sumex_apps_sage_inherits_view_inherit_product_search" model="ir.ui.view">
+        <field name="name">sumex_apps_sage_inherits_view_inherit_product_search</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter string="Creado por Sumex_apps_imports - SÍ" name="_created_from_sumex_apps_imports_csv_yes" domain="[('_created_from_sumex_apps_imports_csv','!=',False)]"/>
+                <filter string="Creado por Sumex_apps_imports - NO" name="_created_from_sumex_apps_imports_csv_no" domain="[('_created_from_sumex_apps_imports_csv','=',False)]"/>
+            </xpath>
+        </field>
+    </record>
+    
+    <record id="sumex_apps_imports_csv_view_inherit_product_tree" model="ir.ui.view">
+        <field name="name">sumex_apps_imports_csv_view_inherit_product_tree</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+
+            <field name='categ_id' position="after">
+                <field name="_created_from_sumex_apps_imports_csv" readonly="1" optional="show"/>
+            </field>
+
+        </field>
+    </record>
+
+    <record id="sumex_apps_imports_csv_view_inherit_product_form" model="ir.ui.view">
+        <field name="name">sumex_apps_imports_csv_view_inherit_product_form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+
+            <field name='categ_id' position="after">
+                <field name="_created_from_sumex_apps_imports_csv" readonly="1"/>
+            </field>
+
+        </field>
+    </record>
+
+</odoo>

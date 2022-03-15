@@ -1,0 +1,7 @@
+"id","name","model_id/id","group_id/id","perm_read","perm_write","perm_create","perm_unlink"
+"sumex_apps_imports_csv_user","sumex_apps_imports_csv_user","model_sumex_apps_imports_csv","base.group_user",0,0,0,0
+"sumex_apps_imports_csv_admin","sumex_apps_imports_csv_admin","model_sumex_apps_imports_csv","base.group_system",1,1,1,1
+"sumex_apps_imports_csv_instructions_wizard_user","sumex_apps_imports_csv_instructions_wizard_user","model_sumex_apps_imports_csv_instructions_wizard","base.group_user",0,0,0,0
+"sumex_apps_imports_csv_instructions_wizard_admin","sumex_apps_imports_csv_instructions_wizard_admin","model_sumex_apps_imports_csv_instructions_wizard","base.group_system",1,1,1,1
+"sumex_apps_imports_csv_logger_user","sumex_apps_imports_csv_logger_user","model_sumex_apps_imports_csv_logger","base.group_user",0,0,0,0
+"sumex_apps_imports_csv_logger_admin","sumex_apps_imports_csv_logger_admin","model_sumex_apps_imports_csv_logger","base.group_system",1,0,0,1

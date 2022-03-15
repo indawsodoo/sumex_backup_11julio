@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="sumex_apps_sage_inherits_view_inherit_order_search" model="ir.ui.view">
+        <field name="name">sumex_apps_sage_inherits_view_inherit_order_search</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter string="From import CSV of Sage - SÍ" name="_created_from_sumex_apps_imports_csv_of_sage_yes" domain="[('_created_from_sumex_apps_imports_csv_of_sage','!=',False)]"/>
+                <filter string="From import CSV of Sage - NO" name="_created_from_sumex_apps_imports_csv_of_sage_no" domain="[('_created_from_sumex_apps_imports_csv_of_sage','=',False)]"/>
+                <filter string="Sage Número pedido - SÍ Existe" name="_sage_field_numeropedido_si_existe" domain="[('_sage_field_numeropedido','!=',False)]"/>
+                <filter string="Sage Número pedido - NO Existe" name="_sage_field_numeropedido_no_existe" domain="[('_sage_field_numeropedido','=',False)]"/>
+                <!-- <separator string="Description" /> -->
+                <field string="SAGE Número pedido" name="_sage_field_numeropedido" filter_domain="[('_sage_field_numeropedido','ilike',self)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="sumex_apps_sage_inherits_view_inherit_order_tree" model="ir.ui.view">
+        <field name="name">sumex_apps_sage_inherits_view_inherit_order_tree</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree"/>
+        <field name="arch" type="xml">
+
+            <field name='state' position="after">
+                <field name="_created_from_sumex_apps_imports_csv_of_sage" readonly="1" optional="hide"/>
+            </field>
+
+        </field>
+    </record>
+
+    <record id="sumex_apps_sage_inherits_view_inherit_order_form" model="ir.ui.view">
+        <field name="name">sumex_apps_sage_inherits_view_inherit_order_form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <field name='payment_term_id' position="after">
+                <field name="_created_from_sumex_apps_imports_csv_of_sage" readonly="1"/>
+            </field>
+
+            <xpath expr="/form/sheet/notebook" position="inside">
+                <page string="Campos sage">
+                    <form>
+                        <group>
+
+                            <field name='_sage_field_nacion' readonly="1"/>
+                            <field name='_sage_field_razonsocial' readonly="1"/>
+                            <field name='_sage_field_cifeuropeo' readonly="1"/>
+                            <field name='_sage_field_nombre' readonly="1"/>
+                            <field name='_sage_field_domicilio' readonly="1"/>
+                            <field name='_sage_field_codigopostal' readonly="1"/>
+                            <field name='_sage_field_municipio' readonly="1"/>
+                            <field name='_sage_field_colamunicipio' readonly="1"/>
+                            <field name='_sage_field_seriepedido' readonly="1"/>
+                            <field name='_sage_field_numeropedido' readonly="1"/>
+                            <field name='_sage_field_numerolineas' readonly="1"/>
+                            <field name='_sage_field_ejerciciopedido' readonly="1"/>
+                            <field name='_sage_field_codigocliente' readonly="1"/>
+                            <field name='_sage_field_codigocadena' readonly="1"/>
+                            <field name='_sage_field_siglanacion' readonly="1"/>
+                            <field name='_sage_field_fechapedido' readonly="1"/>
+                            <field name='_sage_field_formadepago' readonly="1"/>
+                            <field name='_sage_field_numeroplazos' readonly="1"/>
+                            <field name='_sage_field_diasprimerplazo' readonly="1"/>
+                            <field name='_sage_field_diasentreplazos' readonly="1"/>
+                            <field name='_sage_field_diasfijos1' readonly="1"/>
+                            <field name='_sage_field_diasfijos2' readonly="1"/>
+                            <field name='_sage_field_diasfijos3' readonly="1"/>
+                            <field name='_sage_field_inicionopago' readonly="1"/>
+                            <field name='_sage_field_finnopago' readonly="1"/>
+                            <field name='_sage_field_controlarfestivos' readonly="1"/>
+                            <field name='_sage_field_diasretroceso' readonly="1"/>
+                            <field name='_sage_field_mesescomerciales' readonly="1"/>
+                            <field name='_sage_field_codigocontable' readonly="1"/>
+                            <field name='_sage_field_codigodefinicion' readonly="1"/>
+                            <field name='_sage_field_remesahabitual' readonly="1"/>
+                            <field name='_sage_field_codigobanco' readonly="1"/>
+                            <field name='_sage_field_codigoagencia' readonly="1"/>
+                            <field name='_sage_field_dc' readonly="1"/>
+                            <field name='_sage_field_ccc' readonly="1"/>
+                            <field name='_sage_field_iban' readonly="1"/>
+                            <field name='_sage_field_domicilioenvio' readonly="1"/>
+                            <field name='_sage_field_domiciliofactura' readonly="1"/>
+                            <field name='_sage_field_domiciliorecibo' readonly="1"/>
+                            <field name='_sage_field_codigoproyecto' readonly="1"/>
+                            <field name='_sage_field_codigoseccion' readonly="1"/>
+                            <field name='_sage_field_codigodepartamento' readonly="1"/>
+                            <field name='_sage_field_codigotransportistaenvios' readonly="1"/>
+                            <field name='_sage_field_tipoportesenvios' readonly="1"/>
+                            <field name='_sage_field_codigoretencion' readonly="1"/>
+                            <field name='_sage_field_codigotransaccion' readonly="1"/>
+                            <field name='_sage_field_codigozona' readonly="1"/>
+                            <field name='_sage_field_codigocanal' readonly="1"/>
+                            <field name='_sage_field_codigoruta' readonly="1"/>
+                            <field name='_sage_field_codigoterritorio' readonly="1"/>
+                            <field name='_sage_field_codigotipoefecto' readonly="1"/>
+                            <field name='_sage_field_codigoexportacion' readonly="1"/>
+                            <field name='_sage_field_condicionexportacion' readonly="1"/>
+                            <field name='_sage_field_tarifaprecio' readonly="1"/>
+                            <field name='_sage_field_tarifadescuento' readonly="1"/>
+                            <field name='_sage_field_grupoiva' readonly="1"/>
+                            <field name='_sage_field_indicadoriva' readonly="1"/>
+                            <field name='_sage_field_ivaincluido' readonly="1"/>
+                            <field name='_sage_field_servircompleto' readonly="1"/>
+                            <field name='_sage_field_reservarstock' readonly="1"/>
+                            <field name='_sage_field_estado' readonly="1"/>
+                            <field name='_sage_field_statusanalitica' readonly="1"/>
+                            <field name='_sage_field_statusaprobado' readonly="1"/>
+                            <field name='_sage_field_statuslistado' readonly="1"/>
+                            <field name='_sage_field_statusestadis' readonly="1"/>
+                            <field name='_sage_field_percent_descuento' readonly="1"/>
+                            <field name='_sage_field_percent_prontopago' readonly="1"/>
+                            <field name='_sage_field_percent_financiacion' readonly="1"/>
+                            <field name='_sage_field_percent_retencion' readonly="1"/>
+                            <field name='_sage_field_percent_rappel' readonly="1"/>
+                            <field name='_sage_field_codigocomisionista' readonly="1"/>
+                            <field name='_sage_field_codigocomisionista2' readonly="1"/>
+                            <field name='_sage_field_codigocomisionista3' readonly="1"/>
+                            <field name='_sage_field_codigocomisionista4' readonly="1"/>
+                            <field name='_sage_field_codigojefeventa' readonly="1"/>
+                            <field name='_sage_field_codigojefezona' readonly="1"/>
+                            <field name='_sage_field_percent_comision' readonly="1"/>
+                            <field name='_sage_field_percent_comision2' readonly="1"/>
+                            <field name='_sage_field_percent_comision3' readonly="1"/>
+                            <field name='_sage_field_percent_comision4' readonly="1"/>
+                            <field name='_sage_field_comisionsobreventa_percent' readonly="1"/>
+                            <field name='_sage_field_comisionsobrezona_percent' readonly="1"/>
+                            <field name='_sage_field_periodicidadfacturas' readonly="1"/>
+                            <field name='_sage_field_mascarapedido' readonly="1"/>
+                            <field name='_sage_field_agruparalbaranes' readonly="1"/>
+                            <field name='_sage_field_albaranvalorado' readonly="1"/>
+                            <field name='_sage_field_copiasalbaran' readonly="1"/>
+                            <field name='_sage_field_copiasfactura' readonly="1"/>
+                            <field name='_sage_field_copiaspedido' readonly="1"/>
+                            <field name='_sage_field_observacionescliente' readonly="1"/>
+                            <field name='_sage_field_observacionespedido' readonly="1"/>
+                            <field name='_sage_field_observacionesalbaran' readonly="1"/>
+                            <field name='_sage_field_observacionesfactura' readonly="1"/>
+                            <field name='_sage_field_supedido' readonly="1"/>
+                            <field name='_sage_field_fechanecesaria' readonly="1"/>
+                            <field name='_sage_field_fechaentrega' readonly="1"/>
+                            <field name='_sage_field_fechatope' readonly="1"/>
+                            <field name='_sage_field_pesobruto' readonly="1"/>
+                            <field name='_sage_field_pesoneto' readonly="1"/>
+                            <field name='_sage_field_volumen' readonly="1"/>
+                            <field name='_sage_field_eneuros' readonly="1"/>
+                            <field name='_sage_field_codigodivisa' readonly="1"/>
+                            <field name='_sage_field_codigoidioma' readonly="1"/>
+                            <field name='_sage_field_mantenercambio' readonly="1"/>
+                            <field name='_sage_field_factorcambio' readonly="1"/>
+                            <field name='_sage_field_importecambio' readonly="1"/>
+                            <field name='_sage_field_importecambioviejo' readonly="1"/>
+                            <field name='_sage_field_importecoste' readonly="1"/>
+                            <field name='_sage_field_importebruto' readonly="1"/>
+                            <field name='_sage_field_importebrutodivisa' readonly="1"/>
+                            <field name='_sage_field_importebrutopendiente' readonly="1"/>
+                            <field name='_sage_field_importedescuentolineas' readonly="1"/>
+                            <field name='_sage_field_importedtolineasdivisa' readonly="1"/>
+                            <field name='_sage_field_importenetolineas' readonly="1"/>
+                            <field name='_sage_field_importenetolineasdivisa' readonly="1"/>
+                            <field name='_sage_field_importenetolineaspendiente' readonly="1"/>
+                            <field name='_sage_field_importedescuento' readonly="1"/>
+                            <field name='_sage_field_importedescuentodivisa' readonly="1"/>
+                            <field name='_sage_field_importeparcial' readonly="1"/>
+                            <field name='_sage_field_importeparcialdivisa' readonly="1"/>
+                            <field name='_sage_field_importeparcialpendiente' readonly="1"/>
+                            <field name='_sage_field_importeprontopago' readonly="1"/>
+                            <field name='_sage_field_importeprontopagodivisa' readonly="1"/>
+                            <field name='_sage_field_baseimponible' readonly="1"/>
+                            <field name='_sage_field_baseimponibledivisa' readonly="1"/>
+                            <field name='_sage_field_baseimponiblependiente' readonly="1"/>
+                            <field name='_sage_field_totalcuotaiva' readonly="1"/>
+                            <field name='_sage_field_totalcuotaivadivisa' readonly="1"/>
+                            <field name='_sage_field_totalcuotarecargo' readonly="1"/>
+                            <field name='_sage_field_totalcuotarecargodivisa' readonly="1"/>
+                            <field name='_sage_field_totaliva' readonly="1"/>
+                            <field name='_sage_field_totalivadivisa' readonly="1"/>
+                            <field name='_sage_field_importefinanciacion' readonly="1"/>
+                            <field name='_sage_field_importefinanciaciondivisa' readonly="1"/>
+                            <field name='_sage_field_importeliquido' readonly="1"/>
+                            <field name='_sage_field_importeliquidodivisa' readonly="1"/>
+                            <field name='_sage_field_importerappel' readonly="1"/>
+                            <field name='_sage_field_importerappeldivisa' readonly="1"/>
+                            <field name='_sage_field_ejerciciofacturaoriginal' readonly="1"/>
+                            <field name='_sage_field_seriefacturaoriginal' readonly="1"/>
+                            <field name='_sage_field_numerofacturaoriginal' readonly="1"/>
+                            <field name='_sage_field_ejerciciooferta' readonly="1"/>
+                            <field name='_sage_field_serieoferta' readonly="1"/>
+                            <field name='_sage_field_numerooferta' readonly="1"/>
+                            <field name='_sage_field_codigotipooperacionlc' readonly="1"/>
+                            <field name='_sage_field_codigotipooperacionorigenlc' readonly="1"/>
+                            <field name='_sage_field_codigodivisionlc' readonly="1"/>
+                            <field name='_sage_field_codigoambitoclientelc' readonly="1"/>
+                            <field name='_sage_field_codigoclaseclientelc' readonly="1"/>
+                            <field name='_sage_field_codigosubclaseclientelc' readonly="1"/>
+                            <field name='_sage_field_codigotipoclientelc' readonly="1"/>
+                            <field name='_sage_field_codigogrupoclientelc' readonly="1"/>
+                            <field name='_sage_field_codigoactividadlc' readonly="1"/>
+                            <field name='_sage_field_codigosubactividadlc' readonly="1"/>
+                            <field name='_sage_field_comercialasignadolc' readonly="1"/>
+                            <field name='_sage_field_facturarcompletolc' readonly="1"/>
+                            <field name='_sage_field_idfacturarcompletolc' readonly="1"/>
+                            <field name='_sage_field_idfacturacionconjuntalc' readonly="1"/>
+                            <field name='_sage_field_iddelegacioncentrallc' readonly="1"/>
+                            <field name='_sage_field_codigocampanalc' readonly="1"/>
+                            <field name='_sage_field_referenciaedi' readonly="1"/>
+                            <field name='_sage_field_codigomotivoabonolc' readonly="1"/>
+                            <field name='_sage_field_ejercicioalbaranoriginallc' readonly="1"/>
+                            <field name='_sage_field_seriealbaranoriginallc' readonly="1"/>
+                            <field name='_sage_field_numeroalbaranoriginallc' readonly="1"/>
+                            <field name='_sage_field_generarfactura' readonly="1"/>
+                            <field name='_sage_field_importeacuentap' readonly="1"/>
+                            <field name='_sage_field_importeacuentapdivisa' readonly="1"/>
+                            <field name='_sage_field_importeconsumidop' readonly="1"/>
+                            <field name='_sage_field_importeconsumidopdivisa' readonly="1"/>
+                            <field name='_sage_field_ejercicioalbarandevolucionp' readonly="1"/>
+                            <field name='_sage_field_seriealbarandevolucionp' readonly="1"/>
+                            <field name='_sage_field_numeroalbarandevolucionp' readonly="1"/>
+                            <field name='_sage_field_importependientepac' readonly="1"/>
+                            <field name='_sage_field_importependientepacdivisa' readonly="1"/>
+                            <field name='_sage_field_importefactura' readonly="1"/>
+                            <field name='_sage_field_importefacturadivisa' readonly="1"/>
+                            <field name='_sage_field_pormargenbeneficio' readonly="1"/>
+                            <field name='_sage_field_margenbeneficio' readonly="1"/>
+                            <field name='_sage_field_ejercicioexpediente' readonly="1"/>
+                            <field name='_sage_field_serieexpediente' readonly="1"/>
+                            <field name='_sage_field_numeroexpediente' readonly="1"/>
+                            <field name='_sage_field_origendespacho' readonly="1"/>
+                            <field name='_sage_field_importeprovisiones' readonly="1"/>
+                            <field name='_sage_field_importeprovisionesnf' readonly="1"/>
+                            <field name='_sage_field_importesuplidos' readonly="1"/>
+                            <field name='_sage_field_importeprovisionesdivisa' readonly="1"/>
+                            <field name='_sage_field_importeprovisionesnfdivisa' readonly="1"/>
+                            <field name='_sage_field_importesuplidosdivisa' readonly="1"/>
+                            <field name='_sage_field_codigocontableant' readonly="1"/>
+                            <field name='_sage_field_remesahabitualant' readonly="1"/>
+                            <field name='_sage_field_analote' readonly="1"/>
+                            <field name='_sage_field_anacapitulo' readonly="1"/>
+                            <field name='_sage_field_nofacturable' readonly="1"/>
+                            <field name='_sage_field_observacionesweb' readonly="1"/>
+                            <field name='_sage_field_supedidoweb' readonly="1"/>
+                            <field name='_sage_field_varfechatraspaso' readonly="1"/>
+                            <field name='_sage_field_vartraspasado' readonly="1"/>
+                            <field name='_sage_field_idpedidocli' readonly="1"/>
+                            <field name='_sage_field_referenciamandato' readonly="1"/>
+                            <field name='_sage_field_comentarios' readonly="1"/>
+                            <field name='_sage_field_sucontrato' readonly="1"/>
+                            <field name='_sage_field_s_aplicarbaremost' readonly="1"/>
+                            <field name='_sage_field_s_usuariocrea' readonly="1"/>
+                            <field name='_sage_field_s_nombreusuario' readonly="1"/>
+                            <field name='_sage_field_sumex_pedidoaservir' readonly="1"/>
+                            <field name='_sage_field_cp_ediemisor' readonly="1"/>
+                            <field name='_sage_field_cp_edivendedor' readonly="1"/>
+                            <field name='_sage_field_cp_edicomprador' readonly="1"/>
+                            <field name='_sage_field_cp_edi' readonly="1"/>
+                            <field name='_sage_field_cp_fechaentini' readonly="1"/>
+                            <field name='_sage_field_cp_fechaentfin' readonly="1"/>
+                            <field name='_sage_field_cp_librevar1' readonly="1"/>
+                            <field name='_sage_field_cp_librevar2' readonly="1"/>
+                            <field name='_sage_field_cp_preciotransporte' readonly="1"/>
+                            <field name='_sage_field_sumex_codigorecargo' readonly="1"/>
+                            <field name='_sage_field_sumex_importerecargo' readonly="1"/>
+                            <field name='_sage_field_sumex_porrecargo' readonly="1"/>
+                            <field name='_sage_field_pagoinmediato' readonly="1"/>
+                            <field name='_sage_field_statuswf' readonly="1"/>
+
+                        </group>
+                    </form>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

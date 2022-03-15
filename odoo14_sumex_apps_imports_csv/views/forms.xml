@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="sumex_apps_imports_csv_logger_filtered" model="ir.actions.act_window">
+        <field name="name">Sumex Imports CSV Logger [Filtrado]</field>
+        <field name="res_model">sumex_apps_imports_csv_logger</field>
+        <field name="view_mode">tree</field>
+        <field name="domain">[('import_id','=',[active_id])]</field>
+    </record>
+
+    <record id="sumex_apps_imports_csv_view_tree" model="ir.ui.view">
+        <field name="name">Vista Tree de Sumex Importacion CSV</field>
+        <field name="model">sumex_apps_imports_csv</field>
+        <field name="arch" type="xml">
+
+            <tree decoration-success="state=='finok'" decoration-info="state=='ejecutando' or state=='testeando'" decoration-danger="state=='finerror' or state=='cancelado'">
+                <button 
+                    type="object"
+                    name='import_now_action'
+                    class="btn btn-success btn-sm o_list_button_add"
+                    string="Importar ahora"
+                />
+                <button 
+                    type="object"
+                    name='test_now_action'
+                    class="btn btn-success btn-sm o_list_button_add"
+                    string="Test"
+                />
+                <button 
+                    type="object"
+                    name='cancel_action'
+                    class="btn btn-danger btn-sm o_list_button_add"
+                    string="Cancelar"
+                />
+                <button 
+                    type="action"
+                    name="%(sumex_apps_imports_csv_logger_filtered)d"
+                    string="Logs"
+                    class="btn btn-primary btn-sm o_list_button_add"
+                />
+                <field name="id"/>
+                <field name="name"/>
+                <field name="import_name"/>
+                <field name="company_id"/>
+                <field name="print_progress_in_console"/>
+                <field name="stop_in_error"/>
+                <field name="separator"/>
+                <field name="description"/>
+                <field name="file"/>
+                <field name="state"/>
+                <field name="progress"/>
+                <field name="last_progress"/>
+                <field name="logger_count_infos" readonly="1"/>
+                <field name="logger_count_warnings" readonly="1"/>
+                <field name="logger_count_errors" readonly="1"/>
+            </tree>
+
+        </field>
+    </record>
+
+    <record id="action_sumex_apps_imports_csv_view_form" model="ir.ui.view">
+        <field name="name">sumex_photostock_products_template_form_view</field>
+        <field name="model">sumex_apps_imports_csv</field>
+        <field name="arch" type="xml">
+
+            <form modifiers="{}">
+                <header>
+                    <button
+                        type="action"
+                        name="%(sumex_apps_imports_csv_view_csv_instructions_wizard_action_open)d"
+                        class="btn btn-danger"
+                        string="Instrucciones CSV"
+                    />
+                </header>
+                <sheet modifiers="{}">
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id"/>
+                            <field name="separator"/>
+                            <field name="description"/>
+                        </group>
+                        <group>
+                            <field name="import_name"/>
+                            <field name="print_progress_in_console"/>
+                            <field name="stop_in_error"/>
+                        </group>
+                        <group>
+                            <field name="file"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+
+        </field>
+    </record>
+
+
+    <record id="sumex_apps_imports_csv_logger_view_tree" model="ir.ui.view">
+        <field name="name">Vista Tree de Sumex Importacion CSV Logger</field>
+        <field name="model">sumex_apps_imports_csv_logger</field>
+        <field name="arch" type="xml">
+
+            <tree>
+                <field name="import_id"/>
+                <field name="type"/>
+                <field name="line_num"/>
+                <field name="message"/>
+            </tree>
+
+        </field>
+    </record>
+
+    <record id="sumex_apps_imports_csv_logger_view_form" model="ir.ui.view">
+        <field name="name">Vista Form de Sumex Importacion CSV Logger</field>
+        <field name="model">sumex_apps_imports_csv_logger</field>
+        <field name="arch" type="xml">
+
+            <form>
+                    <header>
+                        <button 
+                        type="action"
+                        name="%(sumex_apps_imports_csv_view_csv_instructions_wizard_action_open)d"
+                        class="btn btn-danger"
+                        string="Instrucciones CSV"
+                    />
+                    </header>
+
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="import_id"/>
+                            <field name="type"/>
+                            <field name="line_num"/>
+                            <field name="message"/>
+                        </group>
+                    </group>
+
+                </sheet>
+            </form>
+
+        </field>
+    </record>
+
+
+</odoo>

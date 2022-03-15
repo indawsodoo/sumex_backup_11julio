@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="sumex_apps_sage_inherits_view_inherit_product_search" model="ir.ui.view">
+        <field name="name">sumex_apps_sage_inherits_view_inherit_product_search</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter string="From import CSV of Sage - SÍ" name="_created_from_sumex_apps_imports_csv_of_sage_yes" domain="[('_created_from_sumex_apps_imports_csv_of_sage','!=',False)]"/>
+                <filter string="From import CSV of Sage - NO" name="_created_from_sumex_apps_imports_csv_of_sage_no" domain="[('_created_from_sumex_apps_imports_csv_of_sage','=',False)]"/>
+                <filter string="Sage Número pedido - SÍ Existe" name="_sage_field_codigoarticulo_existe" domain="[('_sage_field_codigoarticulo','!=',False)]"/>
+                <filter string="Sage Número pedido - NO Existe" name="_sage_field_codigoarticulo_existe" domain="[('_sage_field_codigoarticulo','=',False)]"/>
+                <field string="SAGE Código artículo" name="_sage_field_codigoarticulo" filter_domain="[('_sage_field_codigoarticulo','ilike',self)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="sumex_apps_sage_inherits_view_inherit_product_tree" model="ir.ui.view">
+        <field name="name">sumex_apps_sage_inherits_view_inherit_product_tree</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+
+            <field name='categ_id' position="after">
+                <field name="_created_from_sumex_apps_imports_csv_of_sage" readonly="1" optional="show"/>
+            </field>
+
+        </field>
+    </record>
+
+    <record id="sumex_apps_sage_inherits_view_inherit_product_form" model="ir.ui.view">
+        <field name="name">sumex_apps_sage_inherits_view_inherit_product_form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+
+            <field name='categ_id' position="after">
+                <field name="_created_from_sumex_apps_imports_csv_of_sage" readonly="1"/>
+            </field>
+
+            <xpath expr="/form/sheet/notebook" position="inside">
+                <page string="Campos sage">
+                    <form>
+                        <group>
+                            <field name='_sage_field_codigoempresa' readonly="1"/>
+                            <field name='_sage_field_codigoarticulo' readonly="1"/>
+                            <field name='_sage_field_descripcionarticulo' readonly="1"/>
+                            <field name='_sage_field_descripcion2articulo' readonly="1"/>
+                            <field name='_sage_field_descripcionlinea' readonly="1"/>
+                            <field name='_sage_field_comentarioarticulo' readonly="1"/>
+                            <field name='_sage_field_marcaproducto' readonly="1"/>
+                            <field name='_sage_field_codigoalternativo' readonly="1"/>
+                            <field name='_sage_field_codigoalternativo2' readonly="1"/>
+                            <field name='_sage_field_codigoarticulooferta' readonly="1"/>
+                            <field name='_sage_field_codigoarancelario' readonly="1"/>
+                            <field name='_sage_field_codigoproveedor' readonly="1"/>
+                            <field name='_sage_field_referenciaedi_' readonly="1"/>
+                            <field name='_sage_field_publicarinternet' readonly="1"/>
+                            <field name='_sage_field_tipoarticulo' readonly="1"/>
+                            <field name='_sage_field_utilizado' readonly="1"/>
+                            <field name='_sage_field_fechaalta' readonly="1"/>
+                            <field name='_sage_field_fechainiciooferta' readonly="1"/>
+                            <field name='_sage_field_fechafinaloferta' readonly="1"/>
+                            <field name='_sage_field_temporada' readonly="1"/>
+                            <field name='_sage_field_tipoenvase_' readonly="1"/>
+                            <field name='_sage_field_unidadmedida2_' readonly="1"/>
+                            <field name='_sage_field_unidadmedidaalternativa_' readonly="1"/>
+                            <field name='_sage_field_factorconversion_' readonly="1"/>
+                            <field name='_sage_field_codigofamilia' readonly="1"/>
+                            <field name='_sage_field_codigosubfamilia' readonly="1"/>
+                            <field name='_sage_field_codigodivisa' readonly="1"/>
+                            <field name='_sage_field_codigoproyecto' readonly="1"/>
+                            <field name='_sage_field_codigoseccion' readonly="1"/>
+                            <field name='_sage_field_codigodepartamento' readonly="1"/>
+                            <field name='_sage_field_codigodefinicion_' readonly="1"/>
+                            <field name='_sage_field_valoracionstock' readonly="1"/>
+                            <field name='_sage_field_tratamientopartidas' readonly="1"/>
+                            <field name='_sage_field_contadorpartida' readonly="1"/>
+                            <field name='_sage_field_colores_' readonly="1"/>
+                            <field name='_sage_field_grupotalla_' readonly="1"/>
+                            <field name='_sage_field_acumulaestadistica_' readonly="1"/>
+                            <field name='_sage_field_generacompraautomatica_' readonly="1"/>
+                            <field name='_sage_field_ivaincluido' readonly="1"/>
+                            <field name='_sage_field_bloqueocompra' readonly="1"/>
+                            <field name='_sage_field_bloqueopedidocompra' readonly="1"/>
+                            <field name='_sage_field_bloqueoalbaranventa' readonly="1"/>
+                            <field name='_sage_field_bloqueopedidoventa' readonly="1"/>
+                            <field name='_sage_field_unidadesminimasoferta' readonly="1"/>
+                            <field name='_sage_field_unidadesregalooferta' readonly="1"/>
+                            <field name='_sage_field_stockminimo' readonly="1"/>
+                            <field name='_sage_field_stockmaximo' readonly="1"/>
+                            <field name='_sage_field_puntopedido' readonly="1"/>
+                            <field name='_sage_field_lotepedido' readonly="1"/>
+                            <field name='_sage_field_grupoiva' readonly="1"/>
+                            <field name='_sage_field_grupoivacompras' readonly="1"/>
+                            <field name='_sage_field_preciocompra' readonly="1"/>
+                            <field name='_sage_field_precioventa' readonly="1"/>
+                            <field name='_sage_field_percent_margen' readonly="1"/>
+                            <field name='_sage_field_costefabricacionunitario' readonly="1"/>
+                            <field name='_sage_field_preciocosteestandar' readonly="1"/>
+                            <field name='_sage_field_precioventaconiva1' readonly="1"/>
+                            <field name='_sage_field_precioventaconiva2' readonly="1"/>
+                            <field name='_sage_field_precioventaconiva3' readonly="1"/>
+                            <field name='_sage_field_precioventasiniva1' readonly="1"/>
+                            <field name='_sage_field_precioventasiniva2' readonly="1"/>
+                            <field name='_sage_field_precioventasiniva3' readonly="1"/>
+                            <field name='_sage_field_precioofertaconiva' readonly="1"/>
+                            <field name='_sage_field_precioofertasiniva' readonly="1"/>
+                            <field name='_sage_field_percent_descuento' readonly="1"/>
+                            <field name='_sage_field_percent_descuento2' readonly="1"/>
+                            <field name='_sage_field_percent_descuento3' readonly="1"/>
+                            <field name='_sage_field_percent_descuentocompras' readonly="1"/>
+                            <field name='_sage_field_percent_descuentocompras2' readonly="1"/>
+                            <field name='_sage_field_percent_descuentocompras3' readonly="1"/>
+                            <field name='_sage_field_descuentooferta' readonly="1"/>
+                            <field name='_sage_field_aplicardescuentos' readonly="1"/>
+                            <field name='_sage_field_codigocomisionista' readonly="1"/>
+                            <field name='_sage_field_codigocomisionista2_' readonly="1"/>
+                            <field name='_sage_field_codigocomisionista3_' readonly="1"/>
+                            <field name='_sage_field_codigocomisionista4_' readonly="1"/>
+                            <field name='_sage_field_percent_comision' readonly="1"/>
+                            <field name='_sage_field_percent_comision2_' readonly="1"/>
+                            <field name='_sage_field_percent_comision3_' readonly="1"/>
+                            <field name='_sage_field_percent_comision4_' readonly="1"/>
+                            <field name='_sage_field_pesobrutounitario_' readonly="1"/>
+                            <field name='_sage_field_pesonetounitario_' readonly="1"/>
+                            <field name='_sage_field_volumenunitario_' readonly="1"/>
+                            <field name='_sage_field_formulalote' readonly="1"/>
+                            <field name='_sage_field_lote_' readonly="1"/>
+                            <field name='_sage_field_formula' readonly="1"/>
+                            <field name='_sage_field_lotefabricacion' readonly="1"/>
+                            <field name='_sage_field_nivelcompuesto' readonly="1"/>
+                            <field name='_sage_field_tipodemanda' readonly="1"/>
+                            <field name='_sage_field_generarplanprod' readonly="1"/>
+                            <field name='_sage_field_usarstockseg' readonly="1"/>
+                            <field name='_sage_field_percent_stockseguridad' readonly="1"/>
+                            <field name='_sage_field_demandamediadiaria' readonly="1"/>
+                            <field name='_sage_field_factorcrecimiento' readonly="1"/>
+                            <field name='_sage_field_periodospromediar' readonly="1"/>
+                            <field name='_sage_field_tasaproducciondiaria' readonly="1"/>
+                            <field name='_sage_field_tiempomedioreposicion' readonly="1"/>
+                            <field name='_sage_field_numdecimalesunidades' readonly="1"/>
+                            <field name='_sage_field_periodovida' readonly="1"/>
+                            <field name='_sage_field_tipoabc' readonly="1"/>
+                            <field name='_sage_field_codigocategorialc' readonly="1"/>
+                            <field name='_sage_field_codigosubcategorialc' readonly="1"/>
+                            <field name='_sage_field_codigoclasearticulolc' readonly="1"/>
+                            <field name='_sage_field_codigotipoarticulolc' readonly="1"/>
+                            <field name='_sage_field_codigosubtipoarticulolc' readonly="1"/>
+                            <field name='_sage_field_codigogrupoarticulolc' readonly="1"/>
+                            <field name='_sage_field_codigosubgrupoarticulolc' readonly="1"/>
+                            <field name='_sage_field_codigomodolc' readonly="1"/>
+                            <field name='_sage_field_codigofabricantelc' readonly="1"/>
+                            <field name='_sage_field_codigofamiliafabricantelc' readonly="1"/>
+                            <field name='_sage_field_codigoconjuntolc' readonly="1"/>
+                            <field name='_sage_field_codigosubconjuntolc' readonly="1"/>
+                            <field name='_sage_field_maximosinretencionlc' readonly="1"/>
+                            <field name='_sage_field_tratanumerosserielc' readonly="1"/>
+                            <field name='_sage_field_sonhoraslc' readonly="1"/>
+                            <field name='_sage_field_articulonocodificadolc' readonly="1"/>
+                            <field name='_sage_field_preciocosteeditablelc' readonly="1"/>
+                            <field name='_sage_field_codigotipoperiodicidadpreciolc' readonly="1"/>
+                            <field name='_sage_field_liquidablelc' readonly="1"/>
+                            <field name='_sage_field_codigotipocoberturalc' readonly="1"/>
+                            <field name='_sage_field_obsoletolc' readonly="1"/>
+                            <field name='_sage_field_codigoareacompetencialc' readonly="1"/>
+                            <field name='_sage_field_imagenext' readonly="1"/>
+                            <field name='_sage_field_gestioncompras' readonly="1"/>
+                            <field name='_sage_field_unidadmedidacompras_' readonly="1"/>
+                            <field name='_sage_field_unidadmedidaventas_' readonly="1"/>
+                            <field name='_sage_field_unidadmedidafabricacion_' readonly="1"/>
+                            <field name='_sage_field_codigoserie' readonly="1"/>
+                            <field name='_sage_field_unidadmedidaserie' readonly="1"/>
+                            <field name='_sage_field_factorpreciocompra_' readonly="1"/>
+                            <field name='_sage_field_factorprecioventa_' readonly="1"/>
+                            <field name='_sage_field_tipounidadcalculo_' readonly="1"/>
+                            <field name='_sage_field_medida' readonly="1"/>
+                            <field name='_sage_field_tipoarticulopresupuesto' readonly="1"/>
+                            <field name='_sage_field_tipocodificado' readonly="1"/>
+                            <field name='_sage_field_codigoperiodicidadprecio' readonly="1"/>
+                            <field name='_sage_field_cobrardevoluciontardia' readonly="1"/>
+                            <field name='_sage_field_cobrarentregaadelantada' readonly="1"/>
+                            <field name='_sage_field_devolverdevolucionadelantada' readonly="1"/>
+                            <field name='_sage_field_devolverentregatardia' readonly="1"/>
+                            <field name='_sage_field_codigoarticulofacturacion' readonly="1"/>
+                            <field name='_sage_field_precioperiodoretraso' readonly="1"/>
+                            <field name='_sage_field_preciounidadperdida' readonly="1"/>
+                            <field name='_sage_field_partirperiodos' readonly="1"/>
+                            <field name='_sage_field_tipoarticuloalquiler' readonly="1"/>
+                            <field name='_sage_field_notraspasarsfa' readonly="1"/>
+                            <field name='_sage_field_codigocontaje' readonly="1"/>
+                            <field name='_sage_field_precioportramos' readonly="1"/>
+                            <field name='_sage_field_suplido' readonly="1"/>
+                            <field name='_sage_field_codigonacionorigen' readonly="1"/>
+                            <field name='_sage_field_tipocodigobarrassr' readonly="1"/>
+                            <field name='_sage_field_pesablesr' readonly="1"/>
+                            <field name='_sage_field_imagentactilsr' readonly="1"/>
+                            <field name='_sage_field_taraunitaria_' readonly="1"/>
+                            <field name='_sage_field_preciomodificablesr' readonly="1"/>
+                            <field name='_sage_field_noagruparsr' readonly="1"/>
+                            <field name='_sage_field_enviarasr' readonly="1"/>
+                            <field name='_sage_field_impresionresguardosr' readonly="1"/>
+                            <field name='_sage_field_periodogarantiasr' readonly="1"/>
+                            <field name='_sage_field_novedadesweb' readonly="1"/>
+                            <field name='_sage_field_idarticulo' readonly="1"/>
+                            <field name='_sage_field_publicargcrm' readonly="1"/>
+                            <field name='_sage_field_mesesgarantiaventa' readonly="1"/>
+                            <field name='_sage_field_mesesgarantiacompra' readonly="1"/>
+                            <field name='_sage_field_mesesgarantiareparacion' readonly="1"/>
+                            <field name='_sage_field_fechamodificacion' readonly="1"/>
+                            <field name='_sage_field_fecharecepcionsumex' readonly="1"/>
+                            <field name='_sage_field_factors' readonly="1"/>
+                            <field name='_sage_field_estaencatalogo' readonly="1"/>
+                            <field name='_sage_field_codigoalternativo3' readonly="1"/>
+                            <field name='_sage_field_largo_' readonly="1"/>
+                            <field name='_sage_field_ancho_' readonly="1"/>
+                            <field name='_sage_field_alto_' readonly="1"/>
+                            <field name='_sage_field_fabricadoen' readonly="1"/>
+                            <field name='_sage_field_s_codigofiscalproducto' readonly="1"/>
+                            <field name='_sage_field_moq' readonly="1"/>
+                            <field name='_sage_field_udcajaouter' readonly="1"/>
+                            <field name='_sage_field_udcajainner' readonly="1"/>
+                            <field name='_sage_field_largoouter' readonly="1"/>
+                            <field name='_sage_field_largoinner' readonly="1"/>
+                            <field name='_sage_field_anchoouter' readonly="1"/>
+                            <field name='_sage_field_anchoinner' readonly="1"/>
+                            <field name='_sage_field_altoouter' readonly="1"/>
+                            <field name='_sage_field_altoinner' readonly="1"/>
+                            <field name='_sage_field_gwouter' readonly="1"/>
+                            <field name='_sage_field_gwinner' readonly="1"/>
+                            <field name='_sage_field_nwouter' readonly="1"/>
+                            <field name='_sage_field_nwinner' readonly="1"/>
+                            <field name='_sage_field_volumenouter' readonly="1"/>
+                            <field name='_sage_field_volumeninner' readonly="1"/>
+                            <field name='_sage_field_codigotembalaje' readonly="1"/>
+                            <field name='_sage_field_estaentarifa' readonly="1"/>
+                            <field name='_sage_field_articuloequivalente' readonly="1"/>
+                            <field name='_sage_field_fechaprevistasumex' readonly="1"/>
+                        </group>
+                    </form>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>
