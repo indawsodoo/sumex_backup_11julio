@@ -1,0 +1,231 @@
+<odoo>
+    <template id="photostock_frontoffice_page_product">
+
+        <t t-call="website.layout">
+
+            <link rel="stylesheet" href="/odoo14_sumex_apps_photostock/static/src/frontoffice/css/frontoffice_page_product.css"/>
+
+            <t t-call="odoo14_sumex_apps_photostock.photostock_frontoffice_header"/>
+
+            <main>
+
+                <div class="container oe_website_sale">
+                    
+
+
+                    <!-- BOTON ATRÁS -->
+                    <div class="row photostock-front-page-product-col-center-row">
+                        <a t-attf-href="/photostock/index/{{page}}" class="btn btn-secondary">Volver</a>
+                    </div>
+
+                    <br/>
+                    <div style="border-bottom:1px solid black;margin-bottom:25px">
+                        <h1>PRODUCTO XXXXX</h1>
+                    </div>
+
+
+                    <!-- PRODUCTO CAMPOS -->
+                    <div class="row photostock-front-page-product-col-center-row">
+
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
+                            <span class="photostock-front-page-product-col-data-title">Disponible en España:</span>
+                            <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_disponible_en_region_espana"/></span><br/>
+                        </div>
+
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
+                            <span class="photostock-front-page-product-col-data-title">Disponible en España:</span>
+                            <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_disponible_en_region_portugal"/></span><br/>
+                        </div>
+
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
+                            <span class="photostock-front-page-product-col-data-title">Disponible en España:</span>
+                            <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_disponible_en_region_francia"/></span><br/>
+                        </div>
+
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
+                            <span class="photostock-front-page-product-col-data-title">Disponible en España:</span>
+                            <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_disponible_en_region_europa"/></span><br/>
+                        </div>
+
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
+                            <span class="photostock-front-page-product-col-data-title">Disponible en España:</span>
+                            <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_disponible_en_region_usa"/></span><br/>
+                        </div>
+
+                    </div>
+
+                    <div class="row photostock-front-page-product-col-center-row">
+
+
+                        <!-- COLUMNA MANUALES CERTIFICADOS Y FOTOS -->
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12" style="border-right: 1px solid darkblue;">
+
+                            <!-- MANUALES -->
+                            <div class="row photostock-front-page-product-col-center-row" style="background:lightgray;padding:10px"><span style="color:darkblue;font-weight:bold">Manuales:</span></div>
+                            <div class="row photostock-front-page-product-col-center-row">
+                                <t t-set="counter" t-value="0"/>
+                                <t t-foreach="product.photostock_manual_ids" t-as="manual">
+                                    <t t-set="counter" t-value="counter + 1"/>
+                                    <div class="photostock-front-page-product-col-img">
+                                        <a target="_blank" class="btn btn-primary" t-attf-href="/photostock/download_manual/{{manual.id}}"><t t-esc="counter"/>
+                                            <t t-esc="manual.name"/>
+                                        </a>
+                                    </div>
+                                </t>
+                            </div>
+
+                            <!-- IMAGENES -->
+                            <div class="row photostock-front-page-product-col-center-row" style="background:lightgray;padding:10px"><span style="color:darkblue;font-weight:bold">Imágenes:</span></div>
+                            <div class="row">
+                                <t t-set="counter" t-value="0"/>
+                                <t t-foreach="product.photostock_product_template_image_ids" t-as="imagen">
+                                    <!-- <a target="_blank" class="photostock-front-page-product-col-img-btn-num btn btn-primary" t-attf-href="{{imagen.name}}"><t t-esc="counter"/></a> -->
+                                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12" style="border:1px solid lightgray;border-radius:5px">
+                                        <img t-att-src="image_data_uri(imagen.image_256)"/>
+                                        <center><t t-esc="imagen.name"/></center>
+                                    </div>
+                                </t>
+                            </div>
+
+                        </div>
+
+                        <!-- COLUMNA DATOS -->
+
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+
+                        <div class="row photostock-front-page-product-col-center-row" style="background:lightgray;padding:10px">
+                        <span style="color:darkblue;font-weight:bold">Datos:</span>
+                        </div>
+
+                            <div t-if="product.photostock_marca_id.name" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">Marca</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_marca_id.name"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_categoria_id.name" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">Marca</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_categoria_id.name"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_catalogo_pagina" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">Catálogo página</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_catalogo_pagina"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_homologaciones" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">Homologaciones</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_homologaciones"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_proveedor" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">Proveedor</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_proveedor"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_fabricado_en" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">photostock_fabricado_en:</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_fabricado_en"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_material_producto" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">photostock_material_producto:</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_material_producto"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_color" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">photostock_color:</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_color"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_tipo_packaging" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">photostock_tipo_packaging:</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_tipo_packaging"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_medidas_packaging_cm" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">photostock_medidas_packaging_cm:</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_medidas_packaging_cm"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_peso_packaging_kg" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">photostock_peso_packaging_kg:</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_peso_packaging_kg"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_medidas_producto_cm" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">photostock_medidas_producto_cm:</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_medidas_producto_cm"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_peso_producto_kg" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">photostock_peso_producto_kg:</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_peso_producto_kg"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_cantidad_master_box" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">photostock_cantidad_master_box:</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_cantidad_master_box"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_medidas_master_box_cm" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">photostock_medidas_master_box_cm:</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_medidas_master_box_cm"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_peso_bruto_master_kg" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">photostock_peso_bruto_master_kg:</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_peso_bruto_master_kg"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_peso_neto_master_kg" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">photostock_peso_neto_master_kg:</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_peso_neto_master_kg"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_volumen_master_box_m3" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">photostock_volumen_master_box_m3:</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_volumen_master_box_m3"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_cantidad_inner_box" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">photostock_cantidad_inner_box:</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_cantidad_inner_box"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_medidas_inner_box_cm" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">photostock_medidas_inner_box_cm:</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_medidas_inner_box_cm"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_peso_bruto_inner_kg" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">photostock_peso_bruto_inner_kg:</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_peso_bruto_inner_kg"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_peso_neto_inner_kg" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">photostock_peso_neto_inner_kg:</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_peso_neto_inner_kg"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_volumen_inner_box_m3" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">photostock_volumen_inner_box_m3:</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_volumen_inner_box_m3"/></span><br/>
+                            </div>
+
+                            <div t-if="product.photostock_imagen_num_defecto" class="col-12">
+                                <span class="photostock-front-page-product-col-data-title">photostock_imagen_num_defecto:</span>
+                                <span class="photostock-front-page-product-col-data-value"><t t-esc="product.photostock_imagen_num_defecto"/></span><br/>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </t>
+
+    </template>
+</odoo>

@@ -1,0 +1,73 @@
+<odoo>
+    <template id="photostock_frontoffice_page_index_product">
+
+        <div class="o_wsale_product_grid_wrapper o_wsale_product_grid_wrapper_1_1">
+
+            <a t-attf-href='/photostock/product/{{ page }}/{{ td_product.id }}' style='text-decoration:none !important;' class="card oe_product_cart">
+
+                <div class="row">
+                    <div class="col-6" style="z-index:9999">
+
+                        <!-- BOTON CARRITO -->
+                            <img
+                                class="btn btn-primary"
+                                style="width:48px;"
+                                title="Añadir/Eliminar este producto del carrito"
+                                src="/odoo14_sumex_apps_photostock/static/src/frontoffice/img/photostock-cart-white.png"
+                            />
+
+                    </div>
+                    
+                    <div class="col-6" style="z-index:9999;">
+
+                        <!-- ICONOS CONTADORES DE IMGS Y MANUALES -->
+                        <div style="float:right">
+                            <t t-esc="td_product.photostock_product_template_image_ids_count"/><img style="max-width:22px;z-index:999;" src="/odoo14_sumex_apps_photostock/static/src/frontoffice/img/photostock-foto.png" alt="imagen" modifiers="{}"/>
+                                <br/>
+                            <t t-esc="td_product.photostock_manual_ids_count"/><img style="max-width:22px;z-index:999;" src="/odoo14_sumex_apps_photostock/static/src/frontoffice/img/photostock-manual.png" alt="imagen" modifiers="{}"/>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- <form action="/shop/cart/update" method="post" itemscope="itemscope" itemtype="http://schema.org/Product"></form> -->
+
+                    <!-- <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/> -->
+
+                    <!-- FOTO -->
+                    <div class="card-body p-1 oe_product_image">
+                        <span class="d-flex h-100 justify-content-center align-items-center">
+                            <img 
+                                t-att-src="'/web/image/product.template/%s/image_256' % td_product.id"
+                                itemprop="image" 
+                                class="img img-fluid" 
+                                alt="product_image" 
+                                loading="lazy"/>
+                        </span>
+                    </div>
+
+                    <div class="card-body p-0 text-center o_wsale_product_information">
+
+                        <div class="p-2 o_wsale_product_information_text" style="background-color:#e9ecef; icon:pointer !important;">
+
+                            <h6 class="o_wsale_products_item_title">
+                                <strong><t t-esc="td_product.default_code"/></strong><br/>
+                                <t t-esc="td_product.name"/>
+                            </h6>
+
+                        </div>
+                    
+                    </div>
+
+                    <span class="o_ribbon " style=""></span>
+
+                    <div class="o_wsale_product_btn"/>
+
+                <!-- </form> -->
+            </a>
+        </div>
+
+    </template>
+</odoo>

@@ -1,0 +1,61 @@
+.kanban_view_images_img
+{
+    max-width:150px !important;
+    max-height:150px !important;
+}
+
+.kanban_view_products_div_1
+{
+    text-align:center;
+    border-radius:5px;
+}
+
+.kanban_view_products_div_2
+{
+    padding-top:35px;
+    padding-bottom:35px;
+    border:1px solid lightgray;
+    border-radius:5px;
+    height: 100%;
+}
+
+.kanban_view_products_btn_celda
+{
+    color:white;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-right: 10px;
+    background-color: #858585 !important;
+    border-color: gray !important;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.kanban_view_photo
+{
+    margin-bottom:15px;
+}
+
+.kanban_view_products_img
+{
+    max-height: 173px !important;
+    max-width: 231px !important;
+}
+
+.kanban_view_products_span_title
+{
+    display: inline;
+    color: darkblue;
+    font-weight: bold;
+}
+
+.kanban_view_products_span_value
+{
+    display: inline;
+    color: darkblue;
+    font-weight: normal;
+}

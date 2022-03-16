@@ -1,0 +1,6 @@
+"id","name","model_id/id","group_id/id","perm_read","perm_write","perm_create","perm_unlink"
+"sumex.photostock_manuales_admin","sumex.photostock_manuales_admin","model_sumex_photostock_manuales","module_photostock_admin",1,1,1,1
+"sumex.photostock_certificados_admin","sumex.photostock_certificados_admin","model_sumex_photostock_certificados","module_photostock_admin",1,1,1,1
+"sumex.photostock_marcas_admin","sumex.photostock_marcas_admin","model_sumex_photostock_marcas","module_photostock_admin",1,1,1,1
+"sumex.photostock_categorias_admin","sumex.photostock_categorias_admin","model_sumex_photostock_categorias","module_photostock_admin",1,1,1,1
+"sumex.photostock_carrito_admin","sumex.photostock_carrito_admin","model_sumex_photostock_carrito","module_photostock_admin",1,1,1,1

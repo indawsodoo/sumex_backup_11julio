@@ -1,0 +1,184 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <!--Tree View-->
+    <record id="sumex_photostock_products_template_tree_view" model="ir.ui.view">
+        <field name="name">sumex_photostock_products_template_tree_view</field>
+        <field name="model">product.template</field>
+        <field name="groups_id" eval="[(6, 0, [ref('odoo14_sumex_apps_photostock.module_photostock_admin') ])]"/>
+        <field name="arch" type="xml">
+
+            <tree>
+                <!--<field name="photostock_include"/>-->
+                <field name="name" on_change="1" can_create="true" can_write="true"/>
+                <field name="default_code" on_change="1" can_create="true" can_write="true"/>
+                <field name="barcode" on_change="1" can_create="true" can_write="true"/>
+                <field name="photostock_marca_id" widget="many2one" on_change="1" can_create="true" can_write="true"/>
+                <field name="photostock_categoria_id" widget="many2one" on_change="1" can_create="true" can_write="true"/>
+                <field name="photostock_product_template_image_ids_count" on_change="1" can_create="true" can_write="true"/>
+                <field name="photostock_manual_ids_count" on_change="1" can_create="true" can_write="true"/>
+                <field name="photostock_certificado_ids_count" on_change="1" can_create="true" can_write="true"/>
+            </tree>
+
+        </field>
+    </record>
+ 
+    <!--Form view-->
+    <record id="sumex_photostock_products_template_form_view" model="ir.ui.view">
+        <field name="name">sumex_photostock_products_template_form_view</field>
+        <field name="model">product.template</field>
+        <field name="groups_id" eval="[(6, 0, [ref('odoo14_sumex_apps_photostock.module_photostock_admin') ])]"/>
+        <field name="arch" type="xml">
+
+            <form modifiers="{}">
+                <sheet modifiers="{}">
+
+                    <group col="1" modifiers="{}">
+                        <field name="name" modifiers="{}"/>
+                        <field name="default_code" modifiers="{}"/>
+                        <field name="barcode" modifiers="{}"/>
+                    </group>
+
+                    <group col="1" string="Photostock Manuales">
+                        <field name="photostock_manual_ids" context="{'default_name': default_code}" mode="kanban" options="{'create_text':'Añadir Manual a este producto de Photostock'}" nolabel="1"/>
+                    </group>
+
+                    <group col="1" string="Photostock Certificados">
+                        <field name="photostock_certificado_ids" context="{'default_name': default_code}" mode="kanban" options="{'create_text':'Añadir Certificado a este producto de Photostock'}" nolabel="1"/>
+                    </group>
+
+                    <group col="1" string="Photostock Galería">
+                        <field name="photostock_product_template_image_ids" class="o_website_sale_image_list" context="{'default_name': default_code, 'default_photostock_include': 'True'}" mode="kanban" options="{'create_text':'Añadir foto a este producto de Photostock'}" nolabel="1"/>
+                    </group>
+
+                    <group col="1" modifiers="{}">
+                        <field name="photostock_marca_id" modifiers="{}" widget="many2one"/>
+                        <field name="photostock_categoria_id" modifiers="{}" widget="many2one"/>
+                        <field name="photostock_catalogo_pagina"/>
+                        <field name="photostock_homologaciones"/>
+                        <field name="photostock_proveedor"/>
+                        <field name="photostock_fabricado_en"/>
+                        <field name="photostock_material_producto"/>
+                        <field name="photostock_color"/>
+                        <field name="photostock_tipo_packaging"/>
+                        <field name="photostock_medidas_packaging_cm"/>
+                        <field name="photostock_peso_packaging_kg"/>
+                        <field name="photostock_medidas_producto_cm"/>
+                        <field name="photostock_peso_producto_kg"/>
+                        <field name="photostock_cantidad_master_box"/>
+                        <field name="photostock_medidas_master_box_cm"/>
+                        <field name="photostock_peso_bruto_master_kg"/>
+                        <field name="photostock_peso_neto_master_kg"/>
+                        <field name="photostock_volumen_master_box_m3"/>
+                        <field name="photostock_cantidad_inner_box"/>
+                        <field name="photostock_medidas_inner_box_cm"/>
+                        <field name="photostock_peso_bruto_inner_kg"/>
+                        <field name="photostock_peso_neto_inner_kg"/>
+                        <field name="photostock_volumen_inner_box_m3"/>
+                        <field name="photostock_imagen_num_defecto"/>
+                        <field name="photostock_disponible_en_region_espana"/>
+                        <field name="photostock_disponible_en_region_portugal"/>
+                        <field name="photostock_disponible_en_region_francia"/>
+                        <field name="photostock_disponible_en_region_europa"/>
+                        <field name="photostock_disponible_en_region_usa"/>
+                    </group>
+
+                </sheet>
+            </form>
+
+        </field>
+    </record>
+
+    <!--Kanvan View-->
+    <record id="sumex_photostock_products_template_kanban_view" model="ir.ui.view">
+        <field name="name">sumex_photostock_products_template_form_kanban</field>
+        <field name="model">product.template</field>
+        <field name="groups_id" eval="[(6, 0, [ref('odoo14_sumex_apps_photostock.module_photostock_admin') ])]"/>
+        <field name="arch" type="xml">
+
+            <kanban>
+                <field name="id"/>
+                <field name="default_code"/>
+                <field name="barcode"/>
+                <field name="photostock_marca_id"/> 
+                <field name="photostock_categoria_id"/> 
+                <field name="photostock_catalogo_pagina"/> 
+                <field name="photostock_manual_ids"/>
+                <field name="photostock_manual_ids_count"/>
+                <field name="photostock_certificado_ids"/>
+                <field name="photostock_certificado_ids_count"/>
+                <field name="photostock_product_template_image_ids"/>
+                <field name="photostock_product_template_image_ids_count"/>
+
+                <templates>
+                    <t t-name="kanban-box" groups="odoo14_sumex_apps_photostock.module_photostock_admin">
+                        <div class="oe_kanban_global_click kanban_view_products_div_1">
+                            <div class="oe_kanban_details kanban_view_products_div_2">
+                                    
+                                <t t-set="counter" t-value="0"/>
+                                <t t-foreach="record.photostock_product_template_image_ids.raw_value" t-as="p">
+                                    <t t-set="counter" t-value="counter + 1"/>
+                                    <img t-if="counter == 1" t-att-src="kanban_image('product.image', 'image_256', p)" alt="Photostock Imagen"/>
+                                </t>
+
+                                <div style="text-align:left;margin-left:15%">
+
+                                    <span class="kanban_view_products_span_title">Ref: </span>
+                                    <span class="kanban_view_products_span_value"><field name="default_code"/></span>
+                                    <br/>
+
+                                    <span class="kanban_view_products_span_title">Ean: </span>
+                                    <span class="kanban_view_products_span_value"><field name="barcode"/></span>
+                                    <br/>
+
+                                    <span class="kanban_view_products_span_title">Página: </span>
+                                    <span class="kanban_view_products_span_value"><field name="photostock_catalogo_pagina"/></span>
+                                    <br/>
+
+                                    <span class="kanban_view_products_span_title">Nombre: </span>
+                                    <span class="kanban_view_products_span_value"><field name="name"/></span>
+                                    <br/>
+
+                                    <span class="kanban_view_products_span_title">Marca: </span>
+                                    <span class="kanban_view_products_span_value"><field name="photostock_marca_id"/></span>
+                                    <br/>
+
+                                    <span class="kanban_view_products_span_title">Categoria: </span>
+                                    <span class="kanban_view_products_span_value"><field name="photostock_categoria_id"/></span>
+                                    <br/>
+
+                                    <span class="kanban_view_products_span_title">Actualizado: </span>
+                                    <span class="kanban_view_products_span_value"><field name="write_date" t-options='{"format": "MM/dd/yyyy"}'/></span>
+                                    <br/>
+
+
+                                    <!-- div indicador de totales -->
+                                    <div>
+                                        <div style="float:left;width:33.3%;">
+                                            <img style='max-width:32px' src="/odoo14_sumex_apps_photostock/static/src/frontoffice/img/photostock-foto.png" alt="imagen"/>
+                                            <t t-esc="record.photostock_product_template_image_ids_count.value"/>
+                                        </div>
+                                        <div style="float:left;width:33.3%;">
+                                            <img style='max-width:32px' src="/odoo14_sumex_apps_photostock/static/src/frontoffice/img/photostock-manual.png" alt="imagen"/>
+                                            <t t-esc="record.photostock_manual_ids_count.value"/>
+                                        </div>
+                                        <div style="float:left;width:33.3%;">
+                                            <img style='max-width:32px' src="/odoo14_sumex_apps_photostock/static/src/frontoffice/img/photostock-certificado.png" alt="imagen"/>
+                                            <t t-esc="record.photostock_certificado_ids_count.value"/>
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+
+        </field>
+
+    </record>
+</odoo>
