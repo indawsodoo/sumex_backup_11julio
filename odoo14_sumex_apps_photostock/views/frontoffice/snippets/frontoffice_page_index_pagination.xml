@@ -1,0 +1,42 @@
+<odoo>
+    <template id="photostock_frontoffice_page_index_pagination">
+
+        <ul class=" pagination m-0 mt-2 ml-md-2">
+
+            <!-- BOTON FIRST -->
+            <t t-set="class_enable" t-value="'disabled'"/><t t-if="page &gt; 1"><t t-set="class_enable" t-value="''"/></t>
+            <li t-attf-class="page-item {{ class_enable }} ">
+                <a class="page-link" t-attf-href="/photostock/index/1">Primero</a>
+            </li>
+
+            <!-- BOTON PREV -->
+            <t t-set="class_enable" t-value="'disabled'"/><t t-if="page &gt; 1"><t t-set="class_enable" t-value="''"/></t>
+            <li t-attf-class="page-item {{ class_enable }} ">
+                <a class="page-link" t-attf-href="/photostock/index/{{ page-1 }}">Anterior</a>
+            </li>
+
+            <!-- BOTON NUM -->
+            <t t-foreach="paginator_buttons_num" t-as="page_num">
+
+                <t t-set="class_active" t-value="''"/><t t-if="page == page_num"><t t-set="class_active" t-value="'active'"/></t>
+                <li t-attf-class="page-item {{ class_active }} ">
+                    <a class="page-link" t-attf-href="/photostock/index/{{ page_num }}"><t t-esc="page_num"/></a>
+                </li>
+            </t>
+
+            <!-- BOTON NEXT -->
+            <t t-set="class_enable" t-value="'disabled'"/><t t-if="page &lt; total_pages"><t t-set="class_enable" t-value="''"/></t>
+            <li t-attf-class="page-item {{ class_enable }} ">
+                <a class="page-link" t-attf-href="/photostock/index/{{ page+1 }}">Siguiente</a>
+            </li>
+
+            <!-- BOTON LAST -->
+            <t t-set="class_enable" t-value="'disabled'"/><t t-if="page &lt; total_pages"><t t-set="class_enable" t-value="''"/></t>
+            <li t-attf-class="page-item {{ class_enable }} ">
+                <a class="page-link" t-attf-href="/photostock/index/{{ total_pages }}">Último</a>
+            </li>
+
+        </ul>
+
+    </template>
+</odoo>

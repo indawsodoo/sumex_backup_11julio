@@ -1,0 +1,64 @@
+<odoo>
+    <template id="photostock_frontoffice_page_index">
+        <t t-call="website.layout">
+            <t t-call="odoo14_sumex_apps_photostock.photostock_frontoffice_header"/>
+
+
+                <div class="container oe_website_sale">
+
+                    <!-- CAJA BUSQUEDA Y PAGINACION (INICIO) -->
+                    <div class="products_pager form-inline flex-md-nowrap justify-content-between">
+
+                        <!-- BUSQUEDA -->
+                        <t t-call="odoo14_sumex_apps_photostock.photostock_frontoffice_page_index_search"/>
+
+                        <!-- PAGINACION -->
+                        <t t-call="odoo14_sumex_apps_photostock.photostock_frontoffice_page_index_pagination"/>
+
+                    </div>
+                    <!-- CAJA BUSQUEDA Y PAGINACION (FIN) -->
+
+                    <div class="row o_wsale_products_main_row">
+                        <div id="products_grid" class="col ">
+                            <div class="o_wsale_products_grid_table_wrapper">
+                                <table class="table table-borderless m-0" data-ppg="20" data-ppr="4">
+                                    <colgroup>
+                                        <col>
+                                            <col>
+                                                <col>
+                                                    <col></col>
+                                                </col>
+                                            </col>
+                                        </col>
+                                    </colgroup>
+                                    <tbody>
+                                    
+                                        <tr t-foreach="products_tr" t-as="tr_product">
+                                            <t t-foreach="tr_product" t-as="td_product">
+                                                <td class="oe_product">
+
+                                                    <!-- PRODUCTO -->
+                                                    <t t-call="odoo14_sumex_apps_photostock.photostock_frontoffice_page_index_product"/>
+
+                                                </td>
+                                            </t>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="products_pager form-inline justify-content-center py-3">
+                        <!-- PAGINACION -->
+                        <t t-call="odoo14_sumex_apps_photostock.photostock_frontoffice_page_index_pagination"/>
+                    </div>
+
+                </div>
+
+
+
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,37 @@
+<odoo>
+
+    <data>
+
+        <template id="assets_backend_for_photostock" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+
+                <link rel="stylesheet" href="/odoo14_sumex_apps_photostock/static/src/backoffice/css/backoffice.css"/>
+
+            </xpath>
+        </template>
+
+        <template id="assets_frontend_for_photostock" inherit_id="web.assets_frontend">
+            <xpath expr="." position="inside">
+
+                <!-- <link rel="stylesheet" class="origin" href="/web/static/lib/bootstrap/css/bootstrap.css" />
+                <link rel="stylesheet" href="/odoo14_sumex_apps_photostock/static/src/frontoffice/css/frontoffice_header.css"/> -->
+                <!-- <link rel="stylesheet" href="/odoo14_sumex_apps_photostock/static/src/frontoffice/css/frontoffice_page_index.css"/>
+                <link rel="stylesheet" href="/odoo14_sumex_apps_photostock/static/src/frontoffice/css/frontoffice_page_product.css.css"/>
+                <script type="text/javascript" src="/odoo14_sumex_apps_photostock/static/src/frontoffice/js/frontoffice.js"></script> -->
+
+            </xpath>
+
+            <!-- <xpath expr="script[last()]" position="after">
+
+                <script type="text/javascript" src="odoo14_sumex_apps_photostock/static/src/frontoffice/js/frontoffice.js"/>
+
+            </xpath>         -->
+
+
+        </template>
+
+
+
+    </data>
+
+</odoo>

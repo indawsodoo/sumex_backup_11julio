@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+<!--
+
+añadir un groups a cada vista
+
+-->
+
+    <!-- PRODUCTOS -->
+
+        <!-- Accion para vincular vista con el modelo 'productos' -->
+        <record model="ir.actions.act_window" id="action_sumex_photostock_products">
+            <field name="name">PhotoStock - Productos</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="help">Gestionar los productos de PhotoStock</field>
+            <field name="context">{'default_photostock_include':'1', 'enable':'1'}</field>
+            <field name="domain">[['photostock_include','=','1']]</field>
+        </record>
+
+        <!-- Vista KANBAN de photostock productos -->
+        <record model="ir.actions.act_window.view" id="view_action_sumex_photostock_products_kanban">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">kanban</field>
+            <field name="act_window_id" ref="action_sumex_photostock_products"/>
+            <field name="view_id" ref="sumex_photostock_products_template_kanban_view"/>
+        </record>
+
+        <!-- Vista TREE de photostock productos -->
+        <record model="ir.actions.act_window.view" id="view_action_sumex_photostock_products_tree">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">tree</field>
+            <field name="act_window_id" ref="action_sumex_photostock_products"/>
+            <field name="view_id" ref="sumex_photostock_products_template_tree_view"/>
+        </record>
+
+        <!-- Vista FORM de photostock productos -->
+        <record model="ir.actions.act_window.view" id="view_action_sumex_photostock_products_form">
+            <field name="sequence" eval="3"/>
+            <field name="view_mode">form</field>
+            <field name="act_window_id" ref="action_sumex_photostock_products"/>
+            <field name="view_id" ref="sumex_photostock_products_template_form_view"/>
+        </record>
+
+
+    <!-- MARCAS -->
+
+        <!-- Accion para vincular vista con el modelo 'photostock_marcas' -->
+        <record model="ir.actions.act_window" id="action_photostock_producto_marcas">
+            <field name="name">PhotoStock - Marcas</field>
+            <field name="res_model">sumex.photostock_marcas</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+    <!-- CATEGORIAS -->
+
+        <!-- Accion para vincular vista con el modelo 'photostock_categorias' -->
+        <record model="ir.actions.act_window" id="action_photostock_producto_categorias">
+            <field name="name">PhotoStock - Categorias</field>
+            <field name="res_model">sumex.photostock_categorias</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+    <!-- MANUALES -->
+
+        <!-- Accion para vincular vista con el modelo 'photostock_producto_manuales' -->
+        <record model="ir.actions.act_window" id="action_sumex_photostock_manuales">
+            <field name="name">PhotoStock - Manuales</field>
+            <field name="res_model">sumex.photostock_manuales</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">kanban,tree,form</field>
+        </record>
+
+
+    <!-- CERTIFICADOS -->
+
+        <!-- Accion para vincular vista con el modelo 'photostock_producto_certificados' -->
+        <record model="ir.actions.act_window" id="action_sumex_photostock_certificados">
+            <field name="name">PhotoStock - Certificados</field>
+            <field name="res_model">sumex.photostock_certificados</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">kanban,tree,form</field>
+        </record>
+        
+
+    <!-- IMAGENES -->
+
+        <!-- Accion para vincular vista con el modelo 'photostock_imagenes' -->
+        <record model="ir.actions.act_window" id="action_sumex_photostock_imagenes">
+            <field name="name">PhotoStock - Imágenes</field>
+            <field name="res_model">product.image</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="context">{'default_photostock_include':'1', 'enable':'1'}</field>
+            <field name="domain">[['photostock_include','=','1']]</field>
+        </record>
+
+        <!-- Vista KANBAN de photostock productos -->
+        <record model="ir.actions.act_window.view" id="view_action_sumex_photostock_imagenes_kanban">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">kanban</field>
+            <field name="act_window_id" ref="action_sumex_photostock_imagenes"/>
+            <field name="view_id" ref="sumex_photostock_imagenes_kanban_view"/>
+        </record>
+
+    <menuitem 
+        web_icon="odoo14_sumex_apps_photostock,static/description/icon.png"
+        name="PhotoStock"
+        id="menu_photostock"
+    />
+
+    <menuitem 
+        sequence="1"
+        name="Productos"
+        groups="odoo14_sumex_apps_photostock.module_photostock_admin"
+        id="menu_photostock_products"
+        action="action_sumex_photostock_products"
+        parent="menu_photostock" 
+    />
+
+    <menuitem 
+        sequence="2"
+        name="Marcas"
+        id="menu_photostock_producto_marcas"
+        action="action_photostock_producto_marcas"
+        parent="menu_photostock"
+    />
+
+    <menuitem 
+        sequence="3"
+        name="Categorias"
+        id="menu_photostock_producto_categorias"
+        action="action_photostock_producto_categorias"
+        parent="menu_photostock"
+    />
+
+    <menuitem 
+        sequence="4"
+        name="Manuales"
+        id="menu_photostock_producto_manuales"
+        action="action_sumex_photostock_manuales"
+        parent="menu_photostock"
+    />
+
+    <menuitem 
+        sequence="5"
+        name="Certificados"
+        id="menu_sumex_photostock_certificados"
+        action="action_sumex_photostock_certificados"
+        parent="menu_photostock"
+    />
+
+    <menuitem 
+        sequence="6"
+        name="Imagenes"
+        id="menu_photostock_images"
+        action="action_sumex_photostock_imagenes"
+        parent="menu_photostock" 
+    />
+
+</odoo>

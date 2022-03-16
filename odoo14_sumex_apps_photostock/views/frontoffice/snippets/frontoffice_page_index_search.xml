@@ -1,0 +1,65 @@
+<odoo>
+    <template id="photostock_frontoffice_page_index_search">
+        <!-- <form method="get" class="o_wsale_products_searchbar_form w-100 w-md-auto mt-2" action="/shop"> -->
+
+            <div role="search" class="input-group">
+                <input 
+                    id="search_input"
+                    type="search"
+                    name="search"
+                    class="search-query form-control oe_search_box"
+                    placeholder="Buscar…"
+                    value=""
+                    autocomplete="off"
+                >
+
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary oe_search_button" aria-label="Búsqueda" title="Búsqueda">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <ul id="search_options" class="o_dropdown_menu o_searchview_autocomplete dropdown-menu show" style="padding:10px;display:none;z-index:99999">
+                        
+                        <li id="0" onclick="alert('en construccion')">
+                            <span style="margin-left:5px"></span><a href="#"><span style="margin-left:5px"></span><i class="fa fa-caret-right"></i><span style="margin-left:5px"></span>Buscar por <strong>REFERENCIA</strong></a>
+                        </li>
+                        <li id="1" onclick="alert('en construccion')">
+                            <span style="margin-left:5px"></span><a href="#"><span style="margin-left:5px"></span><i class="fa fa-caret-right"></i><span style="margin-left:5px"></span>Buscar por <strong>NOMBRE</strong></a>
+                        </li>
+                        <li id="2" onclick="alert('en construccion')">
+                            <span style="margin-left:5px"></span><a href="#"><span style="margin-left:5px"></span><i class="fa fa-caret-right"></i><span style="margin-left:5px"></span>Buscar por <strong>EAN</strong></a>
+                        </li>
+                        <li id="3" onclick="alert('en construccion')">
+                            <span style="margin-left:5px"></span><a href="#"><span style="margin-left:5px"></span><i class="fa fa-caret-right"></i><span style="margin-left:5px"></span>Buscar por <strong>CATEGORÍA</strong></a>
+                        </li>
+                        <li id="4" onclick="alert('en construccion')">
+                            <span style="margin-left:5px"></span><a href="#"><span style="margin-left:5px"></span><i class="fa fa-caret-right"></i><span style="margin-left:5px"></span>Buscar por <strong>MARCA</strong></a>
+                        </li>
+                        <li id="5" onclick="alert('en construccion')">
+                            <span style="margin-left:5px"></span><a href="#"><span style="margin-left:5px"></span><i class="fa fa-caret-right"></i><span style="margin-left:5px"></span>Buscar por <strong>CATÁLOGO 2016</strong></a>
+                        </li>                        
+                    
+                    </ul>
+
+                </input>
+            </div>
+        <!-- </form> -->
+
+<script>
+object = document.getElementById("search_input");
+object.onkeyup = function(){
+    if (object.value.length > 0)
+    {
+       document.getElementById("search_options").style.display="block";
+    }
+    else
+    {
+       document.getElementById("search_options").style.display="none";
+    }
+};
+</script>
+
+
+    </template>
+</odoo>

@@ -1,0 +1,131 @@
+<odoo>
+    <template id="photostock_frontoffice_page_product">
+        <t t-call="website.layout">
+            <link rel="stylesheet" href="/odoo14_sumex_apps_photostock/static/src/frontoffice/css/frontoffice_page_product.css"/>
+            <t t-call="odoo14_sumex_apps_photostock.photostock_frontoffice_header"/>
+
+            <main>
+                <div itemscope="itemscope" itemtype="http://schema.org/Product" id="wrap" class="js_sale ecom-zoomable zoomodoo-next">
+                    <section id="product_detail" class="container py-2 oe_website_sale">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item">
+                                        <a href="/shop">Productos</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">
+                                        <span><t t-esc="product.name"/></span>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-xl-8">
+                                <div id="o-carousel-product" class="carousel slide">
+                                    <div class="carousel-outer position-relative">
+                                        <div class="carousel-inner h-100">
+                                            <div class="carousel-item h-100 active" style="min-height: 400px;">
+                                                <div class="d-flex align-items-center justify-content-center h-100">
+                                                    <img 
+                                                        t-att-src="'/web/image/product.template/%s/image_256' % product.id"
+                                                        itemprop="image" 
+                                                        class="img img-fluid product_detail_img mh-100" 
+                                                        alt="product_image" 
+                                                        loading="lazy"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-none d-md-block text-center"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-xl-4" id="product_details">
+                                <h1 itemprop="name"><t t-esc="product.name"/></h1>
+
+                                <strong>Disponible en Espana:</strong>
+                                <t t-esc="product.photostock_disponible_en_region_espana"/><br/>
+
+                                <strong>Disponible en Portugal:</strong>
+                                <t t-esc="product.photostock_disponible_en_region_portugal"/><br/>
+
+                                <strong>Disponible en Francia:</strong>
+                                <t t-esc="product.photostock_disponible_en_region_francia"/><br/>
+
+                                <strong>Disponible en Europa:</strong>
+                                <t t-esc="product.photostock_disponible_en_region_europa"/><br/>
+
+                                <strong>Disponible en Usa:</strong>
+                                <t t-esc="product.photostock_disponible_en_region_usa"/><br/>
+
+                                <span itemprop="url" style="display:none;">/photostock/<t t-esc="page"/>/<t t-esc="product.id"/></span>
+                                <form action="/shop/cart/update" method="POST">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <div class="js_product js_main_product">
+                                        <input type="hidden" class="product_id" name="product_id" t-attf-value="{{ product.id }}" title="">
+                                            <input type="hidden" class="product_template_id" name="product_template_id" t-attf-value="{{ product.id }}" title="">
+                                                <ul class="d-none js_add_cart_variants"></ul>
+                                                <p class="css_not_available_msg alert alert-warning">Esta combinación no existe.</p>
+                                                <a role="button" id="add_to_cart" class="btn btn-primary btn-lg mt16 js_check_product a-submit d-block d-sm-inline-block" href="#">
+                                                    <i class="fa fa-shopping-cart"></i> Agregar al carrito</a>
+                                                <div class="availability_messages o_not_editable"></div>
+                                                <div id="product_option_block"></div>
+                                            </input>
+                                        </input>
+                                    </div>
+                                </form>
+                                <hr>
+                                    <p class="text-muted">
+                                        <a href="#">Términos y condiciones</a>
+                                    </p>
+                                </hr>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                        
+                        
+                            <!-- MANUALES -->
+                            <div t-if="product.photostock_manual_ids" class="col-12" style="background-color:gray;color:white;padding:5px;text-align:center;margin-bottom:10px;">
+                                MANUALES:
+                            </div>
+                            <div t-if="product.photostock_manual_ids" class="col-12">
+                                <t t-set="counter" t-value="0"/>
+                                <t t-foreach="product.photostock_manual_ids" t-as="manual">
+                                    <t t-set="counter" t-value="counter + 1"/>
+                                    <div class="col-2" style="border:1px solid lightgray;border-radius:5px">
+                                        <a target="_blank" class="btn btn-primary" t-attf-href="/photostock/download_manual/{{manual.id}}"><t t-esc="counter"/>
+                                            <t t-esc="manual.name"/>
+                                        </a>
+                                    </div>
+                                </t>
+                            </div>
+
+
+                            <!-- IMAGENES -->
+                            <div class="col-12" style="background-color:gray;color:white;padding:5px;text-align:center;margin-bottom:10px;">
+                                FOTOS:
+                            </div>
+                            <div class="col-12">
+                                <t t-set="counter" t-value="0"/>
+                                <t t-foreach="product.photostock_product_template_image_ids" t-as="imagen">
+                                    <!-- <a target="_blank" class="photostock-front-page-product-col-img-btn-num btn btn-primary" t-attf-href="{{imagen.name}}"><t t-esc="counter"/></a> -->
+                                    <div class="col-2" style="text-align:center">
+                                        <img t-att-src="image_data_uri(imagen.image_256)"/>
+                                        <center><t t-esc="imagen.name"/></center>
+                                    </div>
+                                </t>
+                            </div>
+                        
+                        </div>
+
+                    </section>
+
+                </div>
+            </main>
+
+        </t>
+    </template>
+</odoo>

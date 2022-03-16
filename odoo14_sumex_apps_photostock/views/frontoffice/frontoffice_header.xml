@@ -1,0 +1,40 @@
+<odoo>
+    <template id="photostock_frontoffice_header">
+
+        <link rel="stylesheet" href="/odoo14_sumex_apps_photostock/static/src/frontoffice/css/frontoffice_header.css"/>
+
+        <!--Cabecera-->
+            <div class="container" style="background:black;padding-top:20px;margin-bottom:5px">
+
+                <div class='col-lg-4 col-md-4 col-sm-4 col-xs-12' style="border:1px solid darkred;padding:5px;border-radius:5px">
+
+                    <img src="/odoo14_sumex_apps_photostock/static/src/frontoffice/img/logoSumex.png" class="photostock-front-header-logo-img"/>
+                    <br/>
+                    <span style="clear:both;color:white">PHOTOSTOCK</span>
+                
+                </div>
+
+                <!-- Carrito -->
+                <div class='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
+
+                    <t t-if="carrito">
+                        <!-- <a t-attf-href="/photostock/del/{{page}}/{{product_item.id}}"> --> -->
+                        <img
+                            style="background-color:darkred !important; height:55px !important;"
+                            class="btn btn-primary"
+                            title="Añadir/Eliminar este producto del carrito"
+                            src="/odoo14_sumex_apps_photostock/static/src/frontoffice/img/photostock-cart-white.png"
+                        />
+                        <div class="photostock-front-header-carrito-counter-div">
+                            <t t-esc="len(carrito)"/>
+                        </div>
+                        <!-- </a> -->
+                        <div id="photostock-front-header-carrito-content-div" style="display:none">asdfasdf</div>
+                    </t>
+                </div>
+
+            </div>
+        
+        </template>
+
+</odoo>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <record id="module_category_photostock" model="ir.module.category">
+        <field name="name">Photostock</field>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="module_category_photostock_photostock" model="ir.module.category">
+        <field name="name">Photostock</field>
+        <field name="parent_id" ref="module_category_photostock"/>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="group_photostock_user_front" model="res.groups">
+        <field name="name">User: Solo pueden acceder al frontoffice de Photostock</field>
+        <field name="category_id" ref="module_category_photostock_photostock"/>
+    </record>
+
+    <record id="module_photostock_admin" model="res.groups">
+        <field name="name">Admin: Gestión completa en Backoffice de Photostock</field>
+        <field name="category_id" ref="module_category_photostock_photostock"/>
+        <field name="implied_ids" eval="[(4, ref('group_photostock_user_front'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>        
+    </record>
+
+</odoo>
