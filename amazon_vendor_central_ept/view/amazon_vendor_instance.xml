@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree view of the amazon vendor instance-->
+        <record id="view_tree_amazon_vendor_instance" model="ir.ui.view">
+            <field name="name">Amazon Vendor</field>
+            <field name="model">amazon.vendor.instance</field>
+            <field name="arch" type="xml">
+                <tree string="Amazon Vendor" class="oe_form_configuration" create="false">
+                    <field name="name"/>
+                    <field name="supplier_id"/>
+                    <field name="country_id"/>
+                    <field name="company_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view of the Amazon vendor instance-->
+        <record id="view_form_amazon_vendor_instance" model="ir.ui.view">
+            <field name="name">Amazon Vendor</field>
+            <field name="model">amazon.vendor.instance</field>
+            <field name="arch" type="xml">
+                <form string="Amazon Vendor" class="oe_form_configuration" create="false">
+                    <sheet>
+                        <div class="oe_button_box" name="buttons">
+                            <field name="is_production_environment" invisible="1"/>
+                            <button class="oe_stat_button" name="list_of_vendor_cron"
+                                    type="object" icon="fa-tasks" attrs="{'invisible': [('cron_count', '=',0)]}"
+                                    style="width:14.5%" groups="base.group_system">
+                                <div class="o_field_widget o_stat_info">
+                                    <field string="Cron Scheduler" name="cron_count" widget="statinfo"/>
+                                </div>
+                            </button>
+                            <button type="object"
+                                    name="vendor_cron_configuration_action"
+                                    class="oe_stat_button"
+                                    icon="fa-clock-o" style="width:16% !important" groups="base.group_system">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">Schedulers</span>
+                                </div>
+                            </button>
+
+                            <button attrs="{'invisible': [('is_production_environment', '=', False)]}"
+                                    class="oe_stat_button" name="toggle_prod_environment_value"
+                                    type="object" icon="fa-play">
+                                <div class="o_stat_info o_form_field">
+                                    <span class="text-success">Production</span>
+                                    <span class="o_stat_text">Environment</span>
+                                </div>
+                            </button>
+                            <button attrs="{'invisible': [('is_production_environment', '=', True)]}"
+                                    class="oe_stat_button" name="toggle_prod_environment_value"
+                                    type="object" icon="fa-stop">
+                                <div class="o_stat_info o_form_field">
+                                    <span class="o_warning_text">Test</span>
+                                    <span class="o_stat_text">Environment</span>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="oe_title" style="width: 390px;">
+                            <label class="oe_edit_only" for="name" string="Vendor Name"/>
+                            <h1>
+                                <field name="name" class="oe_inline" required="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="Amazon Configurations">
+                                <field name="supplier_id" readonly="1"/>
+                                <field name="avc_vendor_code" readonly="1"/>
+                                <field name="avc_amazon_qualifier" readonly="1"/>
+                                <field name="avc_file_format" readonly="1"/>
+                                <!--                                <field name="account_type" readonly="1"/>-->
+                            </group>
+                            <group string="General Configurations">
+                                <field name="so_customer_id" readonly="1"/>
+                                <field name="pricelist_id" readonly="1"/>
+                                <field name="company_id" readonly="1"/>
+                                <field name="country_id" readonly="1"/>
+                                <field name="team_id" readonly="1"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="FTP Configurations">
+                                <field name="sender_ftp_connection_id"
+                                       attrs="{'invisible': [('is_production_environment', '=', True)]}" readonly="1"/>
+                                <field name="receiver_ftp_connection_id"
+                                       attrs="{'invisible': [('is_production_environment', '=', True)]}" readonly="1"/>
+                                <field name="production_sender_ftp_connection_id"
+                                       attrs="{'invisible': [('is_production_environment', '=', False)]}" readonly="1"/>
+                                <field name="production_receiver_ftp_connection_id"
+                                       attrs="{'invisible': [('is_production_environment', '=', False)]}" readonly="1"/>
+                            </group>
+                            <group string="Package Configurations"
+                                   groups="amazon_vendor_central_ept.group_avc_packages">
+                                <field name="is_use_packages" widget="boolean_toggle"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- -search view of sale requisition -->
+        <record id="amazon_vendor_instance_search_view" model="ir.ui.view">
+            <field name="name">amazon.vendor.instance.search.view</field>
+            <field name="model">amazon.vendor.instance</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <search string="Search Instance">
+                    <field name="name" string="Vendor Name"/>
+                    <field name="supplier_id" string="Amazon Supplier Id"/>
+                    <field name="avc_vendor_code" string="Amazon Vendor Code"/>
+                    <field name="amazon_gln_number" string="Amazon GLN Number"/>
+                    <field name="so_customer_id" string="Sale Order Partner"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <!--                        <filter string="Account Type" name="Account Type" domain="[]"-->
+                        <!--                                context="{'group_by':'account_type'}"/>-->
+                        <filter string="Warehouse" name="Warehouse" domain="[]"
+                                context="{'group_by':'warehouse_id'}"/>
+                    </group>
+                    <separator/>
+                </search>
+            </field>
+        </record>
+
+        <!--Action view for amazon vendor instance-->
+        <record id="action_amazon_vendor_instance_tree_view" model="ir.actions.act_window">
+            <field name="name">Amazon Vendor</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">amazon.vendor.instance</field>
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="search_view_id" ref="amazon_vendor_central_ept.amazon_vendor_instance_search_view"/>
+        </record>
+    </data>
+</odoo>

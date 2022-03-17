@@ -1,0 +1,40 @@
+{
+    # App information
+    'name': 'Amazon Vendor Central',
+    'version': '14.0.0.1',
+    'category': 'Sale',
+    'license': 'OPL-1',
+    # Author
+    'author': 'Emipro Technologies Pvt. Ltd.',
+    'website': 'http://www.emiprotechnologies.com',
+    'maintainer': 'Emipro Technologies Pvt. Ltd.',
+    # Dependencies
+    'depends': ['common_connector_library', 'ftp_connector_ept'],
+    'data': [
+        'security/res_groups.xml',
+        'security/ir.model.access.csv',
+        'data/ir_sequence_data.xml',
+        'data/ir_cron.xml',
+        'wizard_view/vendor_cron_configuration.xml',
+        'data/import_product_attachment.xml',
+        'view/actions.xml',
+        'view/amazon_vendor_instance.xml',
+        'view/ftp_server_view.xml',
+        'wizard_view/amazon_vendor_import_export_ept.xml',
+        'view/menu.xml',
+        'wizard_view/res_config.xml',
+        'view/amazon_sale_requisition_ept.xml',
+        'view/common_log_book_ept.xml',
+        'view/res_partner.xml',
+        'view/amazon_vendor_central_product.xml',
+        'view/sale_order.xml',
+        'view/stock_picking.xml',
+        'view/account_move.xml',
+        'wizard_view/packages_confirmation.xml'
+    ],
+    'installable': True,
+    'auto_install': False,
+    'application': True,
+    'price': 0.00,
+    'currency': 'EUR',
+}

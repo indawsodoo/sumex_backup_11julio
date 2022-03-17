@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="amazon_vendor_central_product_tree_view" model="ir.ui.view">
+            <field name="name">amazon.vendor.central.product.ept.tree.view</field>
+            <field name="model">amazon.vendor.central.product.ept</field>
+            <field name="arch" type="xml">
+                <tree create="false">
+                    <field name="product_id"/>
+                    <field name="product_type"/>
+                    <field name="amazon_sku"/>
+                    <field name="amazon_vendor_instance_id"/>
+                    <field name="barcode"/>
+                </tree>
+            </field>
+        </record>
+        <!-- Form view of the Amazon product-->
+        <record id="amazon_vendor_central_product_form_view" model="ir.ui.view">
+            <field name="name">amazon.vendor.central.product.ept.form.view</field>
+            <field name="model">amazon.vendor.central.product.ept</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="product_id" readonly="1"/>
+                                <field name="amazon_sku" readonly="1"/>
+                                <field name="amazon_vendor_instance_id" readonly="1" required="1"/>
+                            </group>
+                            <group>
+                                <field name="product_type" required="1"/>
+                                <field name="barcode" readonly="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- -search view of amazon product-->
+        <record id="amazon_vendor_central_product_search_view" model="ir.ui.view">
+            <field name="name">amazon.vendor.central.product.ept.search.view</field>
+            <field name="model">amazon.vendor.central.product.ept</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <search string="Search Amazon Product">
+                    <field name="product_id"/>
+                    <field name="amazon_sku"/>
+                    <field name="amazon_vendor_instance_id"/>
+                    <field name="barcode"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Instances" name="instance" domain="[]"
+                                context="{'group_by':'amazon_vendor_instance_id'}"/>
+                        <filter string="Product Type" name="product_type" domain="[]"
+                                context="{'group_by':'product_type'}"/>
+                    </group>
+                    <separator/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action view of amazon product-->
+        <record id="amazon_vendor_central_product_ept_view_action" model="ir.actions.act_window">
+            <field name="name">Products</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">amazon.vendor.central.product.ept</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="amazon_vendor_central_product_search_view"/>
+        </record>
+
+        <!--        Added action to send inventory and cost report-->
+        <record id="send_inventory_and_cost_report" model="ir.actions.act_window">
+            <field name="name">Send Inventory And Cost Report</field>
+            <field name="res_model">amazon.vendor.import.export.ept</field>
+            <field name="binding_model_id" ref="model_amazon_vendor_central_product_ept"/>
+            <field name="binding_view_types">list</field>
+            <field name="context">{'is_calling_from_amazon_product_action_wizard': True,
+                                   'default_vendor_operations': 'export_inventory_and_stock_report'}</field>
+            <field name="target">new</field>
+        </record>
+
+        <!-- -Menu of amazon product-->
+        <menuitem id="menu_avc_product_template" name="Products"
+                  sequence="1" parent="menu_avc_products"
+                  action="amazon_vendor_central_product_ept_view_action"/>
+    </data>
+</odoo>

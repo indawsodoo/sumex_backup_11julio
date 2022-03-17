@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--Form view for the amazon vendor import export-->
+        <record id="amazon_vendor_import_export_ept_view" model="ir.ui.view">
+            <field name="name">amazon.vendor.import.export.ept.view</field>
+            <field name="model">amazon.vendor.import.export.ept</field>
+            <field name="arch" type="xml">
+                <form create="false">
+                    <sheet>
+                        <group string='Operations'
+                               invisible="context.get('is_calling_from_amazon_product_action_wizard', False)">
+                            <group>
+                                <field name="vendor_operations" string="Operations"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group attrs="{'invisible':[('vendor_operations','=',False)]}">
+                                <field name="instance_id" widget="selection"
+                                       attrs="{'required':[('vendor_operations','!=',False)]}"
+                                       options="{'no_create': True}"/>
+                            </group>
+                            <group attrs="{'invisible':[('vendor_operations','!=','import_products')]}">
+                                <button string="Download Sample Attachment"
+                                        name="download_sample_attachment" type="object"
+                                        class="btn-default"/>
+                            </group>
+                            <group attrs="{'invisible':[('vendor_operations','!=','import_products')]}">
+                                <field name="file" filename="file_name"
+                                       attrs="{'invisible':[('vendor_operations','!=','import_products')]}"/>
+                                <field name="file_name" invisible="1"/>
+                                <field name="delimiter"
+                                       attrs="{'invisible':[('vendor_operations','!=','import_products')]}"/>
+                            </group>
+                        </group>
+                        <footer>
+                            <button class="oe_highlight" name="execute" type="object"
+                                    string="Execute"/>
+                            <button string="Cancel" special="cancel" class="oe_highlight"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

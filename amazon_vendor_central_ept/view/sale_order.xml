@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_avc_sale_order_info" model="ir.ui.view">
+            <field name="name">AVC Sale Order Info</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Amazon Vendor Central"
+                          attrs="{'invisible':[('is_amazon_edi_order','!=',True)]}">
+                        <group>
+                            <group string="General Information">
+                                <field name="is_amazon_edi_order"/>
+                                <field name="amazon_order_ack_uploaded" readonly="1"
+                                       string="Is Acknowledgment Sent?"/>
+                                <field name="amazon_vendor_instance_id" readonly="1"/>
+                                <field name="amazon_vendor_order_id" readonly="1"/>
+                            </group>
+                        </group>
+
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+        <!-- inherit the search view of sale order -->
+        <record id="avc_sale_order_search_view_inherit" model="ir.ui.view">
+            <field name="name">avc.sale.order.search.view</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.sale_order_view_search_inherit_sale"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//filter[@name='order_date']" position="after">
+                        <separator/>
+                        <filter string="Amazon Vendor Instances" name="Amazon Vendor Instances"
+                                domain="[]" context="{'group_by':'amazon_vendor_instance_id'}"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+    </data>
+</odoo>

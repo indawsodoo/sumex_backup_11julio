@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="packages_confirmation_form_view" model="ir.ui.view">
+        <field name="name">packages.confirmation.form</field>
+        <field name="model">packages.confirmation</field>
+        <field name="arch" type="xml">
+            <form string="Packages">
+                <sheet>
+                    <div>
+                        <h1>
+                            Are you sure, you want to send the Advance Shipment Notice without the package details?
+                        </h1>
+                    </div>
+                    <footer>
+                        <button class="oe_highlight" name="action_yes" type="object"
+                                string="Yes"/>
+                        <button class="oe_highlight" string="No" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="packages_confirmation_act_window" model="ir.actions.act_window">
+        <field name="name">Confirmation?</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">packages.confirmation</field>
+        <field name="view_mode">form</field>
+    </record>
+
+</odoo>

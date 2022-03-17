@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--Form view for the server detail in res config -->
+        <record id="view_form_res_config_settings" model="ir.ui.view">
+            <field name="name">Configure FTP Server</field>
+            <field name="model">avc.res.config</field>
+            <field name="arch" type="xml">
+                <form string="Configure Server" class="oe_form_configuration">
+                    <group>
+                        <group string="Amazon Configurations">
+                            <field name="name" required="1"/>
+                            <field name="supplier" required="1"/>
+                            <field name="avc_vendor_code"/>
+                            <field name="amazon_vendor_qualifier" required="1"/>
+                            <!--                            <field name="account_type" required="1"/>-->
+                        </group>
+                        <group string="General Configurations">
+                            <field name='country_id' required="1"/>
+                            <field name='company_id' required="1" string="Company"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="FTP Configurations">
+                            <field name="is_production_environment" widget="boolean_toggle"/>
+                            <field name="sender_ftp_connection_id"
+                                   attrs="{'invisible': [('is_production_environment', '=', True)]}"/>
+                            <field name="receiver_ftp_connection_id"
+                                   attrs="{'invisible': [('is_production_environment', '=', True)]}"/>
+                            <field name="production_sender_ftp_connection_id"
+                                   attrs="{'invisible': [('is_production_environment', '=', False)]}"/>
+                            <field name="production_receiver_ftp_connection_id"
+                                   attrs="{'invisible': [('is_production_environment', '=', False)]}"/>
+                        </group>
+                    </group>
+                    <group class="o_onboard_padding">
+                        <p colspan="2" class="alert alert-warning" role="alert">
+                            <div style="color:#ff0000; font-size:15px;">
+                                <b>Important Note:</b>
+                            </div>
+                            <div class="d-inline-block w-100">
+                                <div class="row">
+                                    <div class="col-11 p-0">
+                                        <ul>
+                                            <li>
+                                                After creating the instance, please make sure you
+                                                complete all
+                                                the other
+                                                necessary configurations such as Seller Id,
+                                                Vendor Pricelist, Sale Order Customer etc.
+                                                from the Amazon Vendor setting screen to
+                                                avoiding the unnecessary Errors.
+                                            </li>
+                                            <li>
+                                                Vendor Central =&gt; Configurations =&gt; Settings
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </p>
+                    </group>
+                    <footer>
+                        <button string="Create" type="object" name="create_amazon_vendor_instance"
+                                class="oe_highlight"/>
+                        <button string="Cancel" class="oe_highlight" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!--Action For the amazon vendor-->
+        <record id="res_config_action_amazon_vendor_central" model="ir.actions.act_window">
+            <field name="name">Amazon Vendor</field>
+            <field name="res_model">avc.res.config</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_form_res_config_settings"/>
+        </record>
+
+        <record id="view_avc_config_settings" model="ir.ui.view">
+            <field name="name">res.config.settings.amazon.vendor.instance.view.form</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('settings')]" position="inside">
+                    <div class="app_settings_block" data-string="Amazon Vendor"
+                         string="Amazon Vendor" data-key="amazon_vendor_central_ept"
+                         groups="amazon_vendor_central_ept.group_amazon_vendor_central_manager">
+                        <h2>Amazon Vendor Central - Setup &amp; Configuration</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <label for="avc_vendor_instance_id" string="Select Vendor"/>
+                                <field name="avc_vendor_instance_id" options="{'no_create_edit': True}"/>
+                                <button name="%(res_config_action_amazon_vendor_central)d"
+                                        icon="fa-arrow-right" type="action"
+                                        string="Create More Instance" class="oe_link"/>
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <group>
+                                    <field name="avc_connection_type" attrs="{'invisible': [('avc_vendor_instance_id','=',False)],
+                             											  'readonly': [('avc_vendor_instance_id','!=',False)]}"/>
+                                </group>
+                            </div>
+                        </div>
+                        <div attrs="{'invisible': [('avc_vendor_instance_id', '=', False)]}">
+                            <h2 style="background-color:rgb(224, 224, 224);">Packages Configuration</h2>
+                            <div class="row mt16 o_settings_container">
+                                <div class="col-12 col-lg-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="group_avc_packages" string="Packages"/>
+                                        <field name="group_avc_packages" widget="boolean_toggle"/>
+                                        <div class="text-muted">
+                                            Send the Package details with Advance Shipment Notice
+                                            to the Amazon Vendor Central
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h2 style="background-color:rgb(224, 224, 224);">General Configuration</h2>
+                            <div class="row mt16 o_settings_container">
+                                <div class="col-12 col-lg-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="avc_supplier"/>
+                                        <field name="avc_supplier"/>
+                                        <div class="text-muted">
+                                            Amazon Supplier Id available in Global Settings ->
+                                            Message Format -> Message Format Identifiers ->
+                                            Your identifiers of Vendor Central Portal
+                                        </div>
+                                        <label for="avc_file_format" string="AVC File Format"/>
+                                        <field name="avc_file_format" class="oe_inline"
+                                               attrs="{'required' : [('avc_vendor_instance_id','!=',False)]}"/>
+                                        <div class="text-muted">
+                                            Format for synchronisation between you (as Amazon
+                                            Vendor) and Amazon
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="avc_amazon_qualifier" string="Amazon Qualifier"/>
+                                        <field name="avc_amazon_qualifier" class="oe_inline"
+                                               options="{'no_create_edit': True, 'no_open': True}"
+                                               attrs="{'required' : [('avc_vendor_instance_id','!=',False)]}"/>
+                                        <div class="text-muted">
+                                            Amazon Qualifier available in Global Settings -> Message Format ->
+                                            Message Format Identifiers ->
+                                            Your identifiers of Vendor Central Portal
+                                        </div>
+                                        <label for="avc_vendor_code" string="Vendor Code"/>
+                                        <field name="avc_vendor_code" class="oe_inline"/>
+                                        <div class="text-muted">
+                                            Find Vendor Central code,
+                                            Goto -> Vendor Central Portal -> Integration -> EDI Integration ->
+                                            Home -> Click View EDI set up -> Current Profile
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h2 style="background-color:rgb(224, 224, 224);">Purchase Order Configuration</h2>
+                            <div class="row mt16 o_settings_container">
+                                <div class="col-12 col-lg-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="avc_price_list_id" string="Vendor Pricelist"/>
+                                        <field name="avc_price_list_id" class="oe_inline"
+                                               options="{'no_create_edit': True}"
+                                               attrs="{'required' : [('avc_vendor_instance_id','!=',False)]}"/>
+                                        <div class="text-muted">
+                                            List of prices of different products for customers and
+                                            avc_suppliers
+                                        </div>
+                                        <label for="avc_so_customer_id" string="Sale Order Customer"/>
+                                        <field name="avc_so_customer_id" class="oe_inline"
+                                               attrs="{'required': [('avc_vendor_instance_id','!=',False)]}"/>
+                                        <div class="text-muted">
+                                            Process sale order based on selected customer
+                                        </div>
+                                        <label for="avc_picking_policy" string="Shipping Policy"/>
+                                        <field name="avc_picking_policy" class="oe_inline"
+                                               attrs="{'required' : [('avc_vendor_instance_id','!=',False)]}"/>
+                                        <div class="text-muted">
+                                            Shipping policy suits to delivery order to Amazon
+                                        </div>
+                                        <label for="avc_journal_id" string="Account Journal"/>
+                                        <field name="avc_journal_id" class="oe_inline"
+                                               attrs="{'required' : [('avc_vendor_instance_id','!=',False)]}"/>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-lg-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="avc_warehouse_id" string="Warehouse"/>
+                                        <field name="avc_warehouse_id" class="oe_inline"
+                                               options="{'no_open': True}"
+                                               attrs="{'required' : [('avc_vendor_instance_id','!=',False)]}"/>
+                                        <div class="text-muted">
+                                            Process sale order with selected warehouse
+                                        </div>
+
+                                        <label for="avc_edi_carrier_method" string="Amazon Carrier"/>
+                                        <field name="avc_edi_carrier_method" class="oe_inline"
+                                               attrs="{'required' : [('avc_vendor_instance_id','!=',False)]}"/>
+                                        <br/>
+                                        <label for="avc_team_id" string="Sales Team"/>
+                                        <field name="avc_team_id" class="oe_inline"
+                                               options="{'no_create_edit': True, 'no_open': True}"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <h2 style="background-color:rgb(224, 224, 224);">Advance Shipment Notice Configuration</h2>
+                            <div class="row mt16 o_settings_container">
+                                <div class="col-12 col-lg-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="avc_amazon_gln_number" string="Amazon GLN Number"/>
+                                        <field name="avc_amazon_gln_number" class="oe_inline"/>
+                                        <div class="text-muted">
+                                            GLN identifies physical locations such as (Stores,
+                                            Manufacturing Centers, Warehouses, etc.)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h2 style="background-color:rgb(224, 224, 224);">Inventory &amp; Cost Configuration</h2>
+                            <div class="row mt16 o_settings_container">
+                                <div class="col-12 col-lg-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="avc_warehouse_code" string="Warehouse Code"/>
+                                        <field name="avc_warehouse_code" class="oe_inline"/>
+                                        <div class="text-muted">
+                                            - Warehouse Code which is configure in the vendor central portal<br/>
+                                            - Warehouse Code available in Messages Dashboard -> Cost and inventory feed (COSTINV)
+                                            -> Settings -> Warehouse Code
+                                        </div>
+                                        <label for="avc_amazon_unb_id" string="Amazon UNB ID"/>
+                                        <field name="avc_amazon_unb_id" class="oe_inline"/>
+                                        <div class="text-muted">
+                                            Amazon Qualifier available in Global Settings -> Message Format ->
+                                            Message Format Identifiers -> Test UNB ID or Production UNB ID
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-lg-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="avc_product_stock_field_id" string="Stock Type"/>
+                                        <field name="avc_product_stock_field_id" class="oe_inline"
+                                               options="{'no_create_edit': True, 'no_open': True}"
+                                               attrs="{'required' : [('avc_vendor_instance_id','!=',False)]}"/>
+                                        <div class="text-muted">
+                                            Used while calculating Stock for products.
+                                        </div>
+                                        <label for="avc_warehouse_ids" string="Warehouses"/>
+                                        <field name="avc_warehouse_ids" widget="many2many_tags" class="oe_inline"/>
+                                        <div class="text-muted">
+                                            List of warehouses where stock will be sold to Amazon.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h2 style="background-color:rgb(224, 224, 224);"
+                                attrs="{'invisible': [('avc_connection_type','=', False)]}">SFTP Configuration
+                            </h2>
+                            <div class="row mt16 o_settings_container"
+                                 attrs="{'invisible': [('avc_connection_type','!=', 'test_connection')]}">
+                                <div class="col-12 col-lg-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="avc_sender_ftp_connection_id" string="Test Sender SFTP Server"/>
+                                        <field name="avc_sender_ftp_connection_id"
+                                               attrs="{'required': [('avc_connection_type','=', 'test_connection'), ('avc_vendor_instance_id','!=',False)]}"
+                                               options="{'no_create_edit': True, 'no_open': True}"/>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-lg-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="avc_receiver_ftp_connection_id" string="Test Receiver SFTP Server"/>
+                                        <field name="avc_receiver_ftp_connection_id"
+                                               attrs="{'required': [('avc_connection_type','=', 'test_connection'), ('avc_vendor_instance_id','!=',False)]}"
+                                               options="{'no_create_edit': True, 'no_open': True}"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt16 o_settings_container"
+                                 attrs="{'invisible': [('avc_connection_type','!=', 'production_connection')]}">
+                                <div class="col-12 col-lg-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="avc_production_sender_ftp_connection_id"
+                                               string="Production Sender SFTP Server"/>
+                                        <field name="avc_production_sender_ftp_connection_id"
+                                               attrs="{'required': [('avc_connection_type','=', 'production_connection'), ('avc_vendor_instance_id','!=',False)]}"
+                                               options="{'no_create_edit': True, 'no_open': True}"/>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-lg-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="avc_production_receiver_ftp_connection_id"
+                                               string="Production Receiver SFTP Server"/>
+                                        <field name="avc_production_receiver_ftp_connection_id"
+                                               attrs="{'required': [('avc_connection_type','=', 'production_connection'), ('avc_vendor_instance_id','!=',False)]}"
+                                               options="{'no_create_edit': True, 'no_open': True}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+        <!--Action view for the amazon vendor central-->
+        <record id="amazon_vendor_central_res_config_settings_action" model="ir.actions.act_window">
+            <field name="name">Settings</field>
+            <field name="res_model">res.config.settings</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_avc_config_settings"/>
+            <field name="context">{'module': 'amazon_vendor_central_ept'}</field>
+            <field name="target">inline</field>
+        </record>
+        <!--Menu view-->
+        <menuitem id="menu_configuration_setting" name="Settings"
+                  parent="menu_amazon_vendor_central_configuration" sequence="1"
+                  groups="amazon_vendor_central_ept.group_amazon_vendor_central_user"
+                  action="amazon_vendor_central_res_config_settings_action"/>
+    </data>
+</odoo>
