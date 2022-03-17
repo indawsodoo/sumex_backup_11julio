@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--This is a common view for cron configuration wizard -->
+        <record id="avc_cron_configuration_ept_form_view" model="ir.ui.view">
+            <field name="name">vendor.cron.configuration</field>
+            <field name="model">vendor.cron.configuration</field>
+            <field name="priority">11</field>
+            <field name="arch" type="xml">
+                <form string="Manual Queue Process">
+                    <field name="amazon_vendor_instance_id" invisible="1"/>
+                    <div name="vendor_central_cron">
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="amz_auto_import_po" widget="boolean_toggle"
+                                           help="If Ticked, System will import Purchase Orders from Amazon Vendor Central."/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="amz_auto_import_po"/>
+                                    <div class="text-muted">
+                                    </div>
+                                </div>
+                                <div>
+                                    <field name="amz_auto_import_po_interval_number"
+                                           attrs="{'required': [('amz_auto_import_po', '=', True),('amazon_vendor_instance_id','!=',False)],'invisible': [('amz_auto_import_po', '=', False)]}"
+                                           class="oe_inline"/>
+                                    <field name="amz_auto_import_po_process_interval_type"
+                                           attrs="{'required': [('amz_auto_import_po', '=', True),('amazon_vendor_instance_id','!=',False)],'invisible': [('amz_auto_import_po', '=', False)]}"
+                                           class="oe_inline"/>
+                                    <field name="amz_auto_import_po_next_execution"
+                                           attrs="{'required': [('amz_auto_import_po', '=', True),('amazon_vendor_instance_id','!=',False)],'invisible': [('amz_auto_import_po', '=', False)]}"
+                                           class="oe_inline"/>
+                                    <field name="amz_auto_import_po_user_id"
+                                           attrs="{'required': [('amz_auto_import_po', '=', True),('amazon_vendor_instance_id','!=',False)],'invisible': [('amz_auto_import_po', '=', False)]}"
+                                           class="oe_inline"/>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="amz_auto_inv_and_cost_export" widget="boolean_toggle"
+                                           help="If Ticked, System will Export Inventory and Cost Report to Amazon Vendor Central."/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="amz_auto_inv_and_cost_export"/>
+                                </div>
+                                <div>
+                                    <field name="amz_auto_inv_and_cost_export_interval_number"
+                                           attrs="{'required': [('amz_auto_inv_and_cost_export', '=', True),('amazon_vendor_instance_id','!=',False)],'invisible': [('amz_auto_inv_and_cost_export', '=', False)]}"
+                                           class="oe_inline"/>
+                                    <field name="amz_auto_inv_and_cost_export_interval_type"
+                                           attrs="{'required': [('amz_auto_inv_and_cost_export', '=', True),('amazon_vendor_instance_id','!=',False)],'invisible': [('amz_auto_inv_and_cost_export', '=', False)]}"
+                                           class="oe_inline"/>
+                                    <field name="amz_auto_inv_and_cost_export_next_execution"
+                                           attrs="{'required': [('amz_auto_inv_and_cost_export', '=', True),('amazon_vendor_instance_id','!=',False)],'invisible': [('amz_auto_inv_and_cost_export', '=', False)]}"
+                                           class="oe_inline"/>
+                                    <field name="amz_auto_inv_and_cost_export_user_id"
+                                           attrs="{'required': [('amz_auto_inv_and_cost_export', '=', True),('amazon_vendor_instance_id','!=',False)],'invisible': [('amz_auto_inv_and_cost_export', '=', False)]}"
+                                           class="oe_inline"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="amz_auto_asn_export" widget="boolean_toggle"
+                                           help="If Ticked, System will Export the Advance Shipment Notices to the Amazon Vendor Central."/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="amz_auto_asn_export"/>
+                                    <div class="text-muted">
+                                    </div>
+                                </div>
+                                <div>
+                                    <field name="amz_auto_asn_export_interval_number"
+                                           attrs="{'required': [('amz_auto_asn_export', '=', True),('amazon_vendor_instance_id','!=',False)],'invisible': [('amz_auto_asn_export', '=', False)]}"
+                                           class="oe_inline"/>
+                                    <field name="amz_auto_asn_export_interval_type"
+                                           attrs="{'required': [('amz_auto_asn_export', '=', True),('amazon_vendor_instance_id','!=',False)],'invisible': [('amz_auto_asn_export', '=', False)]}"
+                                           class="oe_inline"/>
+                                    <field name="amz_auto_asn_export_next_execution"
+                                           attrs="{'required': [('amz_auto_asn_export', '=', True),('amazon_vendor_instance_id','!=',False)],'invisible': [('amz_auto_asn_export', '=', False)]}"
+                                           class="oe_inline"/>
+                                    <field name="amz_auto_asn_export_user_id"
+                                           attrs="{'required': [('amz_auto_asn_export', '=', True),('amazon_vendor_instance_id','!=',False)],'invisible': [('amz_auto_asn_export', '=', False)]}"
+                                           class="oe_inline"/>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="amz_auto_invoices_export" widget="boolean_toggle"
+                                           help="If Ticked, System will Export Inventory and Cost Report to Amazon Vendor Central."/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="amz_auto_invoices_export"/>
+                                </div>
+                                <div>
+                                    <field name="amz_auto_invoices_export_interval_number"
+                                           attrs="{'required': [('amz_auto_invoices_export', '=', True),('amazon_vendor_instance_id','!=',False)],'invisible': [('amz_auto_invoices_export', '=', False)]}"
+                                           class="oe_inline"/>
+                                    <field name="amz_auto_invoices_export_interval_type"
+                                           attrs="{'required': [('amz_auto_invoices_export', '=', True),('amazon_vendor_instance_id','!=',False)],'invisible': [('amz_auto_invoices_export', '=', False)]}"
+                                           class="oe_inline"/>
+                                    <field name="amz_auto_invoices_export_next_execution"
+                                           attrs="{'required': [('amz_auto_invoices_export', '=', True),('amazon_vendor_instance_id','!=',False)],'invisible': [('amz_auto_invoices_export', '=', False)]}"
+                                           class="oe_inline"/>
+                                    <field name="amz_auto_invoices_export_user_id"
+                                           attrs="{'required': [('amz_auto_invoices_export', '=', True),('amazon_vendor_instance_id','!=',False)],'invisible': [('amz_auto_invoices_export', '=', False)]}"
+                                           class="oe_inline"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <footer>
+                        <button string="Save Configurations"
+                                class="oe_highlight" type="object" name="save_vendor_cron_configurations"/>
+                        <button string="Cancel" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_wizard_vendor_cron_configuration_ept" model="ir.actions.act_window">
+            <field name="name">Scheduled Configuration</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">vendor.cron.configuration</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

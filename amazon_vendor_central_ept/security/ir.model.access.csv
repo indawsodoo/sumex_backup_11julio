@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_amazon_vendor_central_manager,amazon.vendor.instance.manager,model_amazon_vendor_instance,,1,1,1,1
+access_amazon_vendor_instance_user,amazon.vendor.instance.user,model_amazon_vendor_instance,,1,0,0,0
+access_amazon_vendor_central_product_ept_manager,amazon.vendor.central.product.ept.manager,model_amazon_vendor_central_product_ept,,1,1,1,1
+access_amazon_vendor_central_product_ept_user,amazon.vendor.central.product.ept.user,model_amazon_vendor_central_product_ept,,1,0,0,0
+access_amazon_sale_requisition_ept_manager,amazon.sale.requisition.ept.manager,model_amazon_sale_requisition_ept,,1,1,1,1
+access_amazon_sale_requisition_ept_user,amazon.sale.requisition.ept.user,model_amazon_sale_requisition_ept,,1,0,0,0
+access_amazon_sale_requisition_line_ept_manager,amazon.sale.requisition.line.ept.manager,model_amazon_sale_requisition_line_ept,,1,1,1,0
+access_amazon_sale_requisition_line_ept_user,amazon.sale.requisition.line.ept.user,model_amazon_sale_requisition_line_ept,,1,0,0,0
+access_avc_res_config,avc.res.config.all,model_avc_res_config,,1,1,1,1
+access_vendor_cron_configuration,vendor.cron.onfiguration.all,model_vendor_cron_configuration,,1,1,1,1
+access_amazon_vendor_import_export_ept,amazon.vendor.import.export.ept.all,model_amazon_vendor_import_export_ept,,1,1,1,1
+access_packages_confirmation,packages.confirmation.all,model_packages_confirmation,,1,1,1,1

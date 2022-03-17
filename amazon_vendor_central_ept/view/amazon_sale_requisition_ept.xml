@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--Tree view for the sale requisition-->
+        <record id="amazon_sale_requisition_ept_tree_view" model="ir.ui.view">
+            <field name="name">amazon.sale.requisition.ept.tree.view</field>
+            <field name="model">amazon.sale.requisition.ept</field>
+            <field name="arch" type="xml">
+                <tree create="false">
+                    <field name="name"/>
+                    <field name="shipping_partner_id"/>
+                    <field name="partner_id"/>
+                    <field name="amazon_edi_order_id"/>
+                    <field name="amazon_vendor_instance_id"/>
+                    <field name="state" decoration-success="state == 'done'"
+                           decoration-info="state in ['draft', 'processed']"
+                           decoration-primary="state in ['ack_send', 'asn_send']"
+                           decoration-muted="state == 'cancel'" widget="badge"/>
+                    <field name="order_date"/>
+                </tree>
+            </field>
+        </record>
+
+        <!--Form View for the sale requisition-->
+        <record id="amazon_sale_requisition_ept_form_view" model="ir.ui.view">
+            <field name="name">amazon.sale.requisition.ept.form.view</field>
+            <field name="model">amazon.sale.requisition.ept</field>
+            <field name="arch" type="xml">
+                <form create="false">
+                    <header>
+                        <button name="create_sale_order" string="Create Sale Order" type="object"
+                                attrs="{'invisible': ['|', ('state', 'not in', ['draft']), ('is_product_availability_ia_or_ib', '=', False)]}"/>
+                        <button name="export_po_acknowledgment"
+                                string="Send PO Acknowledgment"
+                                type="object" class="btn-primary"
+                                context="{'is_call_from_requisition':True}"
+                                attrs="{'invisible': ['|', ('state', 'not in', ['draft']), ('is_product_availability_ia_or_ib', '!=', False)]}"
+                        />
+                        <button name="reprocess_requisition_lines" string="Reprocess"
+                                type="object" states="draft"/>
+                        <button name="send_advance_shipment_notice"
+                                string="Send Advance Shipment Notice"
+                                type="object" class="btn-primary"
+                                states="ack_send"
+                        />
+                        <button name="export_invoice_to_amazon" class="btn-primary"
+                                string="Send Invoice To Vendor Central"
+                                type="object"
+                                attrs="{'invisible': ['|', ('is_invoice_exists', '=', False), ('state', 'in', ['done', 'cancel'])]}"
+                        />
+                        <button name="vendor_requisition_reset_to_draft_ept" class="btn-primary"
+                                string="Reset To Draft" type="object"
+                                attrs="{'invisible': [('state', 'not in', ['cancel'])]}"
+                        />
+                        <field name="state" widget="statusbar" clickable="True"
+                               statusbar_visible="draft,processed,ack_send,asn_send"/>
+
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button type="object"
+                                    name="action_view_vendor_order"
+                                    class="oe_stat_button"
+                                    icon="fa-first-order"
+                                    attrs="{'invisible': [('order_count', '=', 0)]}"
+                                    groups="base.group_user">
+                                <field name="order_count" widget="statinfo" string="Order"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                                <field name="sale_order_id" invisible="1"/>
+                                <field name="is_invoice_exists" invisible="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="partner_id" string="Customer"
+                                       attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+                                <field name="shipping_partner_id" string="Shipping Address"
+                                       attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+                                <field name="invoice_partner_id" string="Invoice Address"
+                                       attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+                            </group>
+                            <group>
+                                <field name="order_date" string="Order Date"
+                                       attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+                                <field name="amazon_vendor_instance_id" string="Vendor" required="1"
+                                       widget="selection" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Amazon Order lines">
+                                <button name="update_product_availability" string="Update Product Availability"
+                                        type="object" class="oe_link oe_right" states="draft"/>
+                                <field name="amazon_sale_requisition_line_ids" mode="tree">
+                                    <form string="Requisition Order Lines">
+                                        <group>
+                                            <group string="Product Description">
+                                                <field name="product_id" readonly="1"/>
+                                                <field name="order_qty" readonly="1" string="Quantity"/>
+                                                <field name="acknowledge_qty" readonly="1" string="Ack Quantity"/>
+                                                <field name="backorder_qty" readonly="1"/>
+                                                <field name="is_backorder" readonly="1"/>
+                                                <field name="unit_price" readonly="1"/>
+                                                <field name="item_type" readonly="1"/>
+                                            </group>
+                                            <group string="Order Date">
+                                                <field name="product_availability" readonly="1"/>
+                                                <field name="delivery_date" readonly="1"/>
+                                                <field name="max_delivery_date" readonly="1"/>
+                                            </group>
+                                        </group>
+                                        <group>
+                                            <group string="Amazon Codes">
+                                                <field name="amazon_edi_line_code" string="Item Code"/>
+                                                <field name="amazon_edi_line_code_type"/>
+                                                <field name="price_qualifier"/>
+                                            </group>
+                                        </group>
+                                    </form>
+
+                                    <tree editable="top" create="false">
+                                        <field name="product_id"
+                                               attrs="{'readonly':[('parent.state', '!=', 'draft')]}"/>
+                                        <field name="qty_available"/>
+<!--                                        <button type="object"-->
+<!--                                                name="action_avc_product_forecast_report"-->
+<!--                                                attrs="{'invisible':[('parent.state', '!=', 'draft')]}"-->
+<!--                                                context="{'default_product_id': product_id}"-->
+<!--                                                class="oe_stat_button" icon="fa-cubes"/>-->
+                                        <field name="order_qty" readonly="True" string="Quantity"
+                                               sum="Total Order Quantity"/>
+                                        <field name="acknowledge_qty" readonly="1" string="Ack Quantity"
+                                               sum="Total Acknowledgment Quantity"/>
+                                        <field name="backorder_qty"
+                                               attrs="{'readonly':[('parent.state', '!=', 'draft')]}"
+                                               sum="Total Backorder Quantity"/>
+                                        <field name="amazon_edi_line_code" string="Item Code"
+                                               attrs="{'readonly':[('parent.state', '!=', 'draft')]}"/>
+                                        <field name="requisition_currency_id" invisible="1"/>
+                                        <field name="unit_price"/>
+                                        <field name="product_availability" required="1"
+                                               attrs="{'readonly':[('parent.state', '!=', 'draft')]}"/>
+                                    </tree>
+                                </field>
+                            </page>
+
+                            <page string="Vendor Central Info"
+                                  attrs="{'invisible': [('amazon_vendor_instance_id', '=', False)]}">
+                                <group cols="4" colspan="4">
+                                    <group string="Order Info">
+                                        <field name="avc_file_format" invisible="1"/>
+                                        <field name="syntax_identifier" invisible="1"/>
+                                        <field name="association_code" invisible="1"/>
+                                        <field name="message_function_code" invisible="1"/>
+                                        <field name="warehouse_code" readonly="1"/>
+                                        <field name="avc_vendor_code" readonly="1"/>
+                                        <field name="amazon_edi_order_id" string="Order Reference"/>
+                                        <field name="is_acknowledgement_sent" invisible="1"/>
+                                        <field name="is_product_availability_ia_or_ib" invisible="1"/>
+                                    </group>
+                                    <group string="Message Info">
+                                        <field name="sender_id" required="1"/>
+                                        <field name="recipient_id" required="1"/>
+                                        <field name="buyer_id"/>
+                                        <field name="buyer_address"/>
+                                    </group>
+                                    <group string="Delivery Info">
+                                        <field name="delivery_party_id"/>
+                                        <field name="country_id" readonly="1"/>
+                                        <field name="country_code" invisible="1"/>
+                                        <field name="delivery_date"/>
+                                        <field name="max_delivery_date"/>
+                                    </group>
+                                    <group string="Invoice Info">
+                                        <field name="invoice_party_id"/>
+                                        <field name="currency_id" readonly="1"/>
+                                        <field name="currency_code" invisible="1"/>
+                                        <field name="vat_number"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"
+                               groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- -search view of sale requisition -->
+        <record id="sale_requisition_view_search_view" model="ir.ui.view">
+            <field name="name">amazon.sale.requisition.search.view</field>
+            <field name="model">amazon.sale.requisition.ept</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <search string="Search Requisition">
+                    <field name="name" string="Amazon Requisition Order"/>
+                    <field name="amazon_edi_order_id" string="Amazon EDI Order Id"/>
+                    <field name="avc_vendor_code" string="Vendor Code"/>
+                    <field name="partner_id" string="Customers"/>
+                    <field name="order_date" string="Order Date"/>
+                    <filter name="state" domain="[('state','=','processed')]" string="Processed"/>
+                    <filter name="state" domain="[('state','=','done')]" string="Done"/>
+                    <filter name="state" domain="[('state','=','cancel')]" string="Cancel"/>
+                    <separator/>
+                    <filter string="Requisition" name="sales"
+                            domain="[('state', 'in', ('draft', 'processed'))]"/>
+                    <filter string="Acknowledged Requisition" name="ack"
+                            domain="[('state','=','ack_send')]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Order Date" name="Order Date" domain="[]"
+                                context="{'group_by':'order_date'}"/>
+                        <filter string="Amazon Vendor" name="Amazon Vendor" domain="[]"
+                                context="{'group_by':'amazon_vendor_instance_id'}"/>
+                        <filter string="State" name="State" domain="[]"
+                                context="{'group_by':'state'}"/>
+                    </group>
+                    <separator/>
+                </search>
+            </field>
+        </record>
+
+        <!--Action View for the Amazon sale Requition-->
+        <record id="amazon_sale_requisition_view_action" model="ir.actions.act_window">
+            <field name="name">Order Requisitions</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">amazon.sale.requisition.ept</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="sale_requisition_view_search_view"/>
+        </record>
+
+        <!--action view for the Sale Order-->
+        <record id="ept_sale_action_quotations" model="ir.actions.act_window">
+            <field name="name">Sales Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
+            <field name="domain">[('amazon_vendor_order_id', '!=', False)]</field>
+        </record>
+
+        <!-- Orders: Child Menu Orders -->
+        <menuitem id="menu_item_amazon_sales_requisition_order_ept" name="Order Requisitions"
+                  parent="menu_avc_sale_order" sequence="2"
+                  action="amazon_sale_requisition_view_action"/>
+        <menuitem id="ept_menu_sale_quotations"
+                  action="ept_sale_action_quotations"
+                  parent="menu_avc_sale_order"
+                  sequence="3"
+                  name="Orders"/>
+    </data>
+</odoo>

@@ -1,0 +1,11 @@
+<odoo>
+    <data>
+        <record id="ir_attachment_import_product_ept" model="ir.attachment">
+            <field name="name">import_product_sample.csv</field>
+            <field name="datas" type="base64"
+                   file="amazon_vendor_central_ept/data/import_product_sample.csv"/>
+            <field name="res_model">amazon.vendor.import.export.ept</field>
+            <field name="public">True</field>
+        </record>
+    </data>
+</odoo>

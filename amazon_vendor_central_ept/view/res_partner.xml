@@ -1,0 +1,56 @@
+<odoo>
+    <data>
+        <!--In partner View Add custom field/>-->
+        <record id="view_res_partner_amazon_edi_section" model="ir.ui.view">
+            <field name="name">res.partner.form.view.with_amazon_edi_detail</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='category_id']" position="after">
+                        <field name="is_avc_customer" invisible="1"/>
+                        <field name="avc_warehouse_code" class="oe_inline"
+                               attrs="{'invisible': [('is_avc_customer','=',False)]}"/>
+                        <field name="invoice_party_id" class="oe_inline"
+                               groups="amazon_vendor_central_ept.group_amazon_vendor_central_manager"
+                               attrs="{'invisible': [('is_avc_customer','=',False)]}"/>
+                        <field name="delivery_party_id" class="oe_inline"
+                               groups="amazon_vendor_central_ept.group_amazon_vendor_central_manager"
+                               attrs="{'invisible': [('is_avc_customer','=',False)]}"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <!--        Inherit Partner Search View-->
+        <record id="view_res_partner_avc_filter" model="ir.ui.view">
+            <field name="name">res.partner.avc.inherit.search</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='inactive']" position="after">
+                    <separator/>
+                    <filter string="AVC Warehouse Code" name="avc_warehouse_code"
+                            domain="[('avc_warehouse_code','!=', False)]"/>
+                    <separator/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="action_avc_menu_customer" model="ir.actions.act_window">
+            <field name="name">Customers</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="base.view_res_partner_filter"/>
+            <field name="domain">[('is_avc_customer', '=', True)]</field>
+            <field name="context">{'create': False}</field>
+        </record>
+
+        <menuitem id="avc_menu_customer"
+                  action="action_avc_menu_customer"
+                  parent="menu_avc_sale_order"
+                  sequence="6"
+                  name="Customers"/>
+    </data>
+</odoo>

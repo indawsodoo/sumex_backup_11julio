@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!--Action view for amazon vendor instance kanban view-->
+        <record id="action_amazon_vendor_instance_kanban" model="ir.actions.act_window">
+            <field name="name">Amazon Vendor Instance</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">amazon.vendor.instance</field>
+            <field name="view_mode">kanban</field>
+            <field name="help" type="html">
+                <div>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <p>
+                        <b>There is no any Amazon Vendor Central Instance Created yet</b>
+                    </p>
+                    <p>
+                        You can't create Amazon Vendor Central Instance directly from here. In order
+                        to
+                        create Instance for Amazon Vendor Central,
+                        You need to go to menu
+                    </p>
+                    <p>
+                        <b>Amazon Vendor Central >> Configuration >> Settings >> Create more Vendor
+                        </b>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <!--Action View for the amazon import export -->
+        <record id="amazon_vendor_import_export_ept_action" model="ir.actions.act_window">
+            <field name="name">Amazon Operations</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">amazon.vendor.import.export.ept</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="action_avc_common_log_lines_ept" model="ir.actions.act_window">
+            <field name="name">Common Log Lines</field>
+            <field name="res_model">common.log.lines.ept</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html"><b>Common Log Lines</b></field>
+            <field name="domain">[('log_book_id.module', '=', 'amz_vendor_central')]</field>
+        </record>
+
+        <record id="action_vendor_common_log_book_ept" model="ir.actions.act_window">
+            <field name="name">Common Log Book</field>
+            <field name="res_model">common.log.book.ept</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html"><b>Common Log Book</b></field>
+            <field name="domain">[('module', '=', 'amz_vendor_central')]</field>
+        </record>
+
+    </data>
+</odoo>
+	

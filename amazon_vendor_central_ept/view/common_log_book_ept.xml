@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Common Log Book Tree View -->
+        <record id="amazon_vendor_central_ept_common_log_book_ept_tree" model="ir.ui.view">
+            <field name="name">amazon_vendor_central_ept.common_log_book_ept_view_tree</field>
+            <field name="model">common.log.book.ept</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Common Log Book" create="false">
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="amazon_sale_requisition_id" widget="many2onebutton"/>
+                    <field name="module"/>
+                    <field name="create_date"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Common Log Book Form View -->
+        <record id="amazon_vendor_central_ept_common_log_book_ept_form" model="ir.ui.view">
+            <field name="name">amazon_vendor_central_ept.common_log_book_ept_view_form</field>
+            <field name="model">common.log.book.ept</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Common Log Book" create="false" edit="false">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="type"/>
+                                <field name="module"/>
+                                <field name="model_id"/>
+                            </group>
+                            <group>
+                                <field name="create_date"/>
+                                <field name="amazon_sale_requisition_id"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Common Logs">
+                                <field name="log_lines">
+                                    <tree create="false" editable="bottom">
+                                        <field name="product_id"/>
+                                        <field name="order_ref"/>
+                                        <field name="default_code"/>
+                                        <field name="message"/>
+                                        <field name="model_id"/>
+                                        <field name="res_id"/>
+                                    </tree>
+                                    <form>
+                                        <div class="oe_title">
+                                            <h1>
+                                                <field name="message"/>
+                                            </h1>
+                                        </div>
+                                        <group>
+                                            <group>
+                                                <field name="log_book_id"/>
+                                                <field name="res_id"/>
+                                                <field name="model_id"/>
+                                                <field name="write_date"/>
+                                            </group>
+                                            <group>
+                                                <field name="product_id"/>
+                                                <field name="order_ref"/>
+                                                <field name="default_code"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"
+                               groups="base.group_user"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="avc_common_log_book_ept_form_inherit" model="ir.actions.act_window">
+            <field name="name">avc.common.log.book.ept.form</field>
+            <field name="res_model">common.log.book.ept</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('module', '=', 'amz_vendor_central')]</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('amazon_vendor_central_ept_common_log_book_ept_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('amazon_vendor_central_ept_common_log_book_ept_form')})]"/>
+            <field name="help" type="html">
+                <b>Common Log Book</b>
+            </field>
+        </record>
+    </data>
+</odoo>

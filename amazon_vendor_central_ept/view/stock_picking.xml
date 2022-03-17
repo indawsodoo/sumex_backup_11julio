@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!--Inherite the view of stock picking-->
+        <record id="view_stock_picking_avc_carrier_info" model="ir.ui.view">
+            <field name="name">AVC Carrier Info</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Amazon Vendor Central"
+                          attrs="{'invisible':[('is_amazon_vendor_central_picking','!=',True)]}">
+                        <group>
+                            <group string="General Information">
+                                <field name="is_amazon_vendor_central_picking"/>
+                                <field name="shipment_notice_sent" readonly="1"/>
+                                <!--                            <field name="amazon_order_ack_uploaded"/>-->
+                                <field name="code"/>
+                            </group>
+                            <group string="Amazon Information">
+                                <field name="carrier_id"/>
+                                <field name="bol_number"/>
+                                <field name="sscc_code"/>
+                            </group>
+                        </group>
+
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+        <record id="avc_stock_picking_search_view_inherit" model="ir.ui.view">
+            <field name="name">AVC Delivery Orders Info</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//search/group/filter[@name='picking_type']" position="after">
+                        <separator/>
+                        <filter string="Amazon Vendor Instances" name="Amazon Vendor Instances"
+                                domain="[]" context="{'group_by':'amazon_vendor_instance_id'}"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <!--action of Stock Picking of amazon requisitions -->
+        <record id="action_avc_delivey_order" model="ir.actions.act_window">
+            <field name="name">Delivery Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'create': False}</field>
+            <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+            <field name="domain">[('is_amazon_vendor_central_picking', '!=', False)]</field>
+        </record>
+
+        <menuitem id="menu_avc_delivery_orders" name="Delivery Orders"
+                  parent="menu_avc_sale_order" sequence="4" action="action_avc_delivey_order"/>
+    </data>
+</odoo>
