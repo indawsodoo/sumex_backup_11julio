@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="wizard_product_template_sales_info_form_view" model="ir.ui.view">
+            <field name="name">product.template.sales.info.form</field>
+            <field name="model">product.template.sales.info</field>
+            <field name="arch" type="xml">
+                <form string="sales">
+                    <h2>Sales Made</h2>
+                    <group>
+                        <field name="line_ids" nolabel="1">
+                            <tree readonly="True" string="Sales">
+                                <field name="order_id"/>
+                                <field invisible="1" name="state"/>
+                                <field name="order_partner_id"/>
+                                <field name="date_product_sale_line" string="Date"/>
+                                <field name="product_uom"/>
+                                <field name="product_uom_qty"/>
+                                <field name="uom_per_price"/>
+                                <field name="price_unit"/>
+                                <field name="price_subtotal"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <footer>
+                        <button special="cancel" string="Close"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_launch_wizard_product_template_sales_info" model="ir.actions.act_window">
+            <field name="name">Check last sales</field>
+            <field name="res_model">product.template.sales.info</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_product_template_sales_info_form_view"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="product_template_kanban_view_indaws" model="ir.ui.view">
+        <field name="name">product.template.kanban.view.indaws</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_kanban_view"/>
+        <field name="arch" type="xml">
+            <div class="oe_kanban_global_click" position="inside">
+                <br/>
+                <button class="btn btn-primary mb-1 w-50 float-left"
+                        name="%(indaws_product_extra_info.action_launch_wizard_product_template_purchases_info)d"
+                        type="action">
+                    <span>Compra</span>
+                </button>
+                <button class="btn btn-primary mb-1 w-50"
+                        name="%(indaws_product_extra_info.action_launch_wizard_product_template_sales_info)d"
+                        type="action">
+                    <span>Venta</span>
+                </button>
+            </div>
+        </field>
+    </record>
+
+    <record id="product_productinherit_view_form_tag" model="ir.ui.view">
+        <field name="name">product.product.inherit.view.form.tag</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button class="btn btn-primary" style="text-align: center;"
+                        name="%(indaws_product_extra_info.action_launch_wizard_product_template_purchases_info)d"
+                        type="action">
+                    <span>Historial Compras</span>
+                </button>
+                <button class="btn btn-primary"  style="text-align: center;"
+                        name="%(indaws_product_extra_info.action_launch_wizard_product_template_sales_info)d"
+                        type="action">
+                    <span>Historial Ventas</span>
+                </button>
+            </div>
+        </field>
+    </record>
+
+    <record id="product_template_inherit_view_form_tag" model="ir.ui.view">
+        <field name="name">product.template.inherit.view.form.tag</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button class="btn btn-primary" style="text-align: center;"
+                        name="%(indaws_product_extra_info.action_launch_wizard_product_template_purchases_info)d"
+                        type="action">
+                    <span>Historial Compras</span>
+                </button>
+                <button class="btn btn-primary"  style="text-align: center;"
+                        name="%(indaws_product_extra_info.action_launch_wizard_product_template_sales_info)d"
+                        type="action">
+                    <span>Historial Ventas</span>
+                </button>
+            </div>
+        </field>
+    </record>
+</odoo>
