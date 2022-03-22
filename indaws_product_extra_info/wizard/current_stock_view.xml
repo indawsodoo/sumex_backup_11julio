@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="wizard_product_template_stock_info_form_view" model="ir.ui.view">
+            <field name="name">product.template.stock.info.form</field>
+            <field name="model">product.template.stock.info</field>
+            <field name="arch" type="xml">
+                <form string="Create Movements">
+                    <h2>Stock</h2>
+                    <group>
+                        <field name="quant_ids" nolabel="1">
+                            <tree readonly="True" string="Quants">
+                                <field name="location_id"/>
+                                <field name="available_quantity"/>
+                                <field name="lot_id"/>
+                                <field name="in_date"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <footer>
+                        <button special="cancel" string="Close"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_launch_wizard_product_template_stock_info" model="ir.actions.act_window">
+            <field name="name">Check stock</field>
+            <field name="res_model">product.template.stock.info</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_product_template_stock_info_form_view"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>
