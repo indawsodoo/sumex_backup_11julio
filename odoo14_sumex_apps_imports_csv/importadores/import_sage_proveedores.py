@@ -9,7 +9,7 @@ from odoo import models
 
 class sumex_apps_imports_csv_import_sage_proveedores(models.AbstractModel):
 
-	_description = "modulo importador"
+	_description = __name__
 
 	def hook_pre_process(self, company_id, file_csv_header, file_csv_content):
 

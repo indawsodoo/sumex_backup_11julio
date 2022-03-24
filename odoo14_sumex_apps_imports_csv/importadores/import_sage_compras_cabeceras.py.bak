@@ -9,7 +9,7 @@ from odoo import models
 
 class sumex_apps_imports_csv_import_sage_compras_cabeceras(models.AbstractModel):
 
-	_description = "modulo importador"
+	_description = __name__
 
 	_import_fields = [
 
@@ -237,7 +237,7 @@ class sumex_apps_imports_csv_import_sage_compras_cabeceras(models.AbstractModel)
 		country = self._get_country(file_csv_content_row['nacion'])
 		state = self._get_state(country, file_csv_content_row['colamunicipio'])
 		cp = self._get_cp(file_csv_content_row, 'codigopostal')
-		partner = self.env['sumex_apps_imports_csv_library'].sudo().get_or_create_partner(
+		partner = self.env['sumex_apps_imports_csv_library'].get_or_create_partner(
 			is_company = False,
 			company_id = company_id,
 			nombre = nombre_partner,
@@ -274,7 +274,7 @@ class sumex_apps_imports_csv_import_sage_compras_cabeceras(models.AbstractModel)
 		# forma de pago
 		payment_term_name = file_csv_content_row['formadepago']
 		if payment_term_name:
-			payment_term = self.env['sumex_apps_imports_csv_library'].sudo().get_or_create_payment_term(payment_term_name)
+			payment_term = self.env['sumex_apps_imports_csv_library'].get_or_create_payment_term(payment_term_name)
 			list_values['payment_term_id'] = payment_term.id
 			changes += 1
 
@@ -308,7 +308,7 @@ class sumex_apps_imports_csv_import_sage_compras_cabeceras(models.AbstractModel)
 		if not company_id:
 			company_id = self.env.user.company_id.id
 		try:
-			order = self.env['sale.order'].sudo().search([('_sage_field_numeropedido', '=', sage_numero_pedido), ('company_id', '=', company_id)], limit = 1)
+			order = self.env['sumex_apps_imports_csv_library'].get_model('sale.order').search([('_sage_field_numeropedido', '=', sage_numero_pedido), ('company_id', '=', company_id)], limit = 1)
 		except Exception as e:
 			exception_msg = self.env['sumex_apps_imports_csv_library'].rollback_and_get_exception_msg(str(e))
 			return {'error': exception_msg}
@@ -319,7 +319,7 @@ class sumex_apps_imports_csv_import_sage_compras_cabeceras(models.AbstractModel)
 		if not company_id:
 			company_id = self.env.user.company_id.id
 		try:
-			order = self.env['sale.order'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True).create({
+			order = self.env['sumex_apps_imports_csv_library'].get_model('sale.order').create({
 				'company_id': company_id,
 				'partner_id': partner_id,
 				# pricelist_id
@@ -332,20 +332,20 @@ class sumex_apps_imports_csv_import_sage_compras_cabeceras(models.AbstractModel)
 
 	def _get_country(self, country_name):
 
-		return self.env['sumex_apps_imports_csv_library'].sudo().get_country(country_name)
+		return self.env['sumex_apps_imports_csv_library'].get_country(country_name)
 
 	def _get_state(self, country, state_name):
 
-		return self.env['sumex_apps_imports_csv_library'].sudo().get_state(country, state_name)
+		return self.env['sumex_apps_imports_csv_library'].get_state(country, state_name)
 
 	def _get_cp(self, file_csv_content_row, fieldname):
 
-		return self.env['sumex_apps_imports_csv_import_sage_clientes'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True).get_cp(file_csv_content_row, fieldname)
+		return self.env['sumex_apps_imports_csv_import_sage_clientes'].get_cp(file_csv_content_row, fieldname)
 
 	def _get_ciudad(self, file_csv_content_row, fieldname):
 
-		return self.env['sumex_apps_imports_csv_import_sage_clientes'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True).get_ciudad(file_csv_content_row, fieldname)
+		return self.env['sumex_apps_imports_csv_import_sage_clientes'].get_ciudad(file_csv_content_row, fieldname)
 
 	def _get_cif(self, file_csv_content_row, fieldname):
 
-		return self.env['sumex_apps_imports_csv_import_sage_clientes'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True).get_cif(file_csv_content_row, fieldname)
+		return self.env['sumex_apps_imports_csv_import_sage_clientes'].get_cif(file_csv_content_row, fieldname)

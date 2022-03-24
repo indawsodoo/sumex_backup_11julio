@@ -10,7 +10,7 @@ from odoo.exceptions import UserError
 
 class sumex_apps_imports_csv_import_genesis_stock(models.AbstractModel):
 
-	_description = "modulo importador"
+	_description = __name__
 
 	_import_fields = [
 
@@ -53,7 +53,7 @@ class sumex_apps_imports_csv_import_genesis_stock(models.AbstractModel):
 		if file_csv_content_row['idempresa'] != "1":
 			return True
 
-		stock_model = self.env['stock.location'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
+		stock_model = self.env['sumex_apps_imports_csv_library'].get_model('stock.location')
 		location_name = file_csv_content_row['idubicacion']
 		try:
 			location_name = int(location_name)
@@ -82,7 +82,7 @@ class sumex_apps_imports_csv_import_genesis_stock(models.AbstractModel):
 		if file_csv_content_row['idempresa'] != "1":
 			return True
 
-		stock_model = self.env['stock.location'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
+		stock_model = self.env['sumex_apps_imports_csv_library'].get_model('stock.location')
 		location_name = file_csv_content_row['idubicacion']
 		try:
 			location_name = int(location_name)
@@ -102,7 +102,7 @@ class sumex_apps_imports_csv_import_genesis_stock(models.AbstractModel):
 		product_name = "no-name %s" % product_referencia
 		# stock = file_csv_content_row['qexistencias']
 
-		product_template = self.env['sumex_apps_imports_csv_library'].sudo().get_or_create_product_template(
+		product_template = self.env['sumex_apps_imports_csv_library'].get_or_create_product_template(
 			company_id = company_id,
 			product_referencia = product_referencia,
 			product_name = product_name,
@@ -113,7 +113,7 @@ class sumex_apps_imports_csv_import_genesis_stock(models.AbstractModel):
 		if isinstance(product_template, dict) and 'error' in product_template:
 			return product_template
 
-		stock_quant_model = self.env['stock.quant'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
+		stock_quant_model = self.env['sumex_apps_imports_csv_library'].get_model('stock.quant')
 		try:
 			stock_quant_model.create({
 				'location_id': location.id,

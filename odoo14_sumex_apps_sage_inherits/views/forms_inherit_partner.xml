@@ -7,8 +7,8 @@
         <field name="inherit_id" ref="base.view_res_partner_filter"/>
         <field name="arch" type="xml">
             <xpath expr="//search" position="inside">
-                <filter string="From import CSV of Sage - SÍ" name="_created_from_sumex_apps_imports_csv_of_sage_yes" domain="[('_created_from_sumex_apps_imports_csv_of_sage','!=',False)]"/>
-                <filter string="From import CSV of Sage - NO" name="_created_from_sumex_apps_imports_csv_of_sage_no" domain="[('_created_from_sumex_apps_imports_csv_of_sage','=',False)]"/>
+                <filter string="From import CSV of Sage - SÍ" name="_created_from_sumex_apps_imports_csv_of_sage_yes" domain="[('_created_from_sumex_apps_imports_csv_of_sage_contactos','!=',False)]"/>
+                <filter string="From import CSV of Sage - NO" name="_created_from_sumex_apps_imports_csv_of_sage_no" domain="[('_created_from_sumex_apps_imports_csv_of_sage_contactos','=',False)]"/>
                 <filter string="Sage Código cliente - SÍ Existe" name="_sage_field_codigocliente_si_existe" domain="[('_sage_field_codigocliente','!=',False)]"/>
                 <filter string="Sage Código cliente - NO Existe" name="_sage_field_codigocliente_no_existe" domain="[('_sage_field_codigocliente','=',False)]"/>
                 <field string="SAGE Código cliente" name="_sage_field_codigocliente" filter_domain="[('_sage_field_codigocliente','ilike',self)]"/>
@@ -23,7 +23,7 @@
         <field name="arch" type="xml">
 
             <field name='display_name' position="after">
-                <field name="_created_from_sumex_apps_imports_csv_of_sage" readonly="1" optional="hide"/>
+                <field name="_created_from_sumex_apps_imports_csv_of_sage_contactos" readonly="1" optional="hide"/>
             </field>
 
         </field>
@@ -36,7 +36,7 @@
         <field name="arch" type="xml">
 
             <field name='vat' position="after">
-                <field name="_created_from_sumex_apps_imports_csv_of_sage" readonly="1"/>
+                <field name="_created_from_sumex_apps_imports_csv_of_sage_contactos" readonly="1"/>
             </field>
 
             <xpath expr="/form/sheet/notebook" position="inside">
