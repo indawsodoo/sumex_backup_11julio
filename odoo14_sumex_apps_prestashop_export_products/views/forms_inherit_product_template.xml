@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="sumex_apps_prestashop_export_products_inherit_product_template_view_search" model="ir.ui.view">
+        <field name="name">sumex_apps_prestashop_export_products_inherit_product_template_view_search</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            
+            <xpath expr="//search" position="inside">
+                <filter string="From import PRESTASHOP - SÍ" name="_created_from_import_prestashop_product_id_exists_si" domain="[('_created_from_import_prestashop_product_id','>',0)]"/>
+                <filter string="From import PRESTASHOP - NO" name="_created_from_import_prestashop_product_id_exists_no" domain="[('_created_from_import_prestashop_product_id','=',0)]"/>
+                <field string="From import PRESTASHOP - Name" name="_created_from_import_prestashop_name" filter_domain="[('_created_from_import_prestashop_name','like',self)]"/>
+                <field string="From import PRESTASHOP - Product ID" name="_created_from_import_prestashop_product_id" filter_domain="[('_created_from_import_prestashop_product_id','=',self)]"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="sumex_apps_prestashop_export_products_inherit_product_template_view_tree" model="ir.ui.view">
+        <field name="name">sumex_apps_prestashop_export_products_inherit_product_template_view_tree</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+
+            <field name='categ_id' position="after">
+                <field name="_created_from_import_prestashop_name" readonly="1" optional="show"/>
+                <field name="_created_from_import_prestashop_product_id" readonly="1" optional="show"/>
+            </field>
+
+        </field>
+    </record>
+
+    <record id="sumex_apps_prestashop_export_products_inherit_product_template_view_form" model="ir.ui.view">
+        <field name="name">sumex_apps_prestashop_export_products_inherit_product_template_view_form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+
+            <field name='categ_id' position="after">
+                <field name="_created_from_import_prestashop_name" readonly="1"/>
+                <field name="_created_from_import_prestashop_product_id" readonly="1"/>
+            </field>
+
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="sumex_apps_migrate_inherit_product_template_view_search" model="ir.ui.view">
+        <field name="name">sumex_apps_migrate_inherit_product_template_view_search</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            
+            <xpath expr="//search" position="inside">
+                <filter string="EXISTE PRODUCTO COMO REFERENCIA EN SAGE" name="_existe_producto_como_referencia_sage" domain="[('_existe_producto_como_referencia_sage','!=',False)]"/>
+                <filter string="EXISTE VARIANTE COMO REFERENCIA EN SAGE" name="_existe_variante_como_referencia_sage" domain="[('_existe_variante_como_referencia_sage','!=',False)]"/>
+                <filter string="EXISTE PRODUCTO O VARIANTE COMO REFERENCIA EN SAGE" name="_existe_variante_como_referencia_sage" domain="['|', ('_existe_producto_como_referencia_sage','!=',False), ('_existe_variante_como_referencia_sage','!=',False)]"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="sumex_apps_migrate_inherit_product_template_view_tree" model="ir.ui.view">
+        <field name="name">sumex_apps_migrate_inherit_product_template_view_tree</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+
+            <field name='categ_id' position="after">
+                <field string="X Producto en Sage" name="_existe_producto_como_referencia_sage" readonly="1" optional="show"/>
+                <field string="X Variante en Sage" name="_existe_variante_como_referencia_sage" readonly="1" optional="show"/>
+            </field>
+
+        </field>
+    </record>
+
+    <record id="sumex_apps_migrate_inherit_product_template_view_form" model="ir.ui.view">
+        <field name="name">sumex_apps_migrate_inherit_product_template_view_form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+
+            <field name='categ_id' position="after">
+                <field string="X Producto en Sage" name="_existe_producto_como_referencia_sage" readonly="1"/>
+                <field string="X Variante en Sage" name="_existe_variante_como_referencia_sage" readonly="1"/>
+            </field>
+
+        </field>
+    </record>
+
+</odoo>

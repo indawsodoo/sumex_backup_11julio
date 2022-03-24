@@ -1,0 +1,32 @@
+{
+    "python.autoComplete.extraPaths": [
+        "${workspaceRoot}",
+    ],
+    "python.linting.flake8Args": [
+        "--config=${workspaceRoot}/.vscode/doodba/travis_run_flake8.cfg",
+        "--ignore=E501,E117,E222,E224,E251,E241,E722,W191,E242",
+        "--verbose"
+    ],
+    "python.linting.ignorePatterns": [
+        "${workspaceRoot}",
+    ],
+    "python.linting.pylintArgs": [
+        "--init-hook=\"import sys;sys.path.append('${workspaceRoot}')\"",
+        "--load-plugins=pylint_odoo",
+        "--rcfile='${workspaceRoot}/.vscode/doodba/doodba_pylint.cfg'",
+    ],
+    "python.linting.pylintEnabled": false,
+    "python.pythonPath": "/usr/bin/python3",
+    "search.useIgnoreFiles": false,
+    "search.followSymlinks": false,
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true,
+    "python.analysis.extraPaths": [
+        "${workspaceRoot}"
+    ],
+    "workbench.colorCustomizations": {
+        "tab.activeBackground": "#aa0000",
+        "tab.activeForeground": "#ffffff",
+    },
+    "editor.renderWhitespace": "all",
+}
