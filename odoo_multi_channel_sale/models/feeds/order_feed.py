@@ -16,6 +16,7 @@ OrderFields = [
 	'name',
 	'store_id',
 	'store_source',
+
 	'partner_id',
 	'order_state',
 	'carrier_id',
@@ -236,9 +237,7 @@ class OrderFeed(models.Model):
 				tx_inclusive = tax['included']
 			if tx_inclusive is not None:
 				domain.append(('include_in_price','=',tx_inclusive))
-			_logger.info("======domain========%r",domain)
 			mapping = self.env['channel.account.mappings'].search(domain,limit=1)
-			_logger.info("======mapping========%r",mapping)
 			if mapping:
 				tx_ids.append(mapping.tax_name.id)
 			else:
@@ -272,7 +271,6 @@ class OrderFeed(models.Model):
 						'odoo_tax_id'       : tx.id,
 					}
 				)
-		_logger.info("============tx_ids=========%r",tx_ids)
 		return [(6,0,tx_ids)]
 
 	@api.model
@@ -289,8 +287,8 @@ class OrderFeed(models.Model):
 			confirmation_date = confirmation_date_res.get('om_date_time')
 
 		date_invoice_res =  channel_id.om_format_date(vals.pop('date_invoice'))
-		if date_invoice_res.get('om_date'):
-			date_invoice = date_invoice_res.get('om_date')
+		if date_invoice_res.get('om_date_time'):
+			date_invoice = date_invoice_res.get('om_date_time')
 		return dict(
 			date_order = date_order,
 			confirmation_date = confirmation_date,
@@ -326,7 +324,7 @@ class OrderFeed(models.Model):
 		date_invoice =  date_info.get('date_invoice')
 		confirmation_date = date_info.get('confirmation_date')
 
-		if store_partner_id:
+		if store_partner_id and self.customer_name:
 			if not match:
 				res_partner = self.get_order_partner_id(store_partner_id,channel_id)
 				message += res_partner.get('message','')
@@ -357,7 +355,6 @@ class OrderFeed(models.Model):
 				if carrier_id:
 					vals['carrier_id'] = carrier_id.id
 			order_line_res = self._get_order_line_vals(vals, carrier_id, channel_id)
-			_logger.info("======order_line_res=====%r",order_line_res)
 			message += order_line_res.get('message','')
 			if not order_line_res.get('status'):
 				state = 'error'
@@ -410,7 +407,6 @@ class OrderFeed(models.Model):
 			if state == 'done':
 				try:
 					order_state = vals.pop('order_state')
-					_logger.info("==============vals========%r",vals)
 					erp_id = self.env['sale.order'].create(vals)
 					message += self.env['multi.channel.skeleton']._SetOdooOrderState(erp_id,channel_id,order_state,self.payment_method,date_invoice=date_invoice,confirmation_date=confirmation_date)
 					message  += '<br/> Order %s successfully evaluated'%(self.store_id)

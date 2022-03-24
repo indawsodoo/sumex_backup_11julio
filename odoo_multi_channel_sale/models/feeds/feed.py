@@ -255,7 +255,7 @@ class WkFeed(models.Model):
 	def get_product_id(self, store_product_id, line_variant_ids, channel_id, default_code=None, barcode=None):
 		message = ''
 
-		# Need to check significance of domain 
+		# Need to check significance of domain
 
 		# domain = []
 		# if default_code:
@@ -454,13 +454,16 @@ class WkFeed(models.Model):
 				product_feeds.setdefault(rec.get('channel_id')[0],{})[rec.get('store_id')] = rec.get('id')
 			return self.with_context(product_feeds=product_feeds)
 		elif type == 'partner':
-			feeds = {}
+			contact_feeds,address_feeds = {},{}
 			for rec in self.env['partner.feed'].search_read(
 				[('channel_id','in',channel_ids)],
-				['id','store_id','channel_id'],
+				['id','store_id','channel_id','type'],
 			):
-				feeds.setdefault(rec.get('channel_id')[0],{})[rec.get('store_id')] = rec.get('id')
-			return self.with_context(partner_feeds=feeds)
+				if rec.get('type') == "contact":
+					contact_feeds.setdefault(rec.get('channel_id')[0],{})[rec.get('store_id')] = rec.get('id')
+				else:
+					address_feeds.setdefault(rec.get('channel_id')[0],{})[rec.get('store_id')] = rec.get('id')
+			return self.with_context(partner_feeds=contact_feeds,address_feeds=address_feeds)
 		elif type == 'order':
 			feeds = {}
 			for rec in self.env['order.feed'].search_read(
@@ -529,4 +532,3 @@ class WkFeed(models.Model):
 			return self.with_context(order_mappings=mappings)
 		else:
 			raise Exception('Wrong type for mappings to be contextualized.')
-

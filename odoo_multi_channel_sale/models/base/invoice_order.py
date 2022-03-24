@@ -49,7 +49,7 @@ class MultiChannelSkeleton(models.TransientModel):
                 [('store_journal_name', '=', PaymentMethod)])
             if not exists:
                 journal = {
-                    'name': PaymentMethod,
+                    'name': self._get_journal_name(PaymentMethod),
                     'code': self._get_journal_code(PaymentMethod),
                     'type': 'bank',
                 }

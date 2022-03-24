@@ -31,7 +31,7 @@ class ProductFeed(models.Model):
 	)
 
 	def _create_feed(self,product_data):
-		variant_data_list = product_data.pop('variants')
+		variant_data_list = product_data.pop('variants', [])
 		channel_id = product_data.get('channel_id')
 		store_id = str(product_data.get('store_id'))
 		feed_id = self._context.get('product_feeds').get(channel_id,{}).get(store_id)
@@ -121,7 +121,6 @@ class ProductFeed(models.Model):
 				exists = self.env['channel.product.mappings'].browse(exists)
 				attribute_value_ids = prod_env.with_context(context).check_for_new_attrs(
 					template_id,variant)
-				_logger.info("attribute_value_ids ----%r", attribute_value_ids)
 				if variant.list_price:
 					exists.product_name.wk_extra_price = parse_float(
 						variant.list_price) - parse_float(template_id.list_price)
@@ -288,16 +287,15 @@ class ProductFeed(models.Model):
 
 	def check_attribute_value(self,variant_ids):
 		state,message= 'done',''
-
 		for variant in variant_ids:
 			name_values = eval(variant.name_value)
 			cnt = Counter()
 			for name_value in name_values:
 				cnt[name_value.get('name')]+=1
-			multi_occur = filter(lambda i:i[1]!=1,cnt.items())
-			for multi_oc in multi_occur:
+			multi_occur = list(filter(lambda i:i[1]!=1,cnt.items()))
+			if multi_occur:
 				state = 'error'
-				items = map(lambda item:'%s(%s times)'%(item[0],item[1]),multi_occur)
+				items = list(map(lambda item:'%s(%s times)'%(item[0],item[1]),multi_occur))
 				message += 'Attributes  are duplicate \n %r'%(','.join(items))
 				return dict(message=message,state=state)
 		return dict(message=message,state=state)
@@ -368,11 +366,8 @@ class ProductFeed(models.Model):
 				extra_categ_ids = vals.pop('extra_categ_ids')
 				if not template_exists_odoo:
 					template_id = match.template_name
-					template_id.with_context(context).write(vals)
 				else:
-					template_exists_odoo.with_context(context).write(vals)
 					template_id = template_exists_odoo
-				match.write({'default_code':vals.get('default_code'),'barcode':vals.get('barcode')})
 				extra_categ = self.env['extra.categories'].search(
 					[
 						('instance_id','=',channel_id.id),
@@ -390,9 +385,18 @@ class ProductFeed(models.Model):
 						'instance_id' : channel_id.id,
 						'category_id':categ_id,
 						}
-						extra_categ.with_context(context).write(data)
+						if extra_categ:
+							extra_categ.with_context(context).write(data)
+						else:
+							extra_categ = self.env['extra.categories'].with_context(context).create(data)
+							vals['channel_category_ids'] = [(6,0,[extra_categ.id])]
+						
 					else:
 						state = 'error'
+				
+				template_id.with_context(context).write(vals)
+				#manage the mapping here
+				match.write({'default_code':vals.get('default_code'),'barcode':vals.get('barcode')})
 				if len(variant_lines):
 					context['wk_qty_update']=False
 					res = self.with_context(context).update_product_variants(
@@ -413,7 +417,7 @@ class ProductFeed(models.Model):
 						#     self.wk_change_product_qty(
 						#         variant_id,qty_available,location_id)
 						match_product = channel_id.match_product_mappings(
-							store_id,'No Variants',default_code=variant_vals.get('default_code'),barcode=variant_vals.get('barcode'))
+							store_id,'No Variants')
 						if not match_product:
 							channel_id.create_product_mapping(
 								template_id,variant_id,store_id,'No Variants',
@@ -446,7 +450,6 @@ class ProductFeed(models.Model):
 						else:
 							template_id = self.env['product.template'].with_context(context).create(vals)
 					else:
-						# template_exists_odoo.with_context(context).write(vals)
 						template_id = template_exists_odoo
 						extra_categ_ids = vals.pop('extra_categ_ids')
 						if extra_categ_ids:
@@ -484,7 +487,7 @@ class ProductFeed(models.Model):
 								self.wk_change_product_qty(
 									variant_id,qty_available,location_id)
 							match = channel_id.match_product_mappings(
-								store_id,'No Variants',default_code=variant_vals.get('default_code'),barcode=variant_vals.get('barcode'))
+								store_id,'No Variants')
 							if not match:
 								channel_id.create_product_mapping(
 									template_id,variant_id,store_id,'No Variants',
@@ -553,5 +556,3 @@ class ProductFeed(models.Model):
 			)
 		message = self.get_feed_result(feed_type='Product')
 		return self.env['multi.channel.sale'].display_message(message)
-
-

@@ -14,11 +14,6 @@ class ProductTemplate(models.Model):
 	wk_length              = fields.Float('Length')
 	width                  = fields.Float('Width')
 	height                 = fields.Float('Height')
-	prestashop_online 	   = fields.Boolean(
-		string='Prestashop product Online',
-		default=0,
-		help='Prestashop product Online Just After Export/Update.',
-	)
 
 	dimensions_uom_id = fields.Many2one(
 		comodel_name = 'uom.uom',
@@ -67,9 +62,8 @@ class ProductTemplate(models.Model):
 			mapping_objs = record.channel_mapping_ids
 			vals = self.env['multi.channel.sale']._core_pre_post_write(record, 'pre', 'template', mapping_objs, vals)
 			mapping_objs.write({'need_sync': 'yes'})
-			res = super(ProductTemplate, record).write(vals)
+			super(ProductTemplate, record).write(vals)
 			self.env['multi.channel.sale']._core_pre_post_write(record, 'post', 'template', mapping_objs, vals)
-		return res
 
 	def unlink(self):
 		for obj in self:

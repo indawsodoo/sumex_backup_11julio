@@ -53,8 +53,8 @@ MAPPINGMODEL = {
 	'sale.order'      : 'channel.order.mappings',
 }
 TaxType = [
-    ('include','Include In Price'),
-    ('exclude','Exclude In Price')
+	('include','Include In Price'),
+	('exclude','Exclude In Price')
 ]
 
 METAMAP = {
@@ -100,7 +100,11 @@ class MultiChannelSale(models.Model):
 	@api.model
 	def create(self, vals):
 		res = super().create(vals)
-		res.use_core_feature = True if res.channel in self.get_core_feature_compatible_channels() else False
+		if 'install_mode' in self._context or 'create_order_states' in self._context:
+			res._on_change_channel()
+		channels = self.get_core_feature_compatible_channels()
+		if res.channel in channels:
+			res.use_core_feature = True
 		return res
 
 	url     = fields.Char("URL")
@@ -121,6 +125,52 @@ class MultiChannelSale(models.Model):
 			return getattr(self, 'test_%s_connection' % self.channel)()
 		else:
 			return self.display_message('Connection protocol missing.')
+
+	@api.onchange('channel')
+	def _on_change_channel(self):
+		if self.channel:
+			if self.order_state_ids:
+				rec = self.env['channel.order.states'].search([('channel_id','=',self._origin.id),('channel_name','=',self.channel)])
+
+				if rec:
+					self.order_state_ids = [(6,0,rec.ids)]
+				else:
+					self.order_state_ids = [(5,0,0)]
+					if hasattr(self,'%s_default_order_state'%self.channel):
+						"""
+						Add default values to order state ids
+						@field channel_state: state of the channel
+						@field default_order_state: True or False
+						@field odoo_create_invoice: True or False
+						@field odoo_ship_order: True or False
+						@field odoo_order_state: draft or shipped or done etc.
+						@field odoo_set_invoice_state: paid or open
+						@return: A list dictionarys of the default values
+						"""
+						values = getattr(self,'%s_default_order_state'%self.channel)()
+						rec_val = []
+						for rec in values:
+							rec_val.append((0,0,rec))
+						self.order_state_ids = rec_val
+			else:
+				if hasattr(self,'%s_default_order_state'%self.channel):
+					"""
+					Add default values to order state ids
+					@field channel_state: state of the channel
+					@field default_order_state: True or False
+					@field odoo_create_invoice: True or False
+					@field odoo_ship_order: True or False
+					@field odoo_order_state: draft or shipped or done etc.
+					@field odoo_set_invoice_state: paid or open
+					@return: A list dictionarys of the default values
+					"""
+					values = getattr(self,'%s_default_order_state'%self.channel)()
+					rec_val = []
+					for rec in values:
+						rec_val.append((0,0,rec))
+					self.order_state_ids = rec_val
+
+
 
 
 	def set_to_draft(self):
@@ -195,10 +245,10 @@ class MultiChannelSale(models.Model):
 	)
 	is_child_store = fields.Boolean(string = 'Is Child-Store')
 	default_store_id =fields.Many2one(
-        comodel_name = 'multi.channel.sale',
-        string='Parent Store',
-        help = DefaultStore,
-    )
+		comodel_name = 'multi.channel.sale',
+		string='Parent Store',
+		help = DefaultStore,
+	)
 	sku_sequence_id = fields.Many2one(
 		comodel_name='ir.sequence',
 		string='Sequence For SKU',
@@ -225,9 +275,9 @@ class MultiChannelSale(models.Model):
 		help="""Default category used as product internal category for imported products.""",
 	)
 	channel_default_product_categ_id = fields.Many2one(
-        comodel_name = 'channel.category.mappings',
-        string = 'Channel Category'
-    )
+		comodel_name = 'channel.category.mappings',
+		string = 'Channel Category'
+	)
 	default_tax_type = fields.Selection(
 		selection = TaxType,
 		string = 'Tax Type',
@@ -268,18 +318,19 @@ class MultiChannelSale(models.Model):
 		help='Sales Team used for imported order.',
 	)
 	payment_term_id = fields.Many2one(
-        'account.payment.term',
-        string="Ecommerce Payment Term",
-        help="""Default Payment Term Used In Sale Order.""")
+		'account.payment.term',
+		string="Ecommerce Payment Term",
+		help="""Default Payment Term Used In Sale Order.""")
 	sales_person_id = fields.Many2one(
-        'res.users',
-        string="Sales Person",
-        help="""Default Sales Person Used In Sale Order.""")
+		'res.users',
+		string="Sales Person",
+		help="""Default Sales Person Used In Sale Order.""")
 	order_state_ids = fields.One2many(
 		comodel_name='channel.order.states',
 		inverse_name='channel_id',
 		string='Default Odoo Order States',
 		help='Imported order will process in odoo on basis of these state mappings.',
+		copy = True,
 	)
 
 	feed = fields.Selection(FEED,default='all', required=True)
@@ -377,16 +428,16 @@ class MultiChannelSale(models.Model):
 
 	@api.model
 	def om_format_date(self, date_string):
-		om_date = None
+		om_date_time = None
 		message = ''
 		try:
 			if date_string:
-				om_date = parser.parse(date_string).astimezone().replace(tzinfo=None)
+				om_date_time = parser.parse(date_string).astimezone().replace(tzinfo=None)
 		except Exception as e:
 			message += '%r'%e
 		return dict(
 			message = message,
-			om_date = om_date
+			om_date_time = om_date_time
 		)
 
 	@api.model
@@ -442,7 +493,7 @@ class MultiChannelSale(models.Model):
 
 	@api.model
 	def default_multi_channel_values(self):
-		return self.env['multi.channel.sale.config'].sudo().get_values()
+		return self.env['res.config.settings'].sudo().get_values()
 
 	def open_website_url(self, url, name='Open Website URL'):
 		self.ensure_one()

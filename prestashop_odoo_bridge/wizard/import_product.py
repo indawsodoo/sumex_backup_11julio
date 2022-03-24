@@ -342,10 +342,13 @@ class ImportPrestashopProducts(models.TransientModel):
         return vals_list
 
     def get_product_all(self, prestashop,**kwargs):
+        since_product_id = 0
         vals_list = []
         limit = '{},{}'.format(kwargs.get("page"),kwargs.get("page_size"))
         try:
-            products = prestashop.get("products",options={'limit':limit, 'sort': 'id_ASC'})
+            # products = prestashop.get("products",options={'limit':limit, 'sort': 'id_ASC'})
+            products = prestashop.get("products", options={
+                                             'filter[id]':'>['+str(self.channel_id.since_id)+']', 'limit': limit, 'sort': 'id_ASC'})
             products = products.get("products")
             if isinstance(products, str):
                 return vals_list
@@ -357,14 +360,18 @@ class ImportPrestashopProducts(models.TransientModel):
                 for product in products:
                     vals = {}
                     product_id = product.get("attrs").get("id")
+                    since_product_id = product_id
                     vals = self.get_product_by_id(prestashop,prestashop_object_id = product_id)
                     if not vals:continue
                     vals_list.append(vals)
+
             elif isinstance(products,dict):
                 product_id = products.get("attrs").get("id")
+                since_product_id = product_id
                 vals = self.get_product_by_id(prestashop,prestashop_object_id = product_id)
                 if vals:
                     vals_list.append(vals)
+        self.channel_id.since_id = since_product_id
         return vals_list
 
     def import_now(self,**kwargs):

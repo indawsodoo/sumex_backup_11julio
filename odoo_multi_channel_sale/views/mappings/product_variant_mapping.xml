@@ -109,10 +109,22 @@
 			</field>
 		</record>
 
+		<record id="channel_product_mapping_pivot" model="ir.ui.view">
+			<field name="name">channel.product.mappings.pivot</field>
+			<field name="model">channel.product.mappings</field>
+			<field name="type">pivot</field>
+			<field name="arch" type="xml">
+				<pivot>
+					<field name="channel_id" type = "col"/>
+					<field name="create_date" type= "row" interval ="day"/>
+				</pivot>
+			</field>
+		</record>
+
 		<record id="channel_product_mapping_action_id" model="ir.actions.act_window">
 			<field name="name">Channel Product Mappings</field>
 			<field name="res_model">channel.product.mappings</field>
-			<field name="view_mode">tree,form</field>
+			<field name="view_mode">tree,form,pivot</field>
 			<field name="view_id" ref="channel_product_mapping_tree"/>
 			<field name="context">
 {

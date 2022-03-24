@@ -7,7 +7,7 @@
 		<function
 			model = "ir.default"
 			name  = "set"
-			eval  = "('multi.channel.sale.config','avoid_duplicity',False)"
+			eval  = "('res.config.settings','avoid_duplicity',False)"
 		/>
 
 		<record id="product_sequence_id" model="ir.sequence" forcecreate="True">

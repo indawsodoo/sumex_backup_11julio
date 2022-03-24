@@ -175,6 +175,3 @@ all_import_templates,import.templates,model_import_templates,,1,0,0,0
 user_import_templates,import.templates,model_import_templates,odoo_multi_channel_sale.group_multi_channel_user,1,1,1,0
 manager_import_templates,import.templates,model_import_templates,odoo_multi_channel_sale.group_multi_channel_admin,1,1,1,1
 
-all_multi_channel_sale_config,multi.channel.sale.config,model_multi_channel_sale_config,,1,0,0,0
-user_multi_channel_sale_config,multi.channel.sale.config,model_multi_channel_sale_config,odoo_multi_channel_sale.group_multi_channel_user,1,1,1,0
-manager_multi_channel_sale_config,multi.channel.sale.config,model_multi_channel_sale_config,odoo_multi_channel_sale.group_multi_channel_admin,1,1,1,1

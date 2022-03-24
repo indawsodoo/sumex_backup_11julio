@@ -62,7 +62,10 @@ class PartnerFeed(models.Model):
 		contact_data_list = partner_data.pop('contacts',[])
 		channel_id = partner_data.get('channel_id')
 		store_id = str(partner_data.get('store_id'))
-		feed_id = self._context.get('partner_feeds').get(channel_id,{}).get(store_id)
+		if contact_data_list:
+			feed_id = self._context.get('partner_feeds').get(channel_id,{}).get(store_id)
+		else:
+			feed_id = self._context.get('address_feeds').get(channel_id,{}).get(store_id)
 # Todo(Pankaj Kumar): Change feed field from state_id,country_id to state_code,country_code
 		partner_data['state_id'] = partner_data.pop('state_code',False)
 		partner_data['country_id'] = partner_data.pop('country_code',False)
@@ -199,5 +202,3 @@ class PartnerFeed(models.Model):
 			)
 		message = self.get_feed_result(feed_type='Partner')
 		return self.env['multi.channel.sale'].display_message(message)
-
-	

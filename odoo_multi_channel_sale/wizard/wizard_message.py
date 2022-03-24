@@ -14,7 +14,6 @@ class WkWizardMessage(models.TransientModel):
 
     def operation_back(self):
         ctx = dict(self._context or {})
-        _logger.info("======================: %r", self._context)
         active_model = ctx.get('active_model')
         partial = self.env[active_model].browse(ctx.get('active_id'))
         ctx['active_id'] = False
