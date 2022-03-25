@@ -9,7 +9,7 @@ from odoo import models
 
 class sumex_apps_imports_csv_import_sage_ventas_lineas(models.AbstractModel):
 
-	_description = "modulo importador"
+	_description = __name__
 
 	_import_fields = [
 
@@ -205,7 +205,7 @@ class sumex_apps_imports_csv_import_sage_ventas_lineas(models.AbstractModel):
 			Se puede retornar {'error':''} {'warning':''} o {'info':''} o simplemente nada.
 		"""
 
-		order = self.env['sumex_apps_imports_csv_import_sage_ventas_cabeceras'].sudo()._get_order(company_id, file_csv_content_row)
+		order = self.env['sumex_apps_imports_csv_import_sage_ventas_cabeceras']._get_order(company_id, file_csv_content_row)
 		if isinstance(order, dict) and 'error' in order:
 			return order
 		if not order:
@@ -236,7 +236,7 @@ class sumex_apps_imports_csv_import_sage_ventas_lineas(models.AbstractModel):
 		product_referencia = file_csv_content_row['codigoarticulo']
 		product_name = file_csv_content_row['descripcionarticulo'].title()
 
-		product_template = self.env['sumex_apps_imports_csv_library'].sudo().get_or_create_product_template(
+		product_template = self.env['sumex_apps_imports_csv_library'].get_or_create_product_template(
 			company_id = company_id,
 			product_referencia = product_referencia,
 			product_name = product_name,
@@ -247,7 +247,7 @@ class sumex_apps_imports_csv_import_sage_ventas_lineas(models.AbstractModel):
 		if isinstance(product_template, dict) and 'error' in product_template:
 			return product_template
 
-		order = self.env['sumex_apps_imports_csv_import_sage_ventas_cabeceras'].sudo()._get_order(company_id, file_csv_content_row)
+		order = self.env['sumex_apps_imports_csv_import_sage_ventas_cabeceras']._get_order(company_id, file_csv_content_row)
 		if isinstance(order, dict) and 'error' in order:
 			return order
 		if not order:
@@ -276,7 +276,7 @@ class sumex_apps_imports_csv_import_sage_ventas_lineas(models.AbstractModel):
 
 		if not company_id:
 			company_id = self.env.user.company_id.id
-		model = self.env['sale.order.line'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
+		model = self.env['sumex_apps_imports_csv_library'].get_model('sale.order.line')
 		try:
 			row = model.search([
 				('name', '=', product_template_name),

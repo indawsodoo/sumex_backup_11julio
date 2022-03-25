@@ -9,7 +9,7 @@ from odoo import models
 
 class sumex_apps_imports_csv_import_sage_clientes(models.AbstractModel):
 
-	_description = "modulo importador"
+	_description = __name__
 
 	_import_fields = [
 
@@ -227,7 +227,7 @@ class sumex_apps_imports_csv_import_sage_clientes(models.AbstractModel):
 
 	def hook_pre_process(self, company_id, file_csv_header, file_csv_content):
 
-		# model = self.env['product.template'].sudo()
+		# model = self.env['sumex_apps_imports_csv_library'].get_model('product.template')
 		# rows=model.search([('_created_from_sumex_apps_imports_csv', '=', True)])
 		# rows.write({'_created_from_sumex_apps_imports_csv_of_sage': True})
 
@@ -254,8 +254,8 @@ class sumex_apps_imports_csv_import_sage_clientes(models.AbstractModel):
 		vat = self.get_cif(file_csv_content_row, 'cifeuropeo')
 		if isinstance(vat, dict) and 'error' in vat:
 			vat = ''
-		country = self.env['sumex_apps_imports_csv_library'].sudo().get_country(file_csv_content_row['nacion'])
-		state = self.env['sumex_apps_imports_csv_library'].sudo().get_state(country, file_csv_content_row['colamunicipio'])
+		country = self.env['sumex_apps_imports_csv_library'].get_country(file_csv_content_row['nacion'])
+		state = self.env['sumex_apps_imports_csv_library'].get_state(country, file_csv_content_row['colamunicipio'])
 		cp = self.get_cp(file_csv_content_row, 'codigopostal')
 		msg_warning = "En esta fila la columna '%s' no contiene un valor válido, se omitirá el valor de este campo. (valor='%s')"
 		warnings = []
@@ -334,7 +334,7 @@ class sumex_apps_imports_csv_import_sage_clientes(models.AbstractModel):
 
 		partner_company_id = False
 		if nombre_partner_company:
-			partner_company_row = self.env['sumex_apps_imports_csv_library'].sudo().get_or_create_partner(
+			partner_company_row = self.env['sumex_apps_imports_csv_library'].get_or_create_partner(
 				is_company = True,
 				company_id = company_id,
 				nombre = nombre_partner_company,
@@ -360,7 +360,7 @@ class sumex_apps_imports_csv_import_sage_clientes(models.AbstractModel):
 			if isinstance(result, dict) and 'error' in result:
 				return result
 
-		partner = self.env['sumex_apps_imports_csv_library'].sudo().get_or_create_partner(
+		partner = self.env['sumex_apps_imports_csv_library'].get_or_create_partner(
 			is_company = False,
 			company_id = company_id,
 			nombre = nombre_partner,
@@ -414,7 +414,7 @@ class sumex_apps_imports_csv_import_sage_clientes(models.AbstractModel):
 		# forma de pago
 		payment_term_name = file_csv_content_row['formadepago']
 		if payment_term_name:
-			payment_term = self.env['sumex_apps_imports_csv_library'].sudo().get_or_create_payment_term(payment_term_name)
+			payment_term = self.env['sumex_apps_imports_csv_library'].get_or_create_payment_term(payment_term_name)
 			list_values['property_payment_term_id'] = payment_term.id
 			changes += 1
 
@@ -461,7 +461,7 @@ class sumex_apps_imports_csv_import_sage_clientes(models.AbstractModel):
 
 	def if_valid_nif(self, vat):
 
-		partner_obj = self.env['res.partner'].sudo()
+		partner_obj = self.env['sumex_apps_imports_csv_library'].get_model('res.partner')
 		try:
 			vat_country, vat_number = partner_obj._split_vat(vat)
 			result = partner_obj.simple_vat_check(vat_country, vat_number)
@@ -511,7 +511,7 @@ class sumex_apps_imports_csv_import_sage_clientes(models.AbstractModel):
 		if not bank_id:
 			bank_name = bank_list_item['name']
 			bank_bic = bank_list_item['bic']
-			model_bank = self.env['res.bank'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
+			model_bank = self.env['sumex_apps_imports_csv_library'].get_model('res.bank')
 			try:
 				bank = model_bank.create({
 					'name': bank_name,
@@ -523,7 +523,7 @@ class sumex_apps_imports_csv_import_sage_clientes(models.AbstractModel):
 				return {'error': exception_msg}
 			bank_id = bank.id
 
-		model_partner_bank = self.env['res.partner.bank'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
+		model_partner_bank = self.env['sumex_apps_imports_csv_library'].get_model('res.partner.bank')
 		vals = model_partner_bank.search([
 			('acc_number', '=', iban),
 		])

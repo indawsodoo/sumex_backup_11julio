@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_product_template_purchases_info,access.product.template.purchases.info,model_product_template_purchases_info,,1,1,1,1
+
+access_product_template_sales_info,access.product.template.sales.info,model_product_template_sales_info,,1,1,1,1
+
+access_product_template_stock_info,access.product.template.stock.info,model_product_template_stock_info,,1,1,1,1

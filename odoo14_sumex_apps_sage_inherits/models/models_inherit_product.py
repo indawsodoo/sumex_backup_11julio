@@ -7,7 +7,7 @@ class sumex_apps_sage_inherits_sage_product_inherit(models.Model):
 
 	_inherit = 'product.template'
 
-	_created_from_sumex_apps_imports_csv_of_sage = fields.Boolean("From import CSV of Sage", required = False)
+	_created_from_sumex_apps_imports_csv_of_sage_articulos = fields.Boolean("From import CSV of Sage", required = False)
 
 	_sage_field_codigoempresa = fields.Char(required = False, string = '_sage_field_codigoempresa')
 	_sage_field_codigoarticulo = fields.Char(required = False, string = '_sage_field_codigoarticulo')
@@ -207,16 +207,16 @@ class sumex_apps_sage_inherits_sage_product_inherit(models.Model):
 	@api.model
 	def create(self, vals_list):
 
-		if 'from_import_csv' not in self._context:
+		if 'from_import_csv_name' not in self._context or self._context['from_import_csv_name'] != 'sumex_apps_imports_csv_import_sage_articulos':
 			return super(sumex_apps_sage_inherits_sage_product_inherit, self).create(vals_list)
-		vals_list['_created_from_sumex_apps_imports_csv_of_sage'] = True
+		vals_list['_created_from_sumex_apps_imports_csv_of_sage_articulos'] = True
 		rows = super(sumex_apps_sage_inherits_sage_product_inherit, self).create(vals_list)
 		return rows
 
 	def write(self, vals_list):
 
-		if 'from_import_csv' not in self._context:
+		if 'from_import_csv_name' not in self._context or self._context['from_import_csv_name'] != 'sumex_apps_imports_csv_import_sage_articulos':
 			return super(sumex_apps_sage_inherits_sage_product_inherit, self).write(vals_list)
-		vals_list['_created_from_sumex_apps_imports_csv_of_sage'] = True
+		vals_list['_created_from_sumex_apps_imports_csv_of_sage_articulos'] = True
 		rows = super(sumex_apps_sage_inherits_sage_product_inherit, self).write(vals_list)
 		return rows

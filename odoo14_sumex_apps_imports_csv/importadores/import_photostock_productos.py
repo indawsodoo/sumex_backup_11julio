@@ -2,11 +2,13 @@
 
 from odoo import models
 import base64
+import os
+from urllib.parse import urlparse
 
 
 class sumex_apps_imports_csv_import_photostock_productos(models.AbstractModel):
 
-	_description = "modulo importador"
+	_description = __name__
 
 	_import_fields = [
 
@@ -102,7 +104,7 @@ class sumex_apps_imports_csv_import_photostock_productos(models.AbstractModel):
 
 		self._filter_wrong_value(file_csv_content_row)
 		warnings = []
-		product_template_model = self.env['product.template'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
+		product_template_model = self.env['sumex_apps_imports_csv_library'].get_model('product.template')
 
 		if 'referencia' not in file_csv_content_row or not file_csv_content_row['referencia']:
 			return {'error': "Este producto tiene campo '%s'=nulo. No se puede procesar" % 'referencia'}
@@ -133,7 +135,7 @@ class sumex_apps_imports_csv_import_photostock_productos(models.AbstractModel):
 
 		import random
 		self._filter_wrong_value(file_csv_content_row)
-		product_template_model = self.env['product.template'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
+		product_template_model = self.env['sumex_apps_imports_csv_library'].get_model('product.template')
 
 		if 'referencia' not in file_csv_content_row or not file_csv_content_row['referencia']:
 			return True
@@ -154,7 +156,7 @@ class sumex_apps_imports_csv_import_photostock_productos(models.AbstractModel):
 				exception_msg = self.env['sumex_apps_imports_csv_library'].rollback_and_get_exception_msg(str(e))
 				return {'error': exception_msg}
 
-		dict_other_fields = {'photostock_include': True}
+		dict_other_fields = {}
 		if file_csv_content_row['creado_en']:
 			fecha = self.env['sumex_apps_imports_csv_library'].get_sql_fecha(file_csv_content_row['creado_en'])
 			if fecha:
@@ -213,7 +215,7 @@ class sumex_apps_imports_csv_import_photostock_productos(models.AbstractModel):
 	def _get_or_create_photostock_marca(self, file_csv_content_row, product_template):
 
 		try:
-			photostock_marca_model = self.env['sumex.photostock_marcas'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
+			photostock_marca_model = self.env['sumex_apps_imports_csv_library'].get_model('sumex.photostock_marcas')
 		except Exception as e:
 			exception_msg = self.env['sumex_apps_imports_csv_library'].rollback_and_get_exception_msg(str(e))
 			return {'error': exception_msg}
@@ -241,7 +243,7 @@ class sumex_apps_imports_csv_import_photostock_productos(models.AbstractModel):
 	def _set_categoria(self, file_csv_content_row, product_template):
 
 		try:
-			photostock_categoria_model = self.env['sumex.photostock_categorias'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
+			photostock_categoria_model = self.env['sumex_apps_imports_csv_library'].get_model('sumex.photostock_categorias')
 		except Exception as e:
 			exception_msg = self.env['sumex_apps_imports_csv_library'].rollback_and_get_exception_msg(str(e))
 			return {'error': exception_msg}
@@ -266,7 +268,22 @@ class sumex_apps_imports_csv_import_photostock_productos(models.AbstractModel):
 				return {'error': exception_msg}
 		return True
 
-	def _load_remote_content(self, url):
+	def _load_remote_content(self, url, cache_path = ''):
+
+		if cache_path:
+			filename = urlparse(url)
+			filename = os.path.basename(filename.path)
+			filename = cache_path + "/" + filename
+
+			if os.path.isfile(filename):
+				with open(filename, "rb") as f:
+					content = f.read()
+					try:
+						encoded_string = base64.b64encode(content)
+						decoded_string = base64.b64decode(encoded_string)
+						return decoded_string
+					except Exception as e:
+						print(str(e))
 
 		import requests
 		try:
@@ -278,9 +295,9 @@ class sumex_apps_imports_csv_import_photostock_productos(models.AbstractModel):
 		if response.ok and response.content:
 			return response.content
 
-	def _set_photostock_model_related_content(self, name, model_name, model_field_name, content, item_num, photostock_include_field = False):
+	def _set_photostock_model_related_content(self, name, model_name, model_field_name, content, item_num):
 
-		model = self.env[model_name].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
+		model = self.env['sumex_apps_imports_csv_library'].get_model(model_name)
 		model_row = model.search([('name', '=', name)], limit=1)
 		if not model_row:
 			try:
@@ -288,13 +305,6 @@ class sumex_apps_imports_csv_import_photostock_productos(models.AbstractModel):
 					'name': name,
 					model_field_name: content
 				}))
-				model_row._cr.commit()
-			except Exception as e:
-				exception_msg = self.env['sumex_apps_imports_csv_library'].rollback_and_get_exception_msg(str(e))
-				return {'error': exception_msg}
-		if photostock_include_field:
-			try:
-				model_row.write({'photostock_include': True})
 				model_row._cr.commit()
 			except Exception as e:
 				exception_msg = self.env['sumex_apps_imports_csv_library'].rollback_and_get_exception_msg(str(e))
@@ -314,7 +324,7 @@ class sumex_apps_imports_csv_import_photostock_productos(models.AbstractModel):
 				continue
 			image_url = image_url.strip()
 			image_num += 1
-			image_remote_content = self._load_remote_content(image_url)
+			image_remote_content = self._load_remote_content(image_url, os.path.dirname(__file__) + '/photostock_cache_files/images')
 			if isinstance(image_remote_content, dict) and 'error' in image_remote_content:
 				return image_remote_content
 			image_name = "%s_%s" % (product_template.default_code, image_num)
@@ -336,8 +346,7 @@ class sumex_apps_imports_csv_import_photostock_productos(models.AbstractModel):
 						model_name = 'product.image',
 						model_field_name = 'image_1920',
 						content = image_content,
-						item_num = image_num,
-						photostock_include_field = True
+						item_num = image_num
 					)
 					if isinstance(result, dict) and 'error' in result:
 						return result
@@ -345,8 +354,7 @@ class sumex_apps_imports_csv_import_photostock_productos(models.AbstractModel):
 		if ids:
 			try:
 				product_template.write({
-					'photostock_product_template_image_ids': [(6, 0, ids)],
-					'photostock_include': True
+					'photostock_product_template_image_ids': [(6, 0, ids)]
 				})
 				product_template._cr.commit()
 			except Exception as e:
@@ -362,7 +370,7 @@ class sumex_apps_imports_csv_import_photostock_productos(models.AbstractModel):
 				continue
 			item_url = item_url.strip()
 			item_num += 1
-			item_remote_content = self._load_remote_content(item_url)
+			item_remote_content = self._load_remote_content(item_url, os.path.dirname(__file__) + '/photostock_cache_files/certificados')
 			if isinstance(item_remote_content, dict) and 'error' in item_remote_content:
 				return item_remote_content
 			item_name = "%s_%s" % (product_template.default_code, item_num)
@@ -386,8 +394,7 @@ class sumex_apps_imports_csv_import_photostock_productos(models.AbstractModel):
 		if ids:
 			try:
 				product_template.write({
-					'photostock_certificado_ids': [(6, 0, ids)],
-					'photostock_include': True
+					'photostock_certificado_ids': [(6, 0, ids)]
 				})
 				product_template._cr.commit()
 			except Exception as e:
@@ -403,7 +410,7 @@ class sumex_apps_imports_csv_import_photostock_productos(models.AbstractModel):
 				continue
 			item_url = item_url.strip()
 			item_num += 1
-			item_remote_content = self._load_remote_content(item_url)
+			item_remote_content = self._load_remote_content(item_url, os.path.dirname(__file__) + '/photostock_cache_files/manuales')
 			if isinstance(item_remote_content, dict) and 'error' in item_remote_content:
 				return item_remote_content
 			item_name = "%s_%s" % (product_template.default_code, item_num)
@@ -427,8 +434,7 @@ class sumex_apps_imports_csv_import_photostock_productos(models.AbstractModel):
 		if ids:
 			try:
 				product_template.write({
-					'photostock_manual_ids': [(6, 0, ids)],
-					'photostock_include': True
+					'photostock_manual_ids': [(6, 0, ids)]
 				})
 				product_template._cr.commit()
 			except Exception as e:

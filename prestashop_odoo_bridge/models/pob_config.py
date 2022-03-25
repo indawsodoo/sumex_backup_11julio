@@ -57,6 +57,10 @@ class MultiChannelSale(models.Model):
         default = '0',
         required = 1,
     )
+     
+    since_id = fields.Integer(
+        default= 1
+    ) 
 
     @api.model
     def get_channel(self):

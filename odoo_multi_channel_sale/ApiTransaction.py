@@ -58,14 +58,11 @@ class Transaction:
 					s_ids,e_ids,feeds = [], [], False
 					data_list, kw = getattr(
 						self.instance, 'import_{}'.format(self.channel))(object, **kw), kw
-					_logger.info(f'~~D~d~{data_list} feeds committed~~~~')
 					kw = data_list[1] if isinstance(data_list, tuple) else kw
 					data_list = [] if data_list in [None, False, ''] or len(data_list) < 1 else data_list[0]
 					if data_list and type(data_list) is list:
 						kw['last_id'] = data_list[-1].get('store_id')
-					
-					_logger.info(f'~~D~~{data_list} feeds committed~~~~')
-					_logger.info(f'~~Dsd~~{kw} feeds committed~~~~')
+
 					if data_list:
 						objectmapping = self.getFeedObjectDictionary()
 						if object in objectmapping:
@@ -73,7 +70,6 @@ class Transaction:
 								channel_id=self.instance
 							)._create_feeds(data_list)
 						elif object == 'product.attribute':
-							_logger.info(f'~~~~{data_list} feeds committed~~~~')
 							data_list = data_list.get('create_ids', []) if data_list.get('create_ids') else data_list.get('update_ids', [])
 							msg = "<div class='alert alert-success' role='alert'><h3 class='alert-heading'><i class='fa fa-smile-o'/>  Congratulations !</h3><hr><span class='badge badge-pill badge-success'>Success</span>All attributes are synced along with the <span class='font-weight-bold'> {} attribute sets</span></div>".format(len(data_list)) if data_list else "<div class='alert alert-danger' role='alert'>Attributes are failed to import.</div>"
 						else:
@@ -89,8 +85,6 @@ class Transaction:
 							old_last_id = kw.get('last_id')
 
 					self._cr.commit()
-					_logger.info(f'~~~~{len(s_ids)} feeds committed~~~~')
-					_logger.info(f"~~~~Latest Id: {kw.get('last_id')}~~~~")
 					success_ids.extend(s_ids)
 					error_ids.extend(e_ids)
 					if self.evaluate_feed and feeds:
@@ -98,8 +92,7 @@ class Transaction:
 						create_ids.extend([mapping.id for mapping in mapping_ids.get('create_ids')])
 						update_ids.extend([mapping.id for mapping in mapping_ids.get('update_ids')])
 						self._cr.commit()
-						_logger.info('~~~~Created feeds are evaluated~~~~')
-					if len(data_list) < kw.get('page_size'):
+					if len(data_list) < kw.get('page_size')  or object == "product.template":
 						break
 			except Exception as e:
 				msg = f'Something went wrong: `{e.args[0]}`'
@@ -110,7 +103,8 @@ class Transaction:
 				operation = dict(IMPORT_OPR)[object]
 				debug = self.instance.debug
 				last_id = kw.get('last_id')
-				msg = self.getActionMessage(msg, success_ids, error_ids, create_ids, update_ids, last_id, debug, operation)
+				ext_msg = kw.get('ext_msg')
+				msg = self.getActionMessage(msg, success_ids, error_ids, create_ids, update_ids, last_id, debug, operation, ext_msg)
 			if not msg:
 				msg += f"<div class='alert alert-danger' role='alert'><h3 class='alert-heading'><i class='fa fa-frown-o'/>  Sorry !</h3><hr><span class='badge badge-pill badge-danger'> 404 </span> <span class='font-weight-bold'> No records found for applied filter.</span></div>"
 		return self.display_message(msg)
@@ -147,9 +141,7 @@ class Transaction:
 				)
 			operation = 'exported'
 			for record in self.env[object].browse(local_ids):
-				_logger.info("====START=====[record]====%r",record)
 				res,remote_object = getattr(self.instance,'export_{}'.format(self.channel))(record)
-				_logger.info("====END=====[res,remote_object]====%r",[res,remote_object])
 				if res:
 					self.create_mapping(record,remote_object)
 					success_ids.append(record.id)
@@ -250,23 +242,44 @@ class Transaction:
 					}
 				)
 
-	def getActionMessage(self, msg, success_ids, error_ids, create_ids, update_ids, last_id, debug, operation):
+	def getActionMessage(self, msg, success_ids, error_ids, create_ids, update_ids, last_id, debug, operation, ext_msg):
 		if success_ids:
-			msg += f"<div class='alert alert-success' role='alert'><h3 class='alert-heading'><i class='fa fa-smile-o'/>  Congratulations !</h3><hr><span class='badge badge-pill badge-success'>Success</span>Data of the {operation} has been successfully imported. <span class='font-weight-bold'> {len(success_ids)} records of {operation} has been created/updated at Odoo</span></div>"
+			msg += (f"<div class='alert alert-success' role='alert'>"
+					f"<h3 class='alert-heading'><i class='fa fa-smile-o'/>  Congratulations !</h3>"
+					f"<hr><span class='badge badge-pill badge-success'>Success</span>"
+					f"Data of the {operation} has been successfully imported. "
+					f"<span class='font-weight-bold'> {len(success_ids)} records of {operation} has been created/updated at Odoo</span></div>")
 			if debug == 'enable':
 				msg += f"<hr><div class='alert alert-success' role='alert'><br/>Ids of the records are <br/>{success_ids}.</div>"
 		if error_ids:
-			msg += f"<div class='alert alert-danger' role='alert'><h3 class='alert-heading'><i class='fa fa-frown-o'/>  Sorry !</h3><hr><span class='badge badge-pill badge-danger'>Success</span>Data of the {operation} has been failed to imported. <span class='font-weight-bold'> {len(error_ids)} records of {operation} has been failed to create/update at Odoo</span></div>"
+			msg += (f"<div class='alert alert-danger' role='alert'>"
+					f"<h3 class='alert-heading'><i class='fa fa-frown-o'/>  Sorry !</h3>"
+					f"<hr><span class='badge badge-pill badge-danger'>Success</span>"
+					f"Data of the {operation} has been failed to imported. "
+					f"<span class='font-weight-bold'> {len(error_ids)} records of {operation} has been failed to create/update at Odoo</span></div>")
 			if debug == 'enable':
 				msg += f"<hr><div class='alert alert-danger' role='alert'><br/>Failed records are <br/>{error_ids}.</div>"
 		if create_ids:
-			msg += f"<div class='alert alert-warning' role='alert'><h3 class='alert-heading'><i class='fa fa-check-circle'/>  Great !</h3><hr><span class='badge badge-pill badge-warning'>Imported</span>Data of the {operation} has been successfully created. <span class='font-weight-bold'> {len(create_ids)} records of {operation} has been created at Odoo</span></div>"
+			msg += (f"<div class='alert alert-warning' role='alert'>"
+					f"<h3 class='alert-heading'><i class='fa fa-check-circle'/>  Great !</h3>"
+					f"<hr><span class='badge badge-pill badge-warning'>Imported</span>"
+					f"Data of the {operation} has been successfully created. "
+					f"<span class='font-weight-bold'> {len(create_ids)} records of {operation} has been created at Odoo</span></div>")
 			if debug == 'enable':
 				msg += f"<hr><div class='alert alert-warning' role='alert'><br/>Ids of the records are <br/>{create_ids}.</div>"
 		if update_ids:
-			msg += f"<div class='alert alert-warning' role='alert'><h3 class='alert-heading'><i class='fa fa-check-circle'/>  Yippee !</h3><hr><span class='badge badge-pill badge-warning'>Updated</span>Data of the {operation} has been successfully updated. <span class='font-weight-bold'> {len(update_ids)} records of {operation} has been updated at Odoo</span></div>"
+			msg += (f"<div class='alert alert-warning' role='alert'>"
+					f"<h3 class='alert-heading'><i class='fa fa-check-circle'/>  Yippee !</h3>"
+					f"<hr><span class='badge badge-pill badge-warning'>Updated</span>"
+					f"Data of the {operation} has been successfully updated. "
+					f"<span class='font-weight-bold'> {len(update_ids)} records of {operation} has been updated at Odoo</span></div>")
 			if debug == 'enable':
 				msg += f"<hr><div class='alert alert-warning' role='alert'><br/>Ids of the records are <br/>{update_ids}.</div>"
+		if ext_msg:
+			msg += (f"<div class='alert alert-info' role='alert'>"
+					f"<h3 class='alert-heading'><i class='fa fa-info-circle'/>  Info !</h3>"
+					f"<hr><span class='badge badge-pill badge-info'>Information</span>"
+					f"Data of the {operation} has been failed to imported. <span class='font-weight-bold'> {ext_msg} </span></div>")
 		if last_id:
 			msg += f"<hr><span class='badge badge-pill badge-info'>Last Imported Record :{last_id}.</span>"
 		return msg

@@ -53,7 +53,7 @@ class MultiChannelSkeleton(models.TransientModel):
                     backorder_obj = self.env['stock.backorder.confirmation'].create({'pick_ids': [(4, picking.id)]})
                     backorder_obj.with_context(context).process_cancel_backorder()
                 else:
-                    picking.with_context(context).action_done()
+                    picking.with_context(context)._action_done()
                 status_message += "Order==> Shipped. "
         except Exception as e:
             status = False

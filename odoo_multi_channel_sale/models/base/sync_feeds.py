@@ -20,6 +20,15 @@ class MultiChannelSale(models.Model):
 			channel_vals: dict(channel_id=id)
 		"""
 		self.ensure_one()
+		contextualize_data = dict()
+		context = dict(self._context)
+		contextualize_data.update(dict(self.env['wk.feed'].contextualize_mappings('order',self.ids)._context))
+		contextualize_data.update(dict(self.env['wk.feed'].contextualize_mappings('product',self.ids)._context))
+		contextualize_data.update(dict(self.env['wk.feed'].contextualize_mappings('category',self.ids)._context))
+		contextualize_data.update(dict(self.env['wk.feed'].contextualize_feeds('category',self.ids)._context))
+		contextualize_data.update(dict(self.env['wk.feed'].contextualize_feeds('product',self.ids)._context))
+		contextualize_data.update(context)
+		self = self.with_context(contextualize_data)
 		message=''
 		try:
 			partner_vals = kwargs.get('partner_vals')
@@ -29,13 +38,13 @@ class MultiChannelSale(models.Model):
 
 			if partner_vals:
 				message += self.sync_partner_feeds(
-					partner_vals, channel_vals= channel_vals)[0].get('message', '')
+					partner_vals, channel_vals= channel_vals).get('message', '')
 			if kwargs.get('category_vals'):
 				message += self.sync_category_feeds(
-					category_vals, channel_vals= channel_vals)[0].get('message', '')
+					category_vals, channel_vals= channel_vals).get('message', '')
 			if kwargs.get('product_vals'):
 				message += self.sync_product_feeds(
-					product_vals, channel_vals= channel_vals)[0].get('message', '')
+					product_vals, channel_vals= channel_vals).get('message', '')
 			ObjModel = self.env['order.feed']
 			for val in vals :
 				obj = ObjModel.search([('store_id','=',val.get('store_id'))])

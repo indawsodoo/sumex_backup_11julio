@@ -92,10 +92,22 @@
 			</field>
 		</record>
 
+		<record id="channel_partner_mapping_pivot" model="ir.ui.view">
+			<field name="name">channel.partner.mappings.pivot</field>
+			<field name="model">channel.partner.mappings</field>
+			<field name="type">pivot</field>
+			<field name="arch" type="xml">
+				<pivot>
+					<field name="channel_id" type = "col"/>
+					<field name="create_date" type= "row" interval ="day"/>
+				</pivot>
+			</field>
+		</record>
+
 		<record id="channel_parnter_mapping_action_id" model="ir.actions.act_window">
 			<field name="name">Channel Partner Mappings</field>
 			<field name="res_model">channel.partner.mappings</field>
-			<field name="view_mode">tree,form</field>
+			<field name="view_mode">tree,form,pivot</field>
 			<field name="context">
 			{
 				"search_default_filter_by_ecom_store":0

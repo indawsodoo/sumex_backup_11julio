@@ -9,7 +9,7 @@ from odoo import models
 
 class sumex_apps_imports_csv_import_sage_ventas_albaranes_cabeceras(models.AbstractModel):
 
-	_description = "modulo importador"
+	_description = __name__
 
 	_import_fields = [
 

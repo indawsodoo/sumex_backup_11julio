@@ -1,4 +1,4 @@
 # ---> VisualStudioCode
 *.pyc
 __pycache__
-
+importadores/photostock_cache_files/*

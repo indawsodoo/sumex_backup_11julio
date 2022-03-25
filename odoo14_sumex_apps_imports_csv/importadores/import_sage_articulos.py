@@ -9,7 +9,7 @@ from odoo import models
 
 class sumex_apps_imports_csv_import_sage_articulos(models.AbstractModel):
 
-	_description = "modulo importador"
+	_description = __name__
 
 	_import_fields = [
 
@@ -241,6 +241,15 @@ class sumex_apps_imports_csv_import_sage_articulos(models.AbstractModel):
 		if not file_csv_content_row['descripcionarticulo']:
 			warnings.append("La columna 'descripcion artículo' no contiene valor, se reemplazará por un valor aleatorio")
 
+		product_referencia = file_csv_content_row['codigoarticulo']
+		row = self.get_model('product.template').search([
+			('default_code', '=', product_referencia),
+			('company_id', '=', company_id),
+			('active', 'in', [True, False])
+		], limit = 1)
+		if row:
+			warnings.append("El producto con referencia '%s' ya existe" % product_referencia)
+
 		if warnings:
 			return {'warning': ("; ").join(warnings)}
 
@@ -253,8 +262,15 @@ class sumex_apps_imports_csv_import_sage_articulos(models.AbstractModel):
 			El formulario dispone de un botón de test, ese botón ejecuta este método "validate_row" sin realizar la importación, y el log recoge los resultados
 			El retorno se asumirá como correcto al no ser que se retorne {'error':}
 		"""
-
 		product_referencia = file_csv_content_row['codigoarticulo']
+		row = self.get_model('product.template').search([
+			('default_code', '=', product_referencia),
+			('company_id', '=', company_id),
+			('active', 'in', [True, False])
+		], limit = 1)
+		if row:
+			return
+
 		product_name = file_csv_content_row['descripcionarticulo']
 		if product_name:
 			product_name = product_name.title()
@@ -272,7 +288,19 @@ class sumex_apps_imports_csv_import_sage_articulos(models.AbstractModel):
 			pass
 		descripcion = file_csv_content_row['comentarioarticulo']
 
-		product_template = self.env['sumex_apps_imports_csv_library'].sudo().get_or_create_product_template(
+		# Hemos decidido no crear productos, solo updatar, porque previamente importamos productos de prestashop, y no queremos introducir en odoo productos que no sean estos.
+		# product_template = self.env['sumex_apps_imports_csv_library'].get_or_create_product_template(
+		# 	company_id = company_id,
+		# 	product_referencia = product_referencia,
+		# 	product_name = product_name,
+		# 	descripcion = descripcion,
+		# 	precio_venta = precio_venta,
+		# 	precio_compra = precio_compra
+		# )
+		# if isinstance(product_template, dict) and 'error' in product_template:
+		# 	return product_template
+
+		product_template = self.env['sumex_apps_imports_csv_library'].get_or_create_product_template(
 			company_id = company_id,
 			product_referencia = product_referencia,
 			product_name = product_name,
@@ -285,7 +313,7 @@ class sumex_apps_imports_csv_import_sage_articulos(models.AbstractModel):
 
 		# marca
 		marca_nombre = file_csv_content_row['marcaproducto']
-		result = self.env['sumex_apps_imports_csv_library'].sudo().get_or_create_marca(product_template, marca_nombre)
+		result = self.env['sumex_apps_imports_csv_library'].get_or_create_marca(product_template, marca_nombre)
 		if isinstance(result, dict) and 'error' in result:
 			return result
 

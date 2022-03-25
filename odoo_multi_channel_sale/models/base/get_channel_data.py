@@ -58,7 +58,7 @@ class MultiChannelSale(models.Model):
 		try:
 			return date_time and fields.Datetime.from_string(date_time).isoformat()
 		except Exception as e:
-			_logger.info("==%r="%(e))
+			_logger.exception("==%r="%(e))
 
 	@api.model
 	def get_state_id(self, state_code, country_id, state_name=None):

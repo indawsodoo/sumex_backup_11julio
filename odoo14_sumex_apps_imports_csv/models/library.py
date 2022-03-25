@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models
-
+from odoo.exceptions import UserError
 
 class sumex_apps_imports_csv_library(models.AbstractModel):
 
@@ -65,7 +65,7 @@ class sumex_apps_imports_csv_library(models.AbstractModel):
 			return False
 
 		""" CUIDADO, NO HACER QUERIES COMO EN PROVINCIAS, PORQUE LOS NOMBRES DE PAISES ESTÁN EN INGLÉS, Y EL ORM HACE LA BUSQUEDA TRADUCIDA, EL SQL A PELO NO """
-		country = self.env['res.country'].sudo().search([('name', 'ilike', country_name)], limit=1)
+		country = self.get_model('res.country').search([('name', 'ilike', country_name)], limit=1)
 		if country:
 			return country
 
@@ -87,12 +87,12 @@ class sumex_apps_imports_csv_library(models.AbstractModel):
 		row = self.env.cr.fetchall()
 		if row:
 			id = row[0][0]
-			state = self.env['res.country.state'].sudo().browse(id)
+			state = self.get_model('res.country.state').browse(id)
 			return state
 
 	def get_or_create_product_template(self, company_id, product_referencia, product_name, descripcion, precio_venta, precio_compra):
 
-		model = self.env['product.template'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
+		model = self.get_model('product.template')
 		row = model.search([
 			('default_code', '=', product_referencia),
 			('company_id', '=', company_id),
@@ -135,7 +135,7 @@ class sumex_apps_imports_csv_library(models.AbstractModel):
 
 		if not marca_nombre:
 			marca_nombre = "no-name"
-		photostock_marca_model = self.env['product.brand'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
+		photostock_marca_model = self.get_model('product.brand')
 		marca_nombre = marca_nombre.title()
 		marca_row = photostock_marca_model.search([('name', '=', marca_nombre)], limit=1)
 		if marca_row:
@@ -220,7 +220,7 @@ class sumex_apps_imports_csv_library(models.AbstractModel):
 		if parent_id:
 			values['parent_id'] = parent_id
 
-		model_res_partner = self.env['res.partner'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
+		model_res_partner = self.get_model('res.partner')
 		partner = model_res_partner.search(domain, limit=1)
 		if not partner:
 			try:
@@ -241,7 +241,7 @@ class sumex_apps_imports_csv_library(models.AbstractModel):
 
 	def get_or_create_payment_term(self, payment_name):
 
-		model_account_payment = self.env['account.payment.term'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
+		model_account_payment = self.get_model('account.payment.term')
 		payment_term = model_account_payment.search([
 			('name', '=', payment_name),
 			('active', 'in', [True, False])
@@ -252,13 +252,13 @@ class sumex_apps_imports_csv_library(models.AbstractModel):
 			payment_term = model_account_payment.create({'name': payment_name})
 			payment_term._cr.commit()
 		except Exception as e:
-			exception_msg = self.env['sumex_apps_imports_csv_library'].rollback_and_get_exception_msg(str(e))
+			exception_msg = self.rollback_and_get_exception_msg(str(e))
 			return {'error': exception_msg}
 		return payment_term
 
 	def get_or_create_location(self, company_id, location_parent_name, location_name, posx = 0, posy = 0, posz = 0):
 
-		stock_model = self.env['stock.location'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
+		stock_model = self.get_model('stock.location')
 		location_parent_id = False
 		if location_parent_name:
 			location_parent = stock_model.search([
@@ -280,7 +280,7 @@ class sumex_apps_imports_csv_library(models.AbstractModel):
 				location_row = location_row.create({'name': location_name})
 				stock_model._cr.commit()
 			except Exception as e:
-				exception_msg = self.env['sumex_apps_imports_csv_library'].rollback_and_get_exception_msg(str(e))
+				exception_msg = self.rollback_and_get_exception_msg(str(e))
 				return {'error': exception_msg}
 		try:
 			location_row.write({
@@ -292,16 +292,16 @@ class sumex_apps_imports_csv_library(models.AbstractModel):
 			})
 			stock_model._cr.commit()
 		except Exception as e:
-			exception_msg = self.env['sumex_apps_imports_csv_library'].rollback_and_get_exception_msg(str(e))
+			exception_msg = self.rollback_and_get_exception_msg(str(e))
 			return {'error': exception_msg}
 
 		return location_row
 
 	def get_or_create_company(self, company_id, company_name, vat, country_name, state_name, domicilio, ciudad, cp, telefono, email):
 
-		country = self.env['sumex_apps_imports_csv_library'].sudo().get_country(country_name)
-		state = self.env['sumex_apps_imports_csv_library'].sudo().get_state(country, state_name)
-		company_model = self.env['res.company'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
+		country = self.get_country(country_name)
+		state = self.get_state(country, state_name)
+		company_model = self.get_model('res.company')
 		company_row = company_model.search([('name', '=', company_name)], limit=1)
 		if not company_row:
 			try:
@@ -318,7 +318,7 @@ class sumex_apps_imports_csv_library(models.AbstractModel):
 				})
 				company_model._cr.commit()
 			except Exception as e:
-				exception_msg = self.env['sumex_apps_imports_csv_library'].rollback_and_get_exception_msg(str(e))
+				exception_msg = self.rollback_and_get_exception_msg(str(e))
 				return {'error': exception_msg}
 		try:
 			company_row.write({
@@ -334,7 +334,22 @@ class sumex_apps_imports_csv_library(models.AbstractModel):
 			})
 			company_model._cr.commit()
 		except Exception as e:
-			exception_msg = self.env['sumex_apps_imports_csv_library'].rollback_and_get_exception_msg(str(e))
+			exception_msg = self.rollback_and_get_exception_msg(str(e))
 			return {'error': exception_msg}
 
 		return company_row
+
+	def get_model(self, model_name):
+
+		try:
+			import_name = self._context['from_import_csv_name']
+		except Exception as e:
+			raise UserError(str(e))
+
+		import_name_parts = import_name.split(".")
+		import_name = import_name_parts[-1]
+		try:
+			model = self.env[model_name].sudo().with_context(from_import_csv = True, from_import_csv_name = import_name, mail_create_nosubscribe = True, tracking_disable = True)
+		except Exception as e:
+			raise UserError(str(e))
+		return model

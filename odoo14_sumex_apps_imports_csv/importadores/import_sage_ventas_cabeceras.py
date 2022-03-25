@@ -4,12 +4,13 @@
 	ESTE IMPORTADOR USA CAMPOS EXTENDIDOS EN EL MODULO 'sumex_apps_sage_inherits'
 """
 
+from datetime import date
 from odoo import models
 
 
 class sumex_apps_imports_csv_import_sage_ventas_cabeceras(models.AbstractModel):
 
-	_description = "modulo importador"
+	_description = __name__
 
 	_import_fields = [
 
@@ -261,6 +262,15 @@ class sumex_apps_imports_csv_import_sage_ventas_cabeceras(models.AbstractModel):
 			Se puede retornar {'error':''} {'warning':''} o {'info':''} o simplemente nada.
 		"""
 
+		fecha_pedido = self._get_fecha_pedido(file_csv_content_row)
+		if not fecha_pedido:
+			return {'error': "No se ha podido hallar una fecha de pedido"}
+
+		todays_date = date.today()
+		fecha_parts = fecha_pedido.split("-")
+		if int(fecha_parts[0]) < (todays_date.year - 5):
+			return
+
 		nombre_partner = file_csv_content_row['nombre']
 		nombre_partner_company = file_csv_content_row['razonsocial']
 		ciudad = self._get_ciudad(file_csv_content_row, 'municipio')
@@ -307,6 +317,12 @@ class sumex_apps_imports_csv_import_sage_ventas_cabeceras(models.AbstractModel):
 			El retorno se asumirá como correcto al no ser que se retorne {'error':}
 		"""
 
+		todays_date = date.today()
+		fecha_pedido = self._get_fecha_pedido(file_csv_content_row)
+		fecha_parts = fecha_pedido.split("-")
+		if int(fecha_parts[0]) < (todays_date.year - 5):
+			return
+
 		nombre_partner = file_csv_content_row['nombre'].title()
 		nombre_partner_company = file_csv_content_row['razonsocial'].title()
 		if nombre_partner_company:
@@ -317,7 +333,7 @@ class sumex_apps_imports_csv_import_sage_ventas_cabeceras(models.AbstractModel):
 		state = self._get_state(country, file_csv_content_row['colamunicipio'])
 		cp = self._get_cp(file_csv_content_row, 'codigopostal')
 
-		partner = self.env['sumex_apps_imports_csv_library'].sudo().get_or_create_partner(
+		partner = self.env['sumex_apps_imports_csv_library'].get_or_create_partner(
 			is_company = False,
 			company_id = company_id,
 			nombre = nombre_partner,
@@ -358,7 +374,7 @@ class sumex_apps_imports_csv_import_sage_ventas_cabeceras(models.AbstractModel):
 		# forma de pago
 		payment_term_name = file_csv_content_row['formadepago']
 		if payment_term_name:
-			payment_term = self.env['sumex_apps_imports_csv_library'].sudo().get_or_create_payment_term(payment_term_name)
+			payment_term = self.env['sumex_apps_imports_csv_library'].get_or_create_payment_term(payment_term_name)
 			list_values['payment_term_id'] = payment_term.id
 			changes += 1
 
@@ -366,6 +382,10 @@ class sumex_apps_imports_csv_import_sage_ventas_cabeceras(models.AbstractModel):
 		fecha_pedido = self._get_fecha_pedido(file_csv_content_row)
 		if fecha_pedido:
 			list_values['date_order'] = fecha_pedido
+			# list_values['validity_date'] = fecha_pedido  # no se asigna
+			# list_values['commitment_date'] = fecha_pedido  # no se asigna
+			# list_values['expected_date'] = fecha_pedido  # no se asigna
+			# list_values['effective_date'] = fecha_pedido  # no se asigna
 			changes += 1
 
 		if changes:
@@ -379,7 +399,7 @@ class sumex_apps_imports_csv_import_sage_ventas_cabeceras(models.AbstractModel):
 		return True
 
 	def _get_fecha_pedido(self, file_csv_content_row):
-		for fecha_campo in ['fechanecesaria', 'fechaentrega', 'fechatope']:
+		for fecha_campo in ['fechanecesaria', 'fechapedido', 'fechaentrega', 'fechatope']:
 			fecha_pedido = file_csv_content_row[fecha_campo]
 			if fecha_pedido:
 				fecha_pedido = self.env['sumex_apps_imports_csv_library'].get_sql_fecha(fecha_pedido)
@@ -388,7 +408,7 @@ class sumex_apps_imports_csv_import_sage_ventas_cabeceras(models.AbstractModel):
 
 	def _get_order(self, company_id, file_csv_content_row):
 
-		order_model = self.env['sale.order'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
+		order_model = self.env['sumex_apps_imports_csv_library'].get_model('sale.order')
 		sage_numero_pedido = file_csv_content_row['numeropedido']
 		if not company_id:
 			company_id = self.env.user.company_id.id
@@ -404,7 +424,7 @@ class sumex_apps_imports_csv_import_sage_ventas_cabeceras(models.AbstractModel):
 
 	def _create_order(self, company_id, file_csv_content_row, partner_id):
 
-		order_model = self.env['sale.order'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
+		order_model = self.env['sumex_apps_imports_csv_library'].get_model('sale.order')
 		if not company_id:
 			company_id = self.env.user.company_id.id
 		try:
@@ -421,21 +441,21 @@ class sumex_apps_imports_csv_import_sage_ventas_cabeceras(models.AbstractModel):
 
 	def _get_country(self, country_name):
 
-		return self.env['sumex_apps_imports_csv_library'].sudo().get_country(country_name)
+		return self.env['sumex_apps_imports_csv_library'].get_country(country_name)
 
 	def _get_state(self, country, state_name):
 
-		return self.env['sumex_apps_imports_csv_library'].sudo().get_state(country, state_name)
+		return self.env['sumex_apps_imports_csv_library'].get_state(country, state_name)
 
 	def _get_cp(self, file_csv_content_row, fieldname):
 
-		return self.env['sumex_apps_imports_csv_import_sage_clientes'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True).get_cp(file_csv_content_row, fieldname)
+		return self.env['sumex_apps_imports_csv_import_sage_clientes'].get_cp(file_csv_content_row, fieldname)
 
 	def _get_ciudad(self, file_csv_content_row, fieldname):
 
-		return self.env['sumex_apps_imports_csv_import_sage_clientes'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True).get_ciudad(file_csv_content_row, fieldname)
+		return self.env['sumex_apps_imports_csv_import_sage_clientes'].get_ciudad(file_csv_content_row, fieldname)
 
 	def _get_cif(self, file_csv_content_row, fieldname):
 
-		return self.env['sumex_apps_imports_csv_import_sage_clientes'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True).get_cif(file_csv_content_row, fieldname)
+		return self.env['sumex_apps_imports_csv_import_sage_clientes'].get_cif(file_csv_content_row, fieldname)
 

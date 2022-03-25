@@ -96,7 +96,7 @@ class sumex_apps_imports_csv(models.Model):
 			raise UserError("Has de seleccionar 'Nombre de importador'")
 
 		try:
-			import_obj = self.env[self.import_name].sudo()
+			import_obj = self.env[self.import_name].sudo().with_context(from_import_csv=True, from_import_csv_name = self.import_name, mail_create_nosubscribe=True, tracking_disable=True)
 		except Exception as e:
 			raise UserError(str(e))
 
@@ -155,7 +155,10 @@ class sumex_apps_imports_csv(models.Model):
 		})
 
 		if hasattr(import_obj, 'hook_pre_process'):
-			import_obj.hook_pre_process(self.company_id.id, file_csv_header, file_csv_content)
+			result = import_obj.hook_pre_process(self.company_id.id, file_csv_header, file_csv_content)
+			if isinstance(result, dict) and 'error' in result:
+				self._insert_log(self.id, 'error', False, result['error'])
+				return False
 
 		#  Importar lineas
 		file_csv_content_total_rows = len(file_csv_content) + 1
@@ -204,7 +207,11 @@ class sumex_apps_imports_csv(models.Model):
 		row._cr.commit()
 
 		if hasattr(import_obj, 'hook_post_process'):
-			import_obj.hook_post_process(self.company_id.id, file_csv_header, file_csv_content_row_dict, file_csv_content)
+			result = import_obj.hook_post_process(self.company_id.id, file_csv_header, file_csv_content_row_dict, file_csv_content)
+			if isinstance(result, dict) and 'error' in result:
+				self._insert_log(self.id, 'error', False, result['error'])
+				return False
+
 
 	def _read_csv_content(self):
 
@@ -240,7 +247,7 @@ class sumex_apps_imports_csv(models.Model):
 
 	def _get_row(self):
 
-		row = self.env['sumex_apps_imports_csv'].sudo().search([['id', '=', self.id]], limit=1)
+		row = self.env['sumex_apps_imports_csv'].sudo().with_context(from_import_csv=True, from_import_csv_name = self.import_name, mail_create_nosubscribe=True, tracking_disable=True).search([['id', '=', self.id]], limit=1)
 		if not row:
 			return False
 		return row
@@ -362,12 +369,12 @@ class sumex_apps_imports_csv(models.Model):
 
 	def _clear_log(self, import_id):
 
-		import_logger_obj = self.env['sumex_apps_imports_csv_logger'].sudo()
+		import_logger_obj = self.env['sumex_apps_imports_csv_logger'].sudo().with_context(mail_create_nosubscribe=True, tracking_disable=True)
 		import_logger_obj._clear_log(import_id)
 
 	def _insert_log(self, import_id, type, line_num, message):
 
-		import_logger_obj = self.env['sumex_apps_imports_csv_logger'].sudo()
+		import_logger_obj = self.env['sumex_apps_imports_csv_logger'].sudo().with_context(mail_create_nosubscribe=True, tracking_disable=True)
 		import_logger_obj._insert_log(import_id, type, line_num, message)
 
 	def _update(self, dict_values):
@@ -408,7 +415,7 @@ class sumex_apps_imports_csv_logger(models.Model):
 
 	def _clear_log(self, import_id):
 
-		import_logger_obj = self.env['sumex_apps_imports_csv_logger'].sudo()
+		import_logger_obj = self.env['sumex_apps_imports_csv_logger'].sudo().with_context(mail_create_nosubscribe=True, tracking_disable=True)
 		obj_rows = import_logger_obj.search([('import_id', '=', import_id)])
 		if obj_rows:
 			obj_rows.sudo().unlink()
@@ -416,7 +423,7 @@ class sumex_apps_imports_csv_logger(models.Model):
 
 	def _insert_log(self, import_id, type, line_num, message):
 
-		import_logger_obj = self.env['sumex_apps_imports_csv_logger'].sudo()
+		import_logger_obj = self.env['sumex_apps_imports_csv_logger'].sudo().with_context(mail_create_nosubscribe=True, tracking_disable=True)
 		if not line_num:
 			line_num = 0
 		import_logger_obj.sudo().create({

@@ -8,8 +8,6 @@ from odoo import api,fields,models
 
 
 class MultiChannelSaleConfig(models.TransientModel):
-	_name = 'multi.channel.sale.config'
-	_description = 'Multi Channel Sale Config'
 	_inherit = 'res.config.settings'
 
 	cron_import_partner = fields.Many2one('ir.cron','Import Customer Scheduler',readonly=True)
@@ -38,12 +36,12 @@ class MultiChannelSaleConfig(models.TransientModel):
 		super(MultiChannelSaleConfig,self).set_values()
 		IrDefault = self.env['ir.default'].sudo()
 		IrDefault.set(
-			'multi.channel.sale.config',
+			'res.config.settings',
 			'avoid_duplicity',
 			self.avoid_duplicity
 		)
 		IrDefault.set(
-			'multi.channel.sale.config',
+			'res.config.settings',
 			'avoid_duplicity_using',
 			self.avoid_duplicity_using
 		)
@@ -55,9 +53,9 @@ class MultiChannelSaleConfig(models.TransientModel):
 		IrDefault = self.env['ir.default'].sudo()
 		res.update(
 			{
-				'avoid_duplicity': IrDefault.get('multi.channel.sale.config','avoid_duplicity'),
+				'avoid_duplicity': IrDefault.get('res.config.settings','avoid_duplicity'),
 				'avoid_duplicity_using': IrDefault.get(
-					'multi.channel.sale.config',
+					'res.config.settings',
 					'avoid_duplicity_using' or 'both',
 				),
 				'cron_import_partner': self.env.ref('odoo_multi_channel_sale.cron_import_partner').id,
@@ -68,3 +66,13 @@ class MultiChannelSaleConfig(models.TransientModel):
 			}
 		)
 		return res
+
+
+class MultiChannelSaleConfigOld(models.TransientModel):
+	_name = 'multi.channel.sale.config'
+	"""
+	This class will be removed with 15.0 release.
+	keeping it here to not cause any breakage while delivering 
+	an update to customers who already using the older version.
+	"""
+	pass

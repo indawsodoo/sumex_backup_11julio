@@ -34,9 +34,6 @@
 						name ="wk_product_id_type"
 						attrs="{'invisible':[('product_variant_count','>',1)]}"
 					/>
-					<field
-						name ="prestashop_online"
-					/>
 				</field>
 				<xpath expr="//page[last()]" position="after">
 					<page

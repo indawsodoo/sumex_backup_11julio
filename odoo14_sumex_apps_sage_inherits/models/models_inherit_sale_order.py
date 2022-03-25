@@ -7,7 +7,7 @@ class sumex_apps_sage_inherits_sage_sale_order_inherit(models.Model):
 
 	_inherit = 'sale.order'
 
-	_created_from_sumex_apps_imports_csv_of_sage = fields.Boolean("From import CSV of Sage", required = False)
+	_created_from_sumex_apps_imports_csv_of_sage_ventas = fields.Boolean("From import CSV of Sage Ventas", required = False)
 
 	_sage_field_nacion = fields.Char(required = False, string = '_sage_field_nacion')
 	_sage_field_razonsocial = fields.Char(required = False, string = '_sage_field_razonsocial')
@@ -233,16 +233,16 @@ class sumex_apps_sage_inherits_sage_sale_order_inherit(models.Model):
 	@api.model
 	def create(self, vals_list):
 
-		if 'from_import_csv' not in self._context:
+		if 'from_import_csv_name' not in self._context or self._context['from_import_csv_name'] != 'sumex_apps_imports_csv_import_sage_ventas_cabeceras':
 			return super(sumex_apps_sage_inherits_sage_sale_order_inherit, self).create(vals_list)
-		vals_list['_created_from_sumex_apps_imports_csv_of_sage'] = True
+		vals_list['_created_from_sumex_apps_imports_csv_of_sage_ventas'] = True
 		rows = super(sumex_apps_sage_inherits_sage_sale_order_inherit, self).create(vals_list)
 		return rows
 
 	def write(self, vals_list):
 
-		if 'from_import_csv' not in self._context:
+		if 'from_import_csv_name' not in self._context or self._context['from_import_csv_name'] != 'sumex_apps_imports_csv_import_sage_ventas_cabeceras':
 			return super(sumex_apps_sage_inherits_sage_sale_order_inherit, self).write(vals_list)
-		vals_list['_created_from_sumex_apps_imports_csv_of_sage'] = True
+		vals_list['_created_from_sumex_apps_imports_csv_of_sage_ventas'] = True
 		rows = super(sumex_apps_sage_inherits_sage_sale_order_inherit, self).write(vals_list)
 		return rows

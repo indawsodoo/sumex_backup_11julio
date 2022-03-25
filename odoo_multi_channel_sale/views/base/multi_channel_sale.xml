@@ -3,7 +3,7 @@
 <!-- See LICENSE file for full copyright and licensing details. -->
 <!--"License URL :<https://store.webkul.com/license.html/>" -->
 <odoo>
-	<record id="multi_channel_view_kanban" model="ir.ui.view">
+		<record id="multi_channel_view_kanban" model="ir.ui.view">
 		<field name="name">multi.channel.sale.kanban</field>
 		<field name="model">multi.channel.sale</field>
 		<field name="type">kanban</field>
@@ -22,8 +22,8 @@
 				<templates>
 					<t t-name="kanban-box">
 						<div
-							t-attf-class="#{kanban_color(record.color_index.raw_value)} oe_kanban_global_click_edit"
-							style="padding-left:10px; height:165px; width:350px;"
+							t-attf-class="#{kanban_color(record.color_index.raw_value)} oe_kanban_global_click"
+							style="padding-left:10px; height:225px; width:350px;"
 						>
 							<div class="o_project_kanban_manage">
 								<a
@@ -37,84 +37,92 @@
 							</div>
 							<div class="o_project_kanban_main wk_o_project_kanban_main">
 								<div
-									class="o_kanban_card_content o_visible oe_kanban_global_click container"
-									style="display:block;position: absolute;top: 5px;"
+									class="o_kanban_card_content o_visible oe_kanban_global_click"
+									style="display:block"
 								>
-									<div class="o_kanban_primary_left">
-										<div>
-											<field name="image" widget="image" class="oe_avatar" options="{'preview_image': 'image'}"/>
-											<h5 style="padding-top: 10px;"><t t-esc="record.name.value"/> Connector</h5>
-										</div>
-									</div>
 								</div>
+								<div
+									class="o_project_kanban_boxes"
+									style="text-align:center;display:grid;top:0;position:absolute;left:0"
+								>
+									<a
+										class="o_project_kanban_box m-0 card text-white bg-success rounded-0 text-decoration-none"
+										name ="open_record_view"
+										type ="object"
+										style="
+											padding         :5%;
+											min-height		: 56px;
+											min-width	    : 115%;
+										"
+										context="{
+											'mapping_model'     :'channel.template.mappings',
+											'odoo_mapping_field':'odoo_template_id',
+										}"
+									>
+										<span class="o_value" style="overflow:visible !important;font-size:18px">
+											<t t-esc="record.channel_products.value"/>
+										</span>
+										<span class="o_label" style="overflow:visible !important;">Products</span>
+									</a>
 
-								<div class="card-body container px-2 py-2">
-									<div class="row m-0">
-										<div class="col-6 p-1">
-											<button
-												class="_action data_cell btn d-flex justify-content-between w-100"
-												data-object="product"
-												t-att-data-channel="record.id"
-												name ="open_record_view"
-												style="border: 1px solid #BABABA; padding: 0px !important;"
-											>
-												<div
-													class="col-4"
-													style="background: #EFEFEF;"
-													t-esc="record.channel_products.value"
-												/>
-												<div class="col-8 font-weight-bold" style="text-align:left; border-left: 1px solid lightgray;">Product</div>
-											</button>
-										</div>
-										<div class="col-6 p-1">
-											<button
-												class="_action data_cell btn d-flex justify-content-between w-100"
-												data-object="order"
-												t-att-data-channel="record.id"
-												name ="open_record_view"
-												style="border: 1px solid #BABABA; padding: 0px !important;"
-											>
-												<div
-													class="col-4"
-													style="background: #EFEFEF;"
-													t-esc="record.channel_orders.value"
-												/>
-												<div class="col-8 font-weight-bold" style="text-align:left; border-left: 1px solid lightgray;">Order</div>
-											</button>
-										</div>
-										<div class="col-6 p-1">
-											<button
-												class="_action data_cell btn d-flex justify-content-between w-100"
-												data-object="category"
-												t-att-data-channel="record.id"
-												name ="open_record_view"
-												style="border: 1px solid #BABABA; padding: 0px !important;"
-											>
-												<div
-													class="col-4"
-													style="background: #EFEFEF;"
-													t-esc="record.channel_categories.value"
-												/>
-												<div class="col-8 font-weight-bold" style="text-align:left; border-left: 1px solid lightgray;">Category</div>
-											</button>
-										</div>
-										<div class="col-6 p-1">
-											<button
-												class="_action data_cell btn d-flex justify-content-between w-100"
-												data-object="customer"
-												t-att-data-channel="record.id"
-												name ="open_record_view"
-												style="border: 1px solid #BABABA; padding: 0px !important;"
-											>
-												<div
-													class="col-4"
-													style="background: #EFEFEF;"
-													t-esc="record.channel_customers.value"
-												/>
-												<div class="col-8 font-weight-bold" style="text-align:left; border-left: 1px solid lightgray;">Customer</div>
-											</button>
-										</div>
-									</div>
+									<a
+										class="o_project_kanban_box m-0 card text-white bg-info rounded-0 text-decoration-none"
+										name ="open_record_view"
+										type ="object"
+										style="
+											padding        : 5%;
+											min-height	   : 56px;
+											min-width	   : 115%;
+										"
+										context="{
+											'mapping_model'     :'channel.order.mappings',
+											'odoo_mapping_field':'odoo_order_id',
+										}"
+									>
+										<span class="o_value" style="overflow:visible !important;font-size:18px">
+											<t t-esc="record.channel_orders.value"/>
+										</span>
+										<span class="o_label" style="overflow:visible !important">Orders</span>
+									</a>
+
+									<a
+										class="o_project_kanban_box m-0 card text-white bg-warning rounded-0 text-decoration-none"
+										name ="open_record_view"
+										type ="object"
+										style="
+											padding        : 5%;
+											min-height	   : 56px;
+											min-width	   : 115%;
+										"
+										context="{
+											'mapping_model':'channel.category.mappings',
+											'odoo_mapping_field':'odoo_category_id',
+										}"
+									>
+										<span class="o_value" style="overflow:visible !important;font-size:18px">
+											<t t-esc="record.channel_categories.value"/>
+										</span>
+										<span class="o_label" style="overflow:visible !important">Categories</span>
+									</a>
+									<a
+										class="o_project_kanban_box m-0 card text-white bg-danger rounded-0 text-decoration-none"
+										name ="open_record_view"
+										type ="object"
+										style="
+											padding        : 5%;
+											min-height	   : 56px;
+											min-width	   : 115%;
+										"
+										context="{
+											'mapping_model':'channel.partner.mappings',
+											'odoo_mapping_field':'odoo_partner_id',
+										}"
+									>
+										<span class="o_value" style="overflow:visible !important;font-size:18px">
+											<t t-esc="record.channel_customers.value"/>
+										</span>
+										<span class="o_label" style="overflow:visible !important">Customers</span>
+									</a>
 								</div>
 								<div class="container o_kanban_card_manage_pane dropdown-menu" role="menu">
 									<t t-call="MultiChannelDashboard"/>

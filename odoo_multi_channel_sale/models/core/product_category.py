@@ -25,6 +25,7 @@ class ProductCategory(models.Model):
 	)
 
 	def write(self, vals):
+		res = False
 		for record in self:
 			record.channel_mapping_ids.write({'need_sync': 'yes'})
 			res = super(ProductCategory, record).write(vals)

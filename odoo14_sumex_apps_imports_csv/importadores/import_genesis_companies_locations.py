@@ -10,8 +10,8 @@ from odoo.exceptions import UserError
 
 class sumex_apps_imports_csv_import_genesis_companies_locations(models.AbstractModel):
 
-	_description = "modulo importador"
-	
+	_description = __name__
+
 	_import_fields = [
 
 		# Campos que participan en la importacion del modelo
@@ -30,11 +30,32 @@ class sumex_apps_imports_csv_import_genesis_companies_locations(models.AbstractM
 
 	def hook_pre_process(self, company_id, file_csv_header, file_csv_content):
 
+		if not company_id:
+			raise UserError("Este importador necesita una compañía vinculada")
+
+		# Actualizo compañía
+		company_model = self.env['sumex_apps_imports_csv_library'].get_model('res.company')
+		company_row = company_model.search([('id', '=', 1)], limit=1)
+		if company_row.name.upper() != 'SUMEX S.A.':
+			country = self.env['sumex_apps_imports_csv_library'].get_country('España')
+			state = self.env['sumex_apps_imports_csv_library'].get_state(country, 'Barcelona')
+			company_row.write({
+				'name': 'SUMEX S.A.',
+				'city': 'Sant Joan Despí',
+				'zip': '08970',
+				'street': 'Montilla, 9',
+				'phone': '+34 93 373 67 13',
+				'email': 'racesport@sumex.com',
+				'vat': 'A-08-242992',
+				'country_id': country.id,
+				'state_id': state.id
+			})
+
 		# Creamos las empresas
 		companies = [
 			{
 				'name': "AMPLUSMART S.L.U​.",
-				'domicilio': "Cl Alguer 8",
+				'domicilio': "C/ Alguer 8",
 				'ciudad': "Sant Boi De Llobregat",
 				'cp': "08830",
 				'provincia': "Barcelona",
@@ -90,11 +111,18 @@ class sumex_apps_imports_csv_import_genesis_companies_locations(models.AbstractM
 				'telefono': "+1 305-591-4420",
 				'email': "manuel@sumex.com"
 			}
-		]
+]
+		almacen_principal = self.env['sumex_apps_imports_csv_library'].get_model('stock.warehouse').search([], limit = 1)
+		ubicacion_padre_code = almacen_principal.code
+		if not ubicacion_padre_code:
+			return {'error': "no se encuentra el code del almacen principal %s"% almacen_principal.name}
+		ubicacion_padre = self.env['sumex_apps_imports_csv_library'].get_model('stock.location').search([('name', '=', ubicacion_padre_code)], limit=1)
+		if not ubicacion_padre:
+			return {'error': "no se encuentra la ubicación padre de la ubicacion %s" % ubicacion_padre_code}
 
 		for company in companies:
 
-			result = self.env['sumex_apps_imports_csv_library'].sudo().get_or_create_company(
+			result = self.env['sumex_apps_imports_csv_library'].get_or_create_company(
 				company_id = False,
 				company_name = company['name'],
 				vat = company['cif'],
@@ -110,30 +138,31 @@ class sumex_apps_imports_csv_import_genesis_companies_locations(models.AbstractM
 				raise UserError(result['error'])
 
 		#  Creamos categoria de location tipo PLANTA
-		stock_storage_category_model = self.env['stock.storage.category'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
-		stock_storage_category_row = stock_storage_category_model.search([('name', '=', 'PLANTA')], limit = 1)
-		if not stock_storage_category_row:
-			try:
-				stock_storage_category_row = stock_storage_category_model.create({'name': 'PLANTA'})
-				stock_storage_category_row._cr.commit()
-			except Exception as e:
-				exception_msg = self.env['sumex_apps_imports_csv_library'].rollback_and_get_exception_msg(str(e))
-				raise UserError(exception_msg)
+		# stock_storage_category_model = self.env['sumex_apps_imports_csv_library'].get_model('stock.storage.category')
+		# stock_storage_category_row = stock_storage_category_model.search([('name', '=', 'PLANTA')], limit = 1)
+		# if not stock_storage_category_row:
+		# 	try:
+		# 		stock_storage_category_row = stock_storage_category_model.create({'name': 'PLANTA'})
+		# 		stock_storage_category_row._cr.commit()
+		# 	except Exception as e:
+		# 		exception_msg = self.env['sumex_apps_imports_csv_library'].rollback_and_get_exception_msg(str(e))
+		# 		raise UserError(exception_msg)
+		# storage_category_id = stock_storage_category_row.id
 
 		#  Creamos los locations padre
-		storage_category_id = stock_storage_category_row.id
-		stock_model = self.env['stock.location'].sudo().with_context(from_import_csv=True, mail_create_nosubscribe=True, tracking_disable=True)
+		stock_location_model = self.env['sumex_apps_imports_csv_library'].get_model('stock.location')
 		locations = ['PLANTA ARRIBA', 'PLANTA ABAJO']
 		for location in locations:
-			row = stock_model.search([('name', '=', location)])
+			row = stock_location_model.search([('name', '=', location)])
 			if not row:
 				try:
-					stock_model.create({
+					stock_location_model.create({
 						'company_id': company_id,
+						'location_id': ubicacion_padre.id,
 						'name': location,
-						'storage_category_id': storage_category_id
+						# 'storage_category_id': storage_category_id
 					})
-					stock_model._cr.commit()
+					stock_location_model._cr.commit()
 				except Exception as e:
 					exception_msg = self.env['sumex_apps_imports_csv_library'].rollback_and_get_exception_msg(str(e))
 					raise UserError(exception_msg)
@@ -211,7 +240,7 @@ class sumex_apps_imports_csv_import_genesis_companies_locations(models.AbstractM
 		if location_name >= 40000:
 			location_parent_name = "PLANTA ABAJO"
 
-		location = self.env['sumex_apps_imports_csv_library'].sudo().get_or_create_location(
+		location = self.env['sumex_apps_imports_csv_library'].get_or_create_location(
 			company_id = company_id,
 			location_parent_name = location_parent_name,
 			location_name = location_name,

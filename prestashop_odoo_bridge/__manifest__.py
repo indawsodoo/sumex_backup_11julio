@@ -67,6 +67,7 @@ Multiple marketplace platform""",
   "data"                 :  [
                             'security/ir.model.access.csv',
                             'data/data.xml',
+                            'views/dashboard.xml',
                             'views/channel_views.xml',
                             'wizard/import_operation.xml',
                             'wizard/export_operation.xml',

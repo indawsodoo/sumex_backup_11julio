@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_product_template_extrainfo_tree_" model="ir.ui.view">
+            <field name="name">view.product.template.extrainfo.tree</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="categ_id" position="after">
+                    <field name="last_purchase_price"/>
+                    <button icon="fa-share" name="%(indaws_product_extra_info.action_launch_wizard_product_template_purchases_info)d" string="" type="action"/>
+                    <field name="last_sale_price"/>
+                    <button icon="fa-share" name="%(indaws_product_extra_info.action_launch_wizard_product_template_sales_info)d" string="" type="action"/>
+                </field>
+            </field>
+        </record>
+        <record id="view_product_template_extrainfo_stock_tree_" model="ir.ui.view">
+            <field name="name">product.template.tree.extrainfo.stock.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="stock.view_stock_product_template_tree"/>
+            <field name="arch" type="xml">
+                <field name="qty_available" position="after">
+                    <button icon="fa-share"
+                            name="%(indaws_product_extra_info.action_launch_wizard_product_template_stock_info)d"
+                            string=""
+                            type="action"/>
+                </field>
+            </field>
+        </record>
+        <!-- Inherit Form View to Modify it -->
+        <record id="product_template_only_form_view_inherit_indaws_product_extra_info_" model="ir.ui.view">
+            <field name="name">product.template.product.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='default_code']" position="after">
+                    <field name="ean2"/>
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>

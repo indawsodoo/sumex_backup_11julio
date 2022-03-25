@@ -7,8 +7,8 @@
         <field name="inherit_id" ref="sale.view_sales_order_filter"/>
         <field name="arch" type="xml">
             <xpath expr="//search" position="inside">
-                <filter string="From import CSV of Sage - SÍ" name="_created_from_sumex_apps_imports_csv_of_sage_yes" domain="[('_created_from_sumex_apps_imports_csv_of_sage','!=',False)]"/>
-                <filter string="From import CSV of Sage - NO" name="_created_from_sumex_apps_imports_csv_of_sage_no" domain="[('_created_from_sumex_apps_imports_csv_of_sage','=',False)]"/>
+                <filter string="From import CSV of Sage - SÍ" name="_created_from_sumex_apps_imports_csv_of_sage_ventas_yes" domain="[('_created_from_sumex_apps_imports_csv_of_sage_ventas','!=',False)]"/>
+                <filter string="From import CSV of Sage - NO" name="_created_from_sumex_apps_imports_csv_of_sage_ventas_no" domain="[('_created_from_sumex_apps_imports_csv_of_sage_ventas','=',False)]"/>
                 <filter string="Sage Número pedido - SÍ Existe" name="_sage_field_numeropedido_si_existe" domain="[('_sage_field_numeropedido','!=',False)]"/>
                 <filter string="Sage Número pedido - NO Existe" name="_sage_field_numeropedido_no_existe" domain="[('_sage_field_numeropedido','=',False)]"/>
                 <!-- <separator string="Description" /> -->
@@ -24,7 +24,7 @@
         <field name="arch" type="xml">
 
             <field name='state' position="after">
-                <field name="_created_from_sumex_apps_imports_csv_of_sage" readonly="1" optional="hide"/>
+                <field name="_created_from_sumex_apps_imports_csv_of_sage_ventas" readonly="1" optional="hide"/>
             </field>
 
         </field>
@@ -37,7 +37,7 @@
         <field name="arch" type="xml">
 
             <field name='payment_term_id' position="after">
-                <field name="_created_from_sumex_apps_imports_csv_of_sage" readonly="1"/>
+                <field name="_created_from_sumex_apps_imports_csv_of_sage_ventas" readonly="1"/>
             </field>
 
             <xpath expr="/form/sheet/notebook" position="inside">

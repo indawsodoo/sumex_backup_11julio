@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="wizard_product_template_purchases_info_form_view" model="ir.ui.view">
+            <field name="name">product.template.purchases.info.form</field>
+            <field name="model">product.template.purchases.info</field>
+            <field name="arch" type="xml">
+                <form string="purchases">
+                    <h2>Purchases Made</h2>
+                    <group>
+                        <field name="line_ids" nolabel="1">
+                            <tree readonly="True" string="Purchases">
+                                <field name="order_id"/>
+                                <field name="partner_id"/>
+                                <field name="date_order" string="Date"/>
+                                <field name="product_qty"/>
+                                <field name="product_uom"/>
+                                <field name="uom_per_price"/>
+                                <field name="price_unit"/>
+                                <field name="price_subtotal"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <footer>
+                        <button special="cancel" string="Close"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_launch_wizard_product_template_purchases_info" model="ir.actions.act_window">
+            <field name="name">Check last purchases</field>
+            <field name="res_model">product.template.purchases.info</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_product_template_purchases_info_form_view"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

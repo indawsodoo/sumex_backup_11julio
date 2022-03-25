@@ -12,7 +12,7 @@
 					<group expand="0" string="Group By...">
 						<field name="odoo_shipping_carrier"/>
 						<field name="shipping_service"/>
-						
+
 						<filter
 							string ="Instance"
 							name   ="filter_by_channel_id"
@@ -94,10 +94,22 @@
 			</field>
 		</record>
 
+		<record id="channel_shipping_mapping_pivot" model="ir.ui.view">
+			<field name="name">channel.shipping.mappings.pivot</field>
+			<field name="model">channel.shipping.mappings</field>
+			<field name="type">pivot</field>
+			<field name="arch" type="xml">
+				<pivot>
+					<field name="channel_id" type = "col"/>
+					<field name="create_date" type= "row" interval ="day"/>
+				</pivot>
+			</field>
+		</record>
+
 		<record id="channel_shipping_mapping_action_id" model="ir.actions.act_window">
 			<field name="name">Channel Shipping Mappings</field>
 			<field name="res_model">channel.shipping.mappings</field>
-			<field name="view_mode">tree,form</field>
+			<field name="view_mode">tree,form,pivot</field>
 			<field name="context">
 {
 	"search_default_filter_by_ecom_store":0

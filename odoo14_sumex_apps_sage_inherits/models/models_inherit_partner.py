@@ -7,7 +7,7 @@ class sumex_apps_sage_inherits_sage_partner_inherit(models.Model):
 
 	_inherit = 'res.partner'
 
-	_created_from_sumex_apps_imports_csv_of_sage = fields.Boolean("From import CSV of Sage", required = False)
+	_created_from_sumex_apps_imports_csv_of_sage_contactos = fields.Boolean("From import CSV of Sage", required = False)
 
 	_sage_field_codigoempresa = fields.Char(required = False, string = '_sage_field_codigoempresa')
 	_sage_field_iddelegacion = fields.Char(required = False, string = '_sage_field_iddelegacion')
@@ -217,16 +217,24 @@ class sumex_apps_sage_inherits_sage_partner_inherit(models.Model):
 	@api.model
 	def create(self, vals_list):
 
-		if 'from_import_csv' not in self._context:
+		if 'from_import_csv_name' not in self._context:
 			return super(sumex_apps_sage_inherits_sage_partner_inherit, self).create(vals_list)
-		vals_list['_created_from_sumex_apps_imports_csv_of_sage'] = True
+
+		if self._context['from_import_csv_name'] != 'sumex_apps_imports_csv_import_sage_clientes' and self._context['from_import_csv_name'] != 'sumex_apps_imports_csv_import_sage_proveedores':
+			return super(sumex_apps_sage_inherits_sage_partner_inherit, self).create(vals_list)
+
+		vals_list['_created_from_sumex_apps_imports_csv_of_sage_contactos'] = True
 		rows = super(sumex_apps_sage_inherits_sage_partner_inherit, self).create(vals_list)
 		return rows
 
 	def write(self, vals_list):
 
-		if 'from_import_csv' not in self._context:
+		if 'from_import_csv_name' not in self._context:
 			return super(sumex_apps_sage_inherits_sage_partner_inherit, self).write(vals_list)
-		vals_list['_created_from_sumex_apps_imports_csv_of_sage'] = True
+
+		if self._context['from_import_csv_name'] != 'sumex_apps_imports_csv_import_sage_clientes' and self._context['from_import_csv_name'] != 'sumex_apps_imports_csv_import_sage_proveedores':
+			return super(sumex_apps_sage_inherits_sage_partner_inherit, self).write(vals_list)
+
+		vals_list['_created_from_sumex_apps_imports_csv_of_sage_contactos'] = True
 		rows = super(sumex_apps_sage_inherits_sage_partner_inherit, self).write(vals_list)
 		return rows

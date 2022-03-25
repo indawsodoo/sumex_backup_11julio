@@ -6,7 +6,8 @@
 ##############################################################################
 from odoo import api,fields,models
 import odoo.addons.decimal_precision as dp
-
+from logging import getLogger
+_logger = getLogger(__name__)
 
 class ProductProduct(models.Model):
 	_inherit = 'product.product'
@@ -48,14 +49,12 @@ class ProductProduct(models.Model):
 	)
 
 	def write(self, vals):
-		res = True
 		for record in self:
 			mapping_objs = record.channel_mapping_ids
 			vals = self.env['multi.channel.sale']._core_pre_post_write(record, 'pre', 'product', mapping_objs, vals)
 			mapping_objs.write({'need_sync': 'yes'})
-			res = super(ProductProduct, record).write(vals)
+			super(ProductProduct, record).write(vals)
 			self.env['multi.channel.sale']._core_pre_post_write(record, 'post', 'product', mapping_objs, vals)
-		return res
 
 	@api.model
 	def check_for_new_price(self,template_id,value_id,price_extra):

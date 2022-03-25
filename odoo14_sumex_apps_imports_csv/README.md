@@ -66,12 +66,13 @@ Ambos métodos tienen como retorno:
 <pre>    def import_row(self, file_csv_header, file_csv_content_row):  
 
         # buscar por Nombre y CifEuropeo
-        partner = self.env['res.partner'].search([
+        partner_model = self.env['sumex_apps_imports_csv_library'].get_model('res.partner', import_name)
+        partner = partner_model.search([
             ('name', '=', file_csv_content_row['Nombre']),
             ('vat', '=', file_csv_content_row['CifEuropeo']),
         ])
         if not partner:
-            partner = self.env['res.partner'].create({
+            partner = partner_model.create({
                 'name': file_csv_content_row['Nombre'],
                 'vat': file_csv_content_row['CifEuropeo'],
                 'is_company': True

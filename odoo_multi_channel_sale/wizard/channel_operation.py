@@ -131,7 +131,7 @@ class ChannelOperation(models.TransientModel):
 					map_create_ids+=mapping_res.get('create_ids')
 					map_update_ids+=mapping_res.get('update_ids')
 				except Exception as e:
-					_logger.info("==%r=post_feed_import_process==="%(e))
+					_logger.exception("==%r=post_feed_import_process==="%(e))
 					message += '%s'%(e)
 		return dict(
 			create_ids    =create_ids,
