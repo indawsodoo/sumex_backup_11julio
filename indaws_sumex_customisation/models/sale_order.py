@@ -17,8 +17,10 @@ class SaleOrder(models.Model):
     def _compute_check_price_line(self):
         for item in self:
             if item.order_line:
-                show_warnning = False
-                error = ''
+                show_warnning_A = False
+                show_warnning_B = False
+                error_A = 'Los siguientes productos han superado el margen establecido en los ajustes de ventas:\n'
+                error_B = 'Los siguientes productos estan por fuera de los limites del margen establecidos en el cliente.:\n'
                 for line in item.order_line:
                     product_id = line.product_id
                     if product_id.standard_price > 0:
@@ -28,17 +30,23 @@ class SaleOrder(models.Model):
                             raise UserError(_("El producto "+product_id.display_name+" No tiene establecido el costo.\nPor Favor establesca el costo del producto para poder continuar con el proceso."))
                     limit_margin_sale = self.env["ir.config_parameter"].search([('key', '=', 'min_margin_sale')]).value
                     if limit_margin_sale and margen > float(limit_margin_sale) and (line.display_type != 'line_note' and line.display_type != 'line_section'):
-                        show_warnning = True
-                        error = 'El producto '+product_id.name+' a superado el margen establecido en los ajustes de ventas.'
+                        show_warnning_A = True
+                        error_A += '  - '+product_id.name+'\n'
                     elif (margen < item.partner_id.min_margin or margen > item.partner_id.max_margin) and (line.display_type != 'line_note' and line.display_type != 'line_section'):
-                        show_warnning = True
-                        error = 'El producto '+product_id.name+' esta por fuera de los limites del margen establecidos en el cliente.'
+                        show_warnning_B = True
+                        error_B += '  -'+product_id.name+'\n'
                     item.check_price_line = True
-                if show_warnning:
-                    item.show_warnning = show_warnning
-                    item.onchange_price = error
+                if show_warnning_A and show_warnning_B:
+                    item.show_warnning = show_warnning_A
+                    item.onchange_price = error_A + '\n' + error_B
+                elif show_warnning_A:
+                    item.show_warnning = show_warnning_A
+                    item.onchange_price = error_A
+                elif show_warnning_B:
+                    item.show_warnning = show_warnning_B
+                    item.onchange_price = error_B
                 else:
-                    item.show_warnning = show_warnning
+                    item.show_warnning = False
                     item.onchange_price = None
                     item.explanation_onchange_price = None
             else:
