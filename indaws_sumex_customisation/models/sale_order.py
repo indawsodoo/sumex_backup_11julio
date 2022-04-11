@@ -31,10 +31,10 @@ class SaleOrder(models.Model):
                     limit_margin_sale = self.env["ir.config_parameter"].search([('key', '=', 'min_margin_sale')]).value
                     if limit_margin_sale and margen > float(limit_margin_sale) and (line.display_type != 'line_note' and line.display_type != 'line_section'):
                         show_warnning_A = True
-                        error_A += '  - '+product_id.name+'\n'
+                        error_A += '  - '+product_id.display_name+'\n'
                     elif (margen < item.partner_id.min_margin or margen > item.partner_id.max_margin) and (line.display_type != 'line_note' and line.display_type != 'line_section'):
                         show_warnning_B = True
-                        error_B += '  -'+product_id.name+'\n'
+                        error_B += '  -'+product_id.display_name+'\n'
                     item.check_price_line = True
                 if show_warnning_A and show_warnning_B:
                     item.show_warnning = show_warnning_A
