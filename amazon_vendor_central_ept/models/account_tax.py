@@ -64,7 +64,7 @@ class AccountTax(models.Model):
         move = invoice_line.move_id
         tax_amount = self.amount
         tag = self.get_tax_tags(is_refund=False, repartition_type='tax')
-        tax_tag = tag[0].tax_report_line_ids[0].name if tag else ''
+        tax_tag = tag[0].tax_report_line_ids[0].name if tag and tag[0].tax_report_line_ids else ''
         tax_tag = tax_tag and ':::' + str(tax_tag)
         if tax_tag and move.currency_id.name == 'INR':
             tax_dict = {tax_tag: tax_amount}
