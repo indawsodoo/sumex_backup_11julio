@@ -224,7 +224,7 @@ class StockPicking(models.Model):
                                            'lot_id': quant_id.lot_id.name or ''})
                         break
             order_lines.append(order_line)
-        order_lines_info = [self.get_avc_updated_order_lines(order_lines)]
+        order_lines_info = self.get_avc_updated_order_lines(order_lines)
         return order_lines_info
 
     def get_avc_picking_product_with_qty_info(self, move_ids):
@@ -284,13 +284,30 @@ class StockPicking(models.Model):
         return quantity_done
 
     def get_avc_updated_order_lines(self, order_lines):
-        order_lines_info = {}
-        for order_line in order_lines:
-            if order_lines_info.get('product_id', False) and order_line['product_id'] == order_lines_info['product_id']:
-                order_lines_info['qty_done'] += order_line['qty_done']
+        """
+            Usage: This method is used for prepare the new dict based on order lines and sum the quantity of
+            same product
+            @Migration by: Dipak Gogiya
+            @Task: 179124 - Migrate Amazon Vendor Central module into V15.
+            :return: order_lines_info -> Dict
+        """
+        lines = []
+        for line in order_lines:
+            qty = line.get('qty_done')
+            if lines:
+                duplicates = [l for l in lines if line.get('product_id') == l.get('product_id')]
+                if len(duplicates):
+                    for duplicate in duplicates:
+                        duplicate.update({
+                            'qty_done': qty + duplicate.get('qty_done')
+                        })
+                else:
+                    # If line is not exist in updated variable then add it
+                    lines.append(line)
             else:
-                order_lines_info.update(order_line)
-        return order_lines_info
+                # If line is not exist in updated variable then add it
+                lines.append(line)
+        return lines
 
     def prepare_packages_acknowledgment_data(self, file_asn_string, total_segment,
                                              packages_info, requisition):

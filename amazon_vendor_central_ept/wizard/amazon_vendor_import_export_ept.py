@@ -116,7 +116,7 @@ class AmazonVendorImportExport(models.TransientModel):
             ('amazon.vendor.central.product.ept', 'import', message)
 
         for line in reader:
-            default_code = line.get('default_code', '')
+            default_code = line.get('internal_reference', '') # changed by Tushal Nimavat at 26-04-2022 because of in sample file has internal_reference but here use default_code
             amazon_sku = line.get('amazon_sku', '')
             barcode = line.get('barcode', '')
             item_type = line.get('item_type', '')

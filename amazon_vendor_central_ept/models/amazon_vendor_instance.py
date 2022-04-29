@@ -83,6 +83,7 @@ class AmazonVendorInstance(models.Model):
     amazon_edi_carrier_method = fields.Many2one(comodel_name='delivery.carrier', string='Amazon Carrier')
     amazon_unb_id = fields.Char(string='Amazon Unb')
     amazon_gln_number = fields.Char("Amazon GLN Number")
+    warehouse_gln_number = fields.Char("Warehouse GLN Number")  # Added by Tushal Nimavat at 21-04-2022
 
     # Cron Configurations
     amz_auto_import_po = fields.Boolean("Auto Import Purchase Orders?", default=False)
@@ -373,7 +374,6 @@ class AmazonVendorInstance(models.Model):
             return True
 
         product_lines = self.prepare_export_inv_and_stock_report_product_lines()
-
         # Prepare EDI file for Export Stock to amazon vendor central
         file_inventory_data = self.prepare_inventory_and_stock_edi_segment_data(product_lines)
 
@@ -469,6 +469,8 @@ class AmazonVendorInstance(models.Model):
         domain = [('amazon_vendor_instance_id', '=', self.id)]
         if context.get('is_calling_from_amazon_product_action_wizard'):
             domain.append(('id', 'in', context.get('active_ids')))
+        if context.get('default_product_ids', False):# Added by Tushal Nimavat at 22-04-2022
+            domain.append(('id', 'in', context.get('default_product_ids', False)))
 
         avc_product_ids = self.env['amazon.vendor.central.product.ept'].search(domain)
         product_ids = avc_product_ids.mapped('product_id')
@@ -498,7 +500,9 @@ class AmazonVendorInstance(models.Model):
         seq_interchange = self.env['ir.sequence'].next_by_code('amazon.edi.ship.message.trailer')
 
         file_inventory = """UNB+UNOC:2+%s:%s+%s:%s+%s:%s+%s+++++EANCOM'""" % (
-            self.supplier_id or '', self.avc_amazon_qualifier or '', self.amazon_unb_id or '',
+            self.warehouse_gln_number or '',  # changed by Tushal Nimavat at 21-04-2022
+            self.avc_amazon_qualifier or '',
+            self.amazon_unb_id or '',  # changed by Tushal Nimavat at 21-04-2022
             self.avc_amazon_qualifier, time.strftime("%y%m%d"), time.strftime("%H%M"),
             seq_interchange or '')
         total_segment += 1
@@ -515,7 +519,8 @@ class AmazonVendorInstance(models.Model):
         file_inventory += """DTM+366:%s:102'""" % (time.strftime("%Y%m%d"))
         total_segment += 1
 
-        file_inventory += """NAD+SU+%s::9'""" % (self.supplier_id or '')
+        file_inventory += """NAD+SU+%s::9'""" % (
+                    self.warehouse_gln_number or '')  # changed by Tushal Nimavat at 21-04-2022
         total_segment += 1
 
         """ warehouse_code = Warehouse Code of Cost and Inventory Report"""

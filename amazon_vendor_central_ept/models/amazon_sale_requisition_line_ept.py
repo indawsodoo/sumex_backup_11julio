@@ -309,8 +309,9 @@ class AmazonSaleRequisitionLine(models.Model):
             file_inventory += """PRI+AAA:%s'""" % (str(price))
             total_segment += 1
 
-            file_inventory += """CUX+2:%s:10'""" % (currency_name)
-            total_segment += 1
+            # commented by Tushal Nimavat at 21-04-2022
+            # file_inventory += """CUX+2:%s:10'""" % (currency_name)
+            # total_segment += 1
 
         return file_inventory, total_segment
 

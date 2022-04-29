@@ -70,6 +70,8 @@ class ResConfigSettings(models.TransientModel):
                                           string='Shipping Policy', default='direct', )
     avc_amazon_gln_number = fields.Char("Amazon GLN Number",
                                         help="Define Unique Amazon GLN(Global Location Number)")
+    avc_warehouse_gln_number = fields.Char("Warehouse GLN Number",
+                                        help="Define Unique Warehouse GLN(Global Location Number)")# Added by Tushal Nimavat at 21-04-2022
     avc_warehouse_code = fields.Char("Warehouse Code",
                                      help="Warehouse Code which is configure in the vendor central portal")
     avc_warehouse_ids = fields.Many2many('stock.warehouse', string="Warehouses",
@@ -130,6 +132,7 @@ class ResConfigSettings(models.TransientModel):
             values['so_customer_id'] = self.avc_so_customer_id.id
             values['picking_policy'] = self.avc_picking_policy or False
             values['amazon_gln_number'] = self.avc_amazon_gln_number or False
+            values['warehouse_gln_number'] = self.avc_warehouse_gln_number or False #Added by Tushal Nimavat at 21-04-2022
             values['warehouse_code'] = self.avc_warehouse_code or False
             values['warehouse_ids'] = [(6, 0, self.avc_warehouse_ids.ids)] if self.avc_warehouse_ids else False
             values['product_stock_field_id'] = self.avc_product_stock_field_id or False
@@ -163,6 +166,7 @@ class ResConfigSettings(models.TransientModel):
             self.avc_so_customer_id = vendor.so_customer_id.id
             self.avc_picking_policy = vendor.picking_policy or False
             self.avc_amazon_gln_number = vendor.amazon_gln_number or False
+            self.avc_warehouse_gln_number = vendor.warehouse_gln_number or False # Added by Tushal Nimavat at 21-04-2022
             self.avc_warehouse_code = vendor.warehouse_code or False
             self.avc_warehouse_ids = [(6, 0, vendor.warehouse_ids.ids)] if vendor.warehouse_ids else False
             self.avc_product_stock_field_id = vendor.product_stock_field_id or False

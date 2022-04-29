@@ -11,3 +11,4 @@ access_avc_res_config,avc.res.config.all,model_avc_res_config,,1,1,1,1
 access_vendor_cron_configuration,vendor.cron.onfiguration.all,model_vendor_cron_configuration,,1,1,1,1
 access_amazon_vendor_import_export_ept,amazon.vendor.import.export.ept.all,model_amazon_vendor_import_export_ept,,1,1,1,1
 access_packages_confirmation,packages.confirmation.all,model_packages_confirmation,,1,1,1,1
+access_inventory_product_wise,inventory_product_wise,model_inventory_product_wise,,1,1,1,1

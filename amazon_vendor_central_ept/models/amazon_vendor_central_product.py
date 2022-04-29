@@ -1,5 +1,5 @@
 """ This file create the new functionality of amazon product. """
-from odoo import models, fields
+from odoo import models, fields, _
 
 
 class AmazonVendorCentralProduct(models.Model):
@@ -95,3 +95,21 @@ class AmazonVendorCentralProduct(models.Model):
         elif edi_line_code_type == 'sku':
             domain.append(('amazon_sku', '=', edi_line_code))
         return self.search(domain, limit=1)
+
+    def action_send_inventory_and_cost_report(self):
+        """
+        This for display products as per the selected in the wizard
+        return: action
+        """
+        if self.ids:
+            view_id = self.env.ref('amazon_vendor_central_ept.send_inventory_and_cost_report_ept_view_ept').id
+            action = {
+                'name': _('Send Inventory And Cost Report'),
+                'type': 'ir.actions.act_window',
+                'view_mode': 'form',
+                'views': [[view_id, 'form']],
+                'target': 'new',
+                'res_model': 'inventory.product.wise',
+                'context': {'default_product_ids': self.ids}
+            }
+            return action

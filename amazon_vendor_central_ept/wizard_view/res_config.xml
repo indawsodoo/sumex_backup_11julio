@@ -219,6 +219,17 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!--Begin Added by Tushal Nimavat at 21-04-2022-->
+                                <div class="col-12 col-lg-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="avc_warehouse_gln_number" string="Warehouse GLN Number"/>
+                                        <field name="avc_warehouse_gln_number" class="oe_inline"/>
+                                        <div class="text-muted">
+                                            Set supplier warehouse GLN Number
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--End Added by Tushal Nimavat at 21-04-2022-->
                             </div>
                             <h2 style="background-color:rgb(224, 224, 224);">Inventory &amp; Cost Configuration</h2>
                             <div class="row mt16 o_settings_container">
@@ -227,8 +238,10 @@
                                         <label for="avc_warehouse_code" string="Warehouse Code"/>
                                         <field name="avc_warehouse_code" class="oe_inline"/>
                                         <div class="text-muted">
-                                            - Warehouse Code which is configure in the vendor central portal<br/>
-                                            - Warehouse Code available in Messages Dashboard -> Cost and inventory feed (COSTINV)
+                                            - Warehouse Code which is configure in the vendor central portal
+                                            <br/>
+                                            - Warehouse Code available in Messages Dashboard -> Cost and inventory feed
+                                            (COSTINV)
                                             -> Settings -> Warehouse Code
                                         </div>
                                         <label for="avc_amazon_unb_id" string="Amazon UNB ID"/>

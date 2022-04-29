@@ -5,3 +5,4 @@ from . import res_config_settings
 from . import avc_res_config
 from . import stock_immediate_transfer
 from . import packages_confirmation
+from . import inventory_product_wise
