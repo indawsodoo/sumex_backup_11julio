@@ -26,28 +26,29 @@ class AccountMoveInherit(models.Model):
         columns = ['partner_id', 'invoice_date', 'invoice_payment_term_id', 'ref', 'name', 'StatusFacturado']
         result = []
         ir_config_parameter_fetch = new_v_14_db.env['ir.config_parameter'].get_param('Fetch_value')
-        cursor.execute(
-            f'select  CodigoCliente,FechaAlbaran,FormadePago,Numerofactura,NumeroAlbaran,StatusFacturado from CabeceraAlbaranCliente order by CodigoCliente offset 0 rows FETCH NEXT {ir_config_parameter_fetch} ROWS ONLY;')
-        for row in cursor.fetchall():
-            result.append(dict(zip(columns, row)))
-        res_partner_obj = new_v_14_db.env['res.partner']
-        res_partner_payment_terms = new_v_14_db.env['account.payment.term']
-        account_move_obj = new_v_14_db.env['account.move']
-        for j in result:
-            try:
-                product_pay_terms = res_partner_payment_terms.search([('name', '=', j['invoice_payment_term_id'])])
-                partner_search = res_partner_obj.search([('ref', '=', j['partner_id'])])
-                account_move_new = account_move_obj.create({
-                    'partner_id': partner_search[0] if j['partner_id'] else False,
-                    'invoice_date': str(j['invoice_date']),
-                    'invoice_payment_term_id': product_pay_terms[0] if j['invoice_payment_term_id'] else False,
-                    'ref': j['ref'],
-                    'journal_id': 1,
-                    'currency_id': 1,
-                    'state': 'draft',
-                    'move_type': 'out_invoice',
-                    'statusfacturado': j['StatusFacturado'],
-                    'name': j['name'],
-                })
-            except Exception as e:
-                logging.info(e)
+        for i in range(1000, 60000, ir_config_parameter_fetch):
+            cursor.execute(
+                f'select  CodigoCliente,FechaAlbaran,FormadePago,Numerofactura,NumeroAlbaran,StatusFacturado from CabeceraAlbaranCliente order by CodigoCliente offset {i} rows FETCH NEXT {ir_config_parameter_fetch} ROWS ONLY;')
+            for row in cursor.fetchall():
+                result.append(dict(zip(columns, row)))
+            res_partner_obj = new_v_14_db.env['res.partner']
+            res_partner_payment_terms = new_v_14_db.env['account.payment.term']
+            account_move_obj = new_v_14_db.env['account.move']
+            for j in result:
+                try:
+                    product_pay_terms = res_partner_payment_terms.search([('name', '=', j['invoice_payment_term_id'])])
+                    partner_search = res_partner_obj.search([('ref', '=', j['partner_id'])])
+                    account_move_new = account_move_obj.create({
+                        'partner_id': partner_search[0] if j['partner_id'] else False,
+                        'invoice_date': str(j['invoice_date']),
+                        'invoice_payment_term_id': product_pay_terms[0] if j['invoice_payment_term_id'] else False,
+                        'ref': j['ref'],
+                        'journal_id': 1,
+                        'currency_id': 1,
+                        'state': 'draft',
+                        'move_type': 'out_invoice',
+                        'statusfacturado': j['StatusFacturado'],
+                        'name': j['name'],
+                    })
+                except Exception as e:
+                    logging.info(e)
