@@ -26,7 +26,7 @@ class AccountMoveInherit(models.Model):
         columns = ['partner_id', 'invoice_date', 'invoice_payment_term_id', 'ref', 'name', 'StatusFacturado']
         result = []
         ir_config_parameter_fetch = new_v_14_db.env['ir.config_parameter'].get_param('Fetch_value')
-        for i in range(1000, 60000, ir_config_parameter_fetch):
+        for i in range(1000, 60000, 1000):
             cursor.execute(
                 f'select  CodigoCliente,FechaAlbaran,FormadePago,Numerofactura,NumeroAlbaran,StatusFacturado from CabeceraAlbaranCliente order by CodigoCliente offset {i} rows FETCH NEXT {ir_config_parameter_fetch} ROWS ONLY;')
             for row in cursor.fetchall():
