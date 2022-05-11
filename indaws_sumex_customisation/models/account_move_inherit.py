@@ -34,21 +34,21 @@ class AccountMoveInherit(models.Model):
             res_partner_obj = new_v_14_db.env['res.partner']
             res_partner_payment_terms = new_v_14_db.env['account.payment.term']
             account_move_obj = new_v_14_db.env['account.move']
-            for j in result:
-                try:
-                    product_pay_terms = res_partner_payment_terms.search([('name', '=', j['invoice_payment_term_id'])])
-                    partner_search = res_partner_obj.search([('ref', '=', j['partner_id'])])
-                    account_move_new = account_move_obj.create({
-                        'partner_id': partner_search[0] if j['partner_id'] else False,
-                        'invoice_date': str(j['invoice_date']),
-                        'invoice_payment_term_id': product_pay_terms[0] if j['invoice_payment_term_id'] else False,
-                        'ref': j['ref'],
-                        'journal_id': 1,
-                        'currency_id': 1,
-                        'state': 'draft',
-                        'move_type': 'out_invoice',
-                        'statusfacturado': j['StatusFacturado'],
-                        'name': j['name'],
-                    })
-                except Exception as e:
-                    logging.info(e)
+        for j in result:
+            try:
+                product_pay_terms = res_partner_payment_terms.search([('name', '=', j['invoice_payment_term_id'])])
+                partner_search = res_partner_obj.search([('ref', '=', j['partner_id'])])
+                account_move_new = account_move_obj.create({
+                    'partner_id': partner_search[0] if j['partner_id'] else False,
+                    'invoice_date': str(j['invoice_date']),
+                    'invoice_payment_term_id': product_pay_terms[0] if j['invoice_payment_term_id'] else False,
+                    'ref': j['ref'],
+                    'journal_id': 1,
+                    'currency_id': 1,
+                    'state': 'draft',
+                    'move_type': 'out_invoice',
+                    'statusfacturado': j['StatusFacturado'],
+                    'name': j['name'],
+                })
+            except Exception as e:
+                logging.info(e)
