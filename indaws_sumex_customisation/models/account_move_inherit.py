@@ -5,10 +5,13 @@ import pymssql
 import odoorpc
 import logging
 
+
 class AccountMoveInherit(models.Model):
     _inherit = 'account.move'
 
-    statusfacturado=fields.Char('StatusFacturado')
+    statusfacturado = fields.Char('StatusFacturado')
+    ejercicioalbaran = fields.Char('EjercicioAlbaran')
+    seriealbaran = fields.Char('SerieAlbaran')
 
     def account_move_cron_job_custom_indaws(self):
 
