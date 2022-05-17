@@ -11,7 +11,7 @@
                 </xpath>
                 <xpath expr="//page[@name='other_info']//field[@name='ref']" position="after">
                     <label for="ejercicioalbaran" string="EjercicioAlbaran"/>
-                    <field name="EjercicioAlbaran" nolabel="1"/>
+                    <field name="ejercicioalbaran" nolabel="1"/>
                     <label for="seriealbaran" string="SerieAlbaran"/>
                     <field name="seriealbaran" nolabel="1"/>
                 </xpath>
