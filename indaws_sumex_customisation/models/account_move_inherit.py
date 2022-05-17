@@ -13,7 +13,7 @@ class AccountMoveInherit(models.Model):
     ejercicioalbaran = fields.Char('EjercicioAlbaran')
     seriealbaran = fields.Char('SerieAlbaran')
 
-    def account_move_cron_job_custom_indaws(self):
+    def account_move_cron_job_custom_indaws_new(self):
 
         server = '10.210.86.100'
         database = 'sage'
@@ -23,7 +23,7 @@ class AccountMoveInherit(models.Model):
                                password=password, database=database)
 
         new_v_14_db = odoorpc.ODOO('38.242.209.30', port=8069)
-        new_v_14_db.login('14_sumex_new', 'hola@indaws.com', 'holaindaws123!!!')
+        new_v_14_db.login('14_sumex_news', 'hola@indaws.com', 'holaindaws123!!!')
 
         cursor = conn.cursor()
         columns = ['partner_id', 'invoice_date', 'invoice_payment_term_id', 'ref', 'name', 'StatusFacturado',
