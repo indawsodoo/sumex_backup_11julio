@@ -13,7 +13,7 @@ class AccountMoveInherit(models.Model):
     ejercicioalbaran = fields.Char('EjercicioAlbaran')
     seriealbaran = fields.Char('SerieAlbaran')
 
-    def account_move_cron_job_custom_indaws_new(self):
+    def account_move_cron_job_custom_indaws(self):
 
         server = '10.210.86.100'
         database = 'sage'
