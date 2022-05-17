@@ -9,9 +9,11 @@
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="statusfacturado"/>
                 </xpath>
-                <xpath expr="//field[@name='ref']" position="after">
-                    <field name="ejercicioalbaran"/>
-                    <field name="seriealbaran"/>
+                <xpath expr="//page[@name='other_info']//field[@name='ref']" position="after">
+                    <label for="ejercicioalbaran" string="EjercicioAlbaran"/>
+                    <field name="EjercicioAlbaran" nolabel="1"/>
+                    <label for="seriealbaran" string="SerieAlbaran"/>
+                    <field name="seriealbaran" nolabel="1"/>
                 </xpath>
             </field>
         </record>
