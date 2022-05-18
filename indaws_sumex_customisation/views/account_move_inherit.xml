@@ -15,6 +15,9 @@
                     <label for="seriealbaran" string="SerieAlbaran"/>
                     <field name="seriealbaran" nolabel="1"/>
                 </xpath>
+                <xpath expr="//page[@id='invoice_tab']//field[@name='invoice_line_ids']//field[@name='quantity']" position="after">
+                    <field name="quantity_2"/>
+                </xpath>
             </field>
         </record>
     </data>
