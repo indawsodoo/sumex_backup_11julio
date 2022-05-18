@@ -117,7 +117,7 @@ class AccountMoveLineInherit(models.Model):
 
     quantity_2 = fields.Float(string='quantity 2')
 
-    def account_move_line_cron_job_custom_indaws_liv(self):
+    def account_move_line_cron_job_custom_indaws(self):
         server = '10.210.86.100'
         database = 'sage'
         username = 'consultasit'
@@ -202,7 +202,7 @@ class AccountMoveLineInherit(models.Model):
             except Exception as e:
                 print(e)
 
-    def account_move_line_cron_job_custom_indaws_stag(self):
+    def account_move_line_cron_job_custom_indaws_stageeee(self):
         server = '10.210.86.100'
         database = 'sage'
         username = 'consultasit'
