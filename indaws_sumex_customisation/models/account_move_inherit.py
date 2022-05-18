@@ -126,7 +126,7 @@ class AccountMoveLineInherit(models.Model):
                                password=password, database=database)
 
         new_v_14_db = odoorpc.ODOO('38.242.209.30', port=8069)
-        new_v_14_db.login('14_sumex_new', 'hola@indaws.com', 'holaindaws123!!!')
+        new_v_14_db.login('14_sumex_neww', 'hola@indaws.com', 'holaindaws123!!!')
 
         cursor = conn.cursor()
         columns = ['move_id', 'name', 'product_id', 'quantity', 'quantity2', 'price_unit', 'tax_ids', 'tax_ids_2',
@@ -211,7 +211,7 @@ class AccountMoveLineInherit(models.Model):
                                password=password, database=database)
 
         new_v_14_db = odoorpc.ODOO('38.242.209.30', port=8069)
-        new_v_14_db.login('14_sumex_new', 'hola@indaws.com', 'holaindaws123!!!')
+        new_v_14_db.login('14_sumex_neww', 'hola@indaws.com', 'holaindaws123!!!')
 
         cursor = conn.cursor()
         columns = ['move_id', 'name', 'product_id', 'quantity', 'quantity2', 'price_unit', 'tax_ids', 'tax_ids_2',
