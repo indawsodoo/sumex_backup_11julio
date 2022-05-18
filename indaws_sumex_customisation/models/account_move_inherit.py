@@ -117,7 +117,7 @@ class AccountMoveLineInherit(models.Model):
 
     quantity_2 = fields.Float(string='quantity 2')
 
-    def account_move_line_cron_job_custom_indaws_livess(self):
+    def account_move_line_cron_job_custom_indaws_liv(self):
         server = '10.210.86.100'
         database = 'sage'
         username = 'consultasit'
@@ -126,7 +126,7 @@ class AccountMoveLineInherit(models.Model):
                                password=password, database=database)
 
         new_v_14_db = odoorpc.ODOO('38.242.209.30', port=8069)
-        new_v_14_db.login('14_sumex_neww', 'hola@indaws.com', 'holaindaws123!!!')
+        new_v_14_db.login('14_sumex', 'hola@indaws.com', 'holaindaws123!!!')
 
         cursor = conn.cursor()
         columns = ['move_id', 'name', 'product_id', 'quantity', 'quantity2', 'price_unit', 'tax_ids', 'tax_ids_2',
@@ -202,7 +202,7 @@ class AccountMoveLineInherit(models.Model):
             except Exception as e:
                 print(e)
 
-    def account_move_line_cron_job_custom_indaws_stagess(self):
+    def account_move_line_cron_job_custom_indaws_stag(self):
         server = '10.210.86.100'
         database = 'sage'
         username = 'consultasit'
@@ -211,7 +211,7 @@ class AccountMoveLineInherit(models.Model):
                                password=password, database=database)
 
         new_v_14_db = odoorpc.ODOO('38.242.209.30', port=8069)
-        new_v_14_db.login('14_sumex_neww', 'hola@indaws.com', 'holaindaws123!!!')
+        new_v_14_db.login('14_sumex', 'hola@indaws.com', 'holaindaws123!!!')
 
         cursor = conn.cursor()
         columns = ['move_id', 'name', 'product_id', 'quantity', 'quantity2', 'price_unit', 'tax_ids', 'tax_ids_2',
