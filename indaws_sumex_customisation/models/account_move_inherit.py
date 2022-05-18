@@ -126,7 +126,7 @@ class AccountMoveLineInherit(models.Model):
                                password=password, database=database)
 
         new_v_14_db = odoorpc.ODOO('38.242.209.30', port=8069)
-        new_v_14_db.login('14_sumex_news', 'hola@indaws.com', 'holaindaws123!!!')
+        new_v_14_db.login('14_sumex_new', 'hola@indaws.com', 'holaindaws123!!!')
 
         cursor = conn.cursor()
         columns = ['move_id', 'name', 'product_id', 'quantity', 'quantity2', 'price_unit', 'tax_ids', 'tax_ids_2',
@@ -187,7 +187,7 @@ class AccountMoveLineInherit(models.Model):
                     'name': j['name'],
                     'product_id': product_id_search[0] if j['product_id'] else False,
                     'quantity': float(j['quantity'].to_eng_string()),
-                    'quantity2': float(j['quantity2'].to_eng_string()),
+                    'quantity_2': float(j['quantity2'].to_eng_string()),
                     'price_unit': float(j['price_unit'].to_eng_string()),
                     'tax_ids': [(6, 0, [account_tax_1[0]])],
                     'exclude_from_invoice_tab': 0,
@@ -211,7 +211,7 @@ class AccountMoveLineInherit(models.Model):
                                password=password, database=database)
 
         new_v_14_db = odoorpc.ODOO('38.242.209.30', port=8069)
-        new_v_14_db.login('14_sumex_news', 'hola@indaws.com', 'holaindaws123!!!')
+        new_v_14_db.login('14_sumex_new', 'hola@indaws.com', 'holaindaws123!!!')
 
         cursor = conn.cursor()
         columns = ['move_id', 'name', 'product_id', 'quantity', 'quantity2', 'price_unit', 'tax_ids', 'tax_ids_2',
@@ -272,7 +272,7 @@ class AccountMoveLineInherit(models.Model):
                     'name': j['name'],
                     'product_id': product_id_search[0] if j['product_id'] else False,
                     'quantity': float(j['quantity'].to_eng_string()),
-                    'quantity2': float(j['quantity2'].to_eng_string()),
+                    'quantity_2': float(j['quantity2'].to_eng_string()),
                     'price_unit': float(j['price_unit'].to_eng_string()),
                     'tax_ids': [(6, 0, [account_tax_1[0]])],
                     'exclude_from_invoice_tab': 0,
