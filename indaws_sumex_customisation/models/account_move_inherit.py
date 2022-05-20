@@ -5,8 +5,9 @@ import pymssql
 import odoorpc
 import logging
 
-
+global unique_move_line_list
 unique_move_line_list = []
+
 
 class AccountMoveInherit(models.Model):
     _inherit = 'account.move'
@@ -204,8 +205,9 @@ class AccountMoveLineInherit(models.Model):
             except Exception as e:
                 print(e)
 
-
     def account_move_line_cron_job_custom_stagess(self):
+
+
         server = '10.210.86.100'
         database = 'sage'
         username = 'consultasit'
@@ -225,8 +227,9 @@ class AccountMoveLineInherit(models.Model):
         for i in range(0, 20, 10):
             logging.info('unique_move_line_list-----------%s', unique_move_line_list)
             if unique_move_line_list:
+                unique_move_line_list_1=tuple(unique_move_line_list)
                 cursor.execute(
-                    f'select  NumeroAlbaran,DescripcionArticulo,CodigoArticulo,Unidades,UnidadesServidas,Precio,[%Iva],[%Recargo],[%Descuento],[%Descuento2],[%Descuento3],EjercicioAlbaran ,SerieAlbaran ,lineasPosicion  from LineasAlbaranCliente where EjercicioAlbaran >= 2017 and lineasPosicion not in {unique_move_line_list} order by NumeroAlbaran offset {i} rows FETCH NEXT {ir_config_parameter_fetch} ROWS ONLY;')
+                    f'select  NumeroAlbaran,DescripcionArticulo,CodigoArticulo,Unidades,UnidadesServidas,Precio,[%Iva],[%Recargo],[%Descuento],[%Descuento2],[%Descuento3],EjercicioAlbaran ,SerieAlbaran ,lineasPosicion  from LineasAlbaranCliente where EjercicioAlbaran >= 2017 and lineasPosicion not in {unique_move_line_list_1} order by NumeroAlbaran offset {i} rows FETCH NEXT {ir_config_parameter_fetch} ROWS ONLY;')
             else:
                 print('>>> false')
                 cursor.execute(
@@ -295,4 +298,4 @@ class AccountMoveLineInherit(models.Model):
                 browse_rec = account_move_obj.browse(account_move_id[0])
                 account_move_new = browse_rec.invoice_line_ids = [(0, 0, vals)]
             except Exception as e:
-                logging.info('%s',e)
+                logging.info('%s', e)
