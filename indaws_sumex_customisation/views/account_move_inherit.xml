@@ -15,7 +15,15 @@
                     <label for="seriealbaran" string="SerieAlbaran"/>
                     <field name="seriealbaran" nolabel="1"/>
                 </xpath>
-                <xpath expr="//page[@id='invoice_tab']//field[@name='invoice_line_ids']//field[@name='quantity']" position="after">
+                <xpath expr="//page[@name='other_info']//group[@name='accounting_info_group']//field[@name='invoice_incoterm_id']"
+                       position="after">
+                    <label for="ejercicioalbaran" string="EjercicioAlbaran"/>
+                    <field name="ejercicioalbaran" nolabel="1"/>
+                    <label for="seriealbaran" string="SerieAlbaran"/>
+                    <field name="seriealbaran" nolabel="1"/>
+                </xpath>
+                <xpath expr="//page[@id='invoice_tab']//field[@name='invoice_line_ids']//field[@name='quantity']"
+                       position="after">
                     <field name="quantity_2"/>
                 </xpath>
             </field>
