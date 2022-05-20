@@ -288,10 +288,10 @@ class AccountMoveLineInherit(models.Model):
                     'discount3': q,
 
                 }
-                logging.info('>>>>> vals', vals)
+                logging.info('>>>>> vals %s', vals)
                 unique_move_line_list.append(str(j['unique_field']))
-                logging.info('>>>>> unique_move_line_list neww', unique_move_line_list)
+                logging.info('>>>>> unique_move_line_list neww %s', unique_move_line_list)
                 browse_rec = account_move_obj.browse(account_move_id[0])
                 account_move_new = browse_rec.invoice_line_ids = [(0, 0, vals)]
             except Exception as e:
-                logging.info(e)
+                logging.info('%s',e)
