@@ -205,7 +205,7 @@ class AccountMoveLineInherit(models.Model):
             except Exception as e:
                 print(e)
 
-    def account_move_line_cron_job_custom_stagess(self):
+    def account_move_line_cron_job_custom_stage_new(self):
 
 
         server = '10.210.86.100'
@@ -224,7 +224,7 @@ class AccountMoveLineInherit(models.Model):
                    'discount2', 'discount3', 'EjercicioAlbaran', 'SerieAlbaran', 'unique_field', ]
         result = []
         ir_config_parameter_fetch = new_v_14_db.env['ir.config_parameter'].get_param('Fetch_value')
-        for i in range(0, 20, 10):
+        for i in range(0, 600000, 1000):
             logging.info('unique_move_line_list-----------%s', unique_move_line_list)
             if unique_move_line_list:
                 unique_move_line_list_1=tuple(unique_move_line_list)
