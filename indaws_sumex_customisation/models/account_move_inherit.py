@@ -205,7 +205,7 @@ class AccountMoveLineInherit(models.Model):
             except Exception as e:
                 print(e)
 
-    def account_move_line_cron_job_custom_stag(self):
+    def account_move_line_cron_job_custom_stag_live(self):
 
 
         server = '10.210.86.100'
@@ -216,7 +216,7 @@ class AccountMoveLineInherit(models.Model):
                                password=password, database=database)
 
         new_v_14_db = odoorpc.ODOO('38.242.209.30', port=8069)
-        new_v_14_db.login('14_sumex_news', 'hola@indaws.com', 'holaindaws123!!!')
+        new_v_14_db.login('14_sumex', 'hola@indaws.com', 'holaindaws123!!!')
 
         cursor = conn.cursor()
         columns = ['move_id', 'name', 'product_id', 'quantity', 'quantity2', 'price_unit', 'tax_ids', 'tax_ids_2',
