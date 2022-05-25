@@ -205,7 +205,7 @@ class AccountMoveLineInherit(models.Model):
             except Exception as e:
                 print(e)
 
-    def account_move_line_cron_job_custom_stage_new(self):
+    def account_move_line_cron_job_custom_stag(self):
 
 
         server = '10.210.86.100'
