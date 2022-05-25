@@ -221,7 +221,21 @@ class AccountMoveLineInherit(models.Model):
                    'discount',
                    'discount2', 'discount3', 'EjercicioAlbaran', 'SerieAlbaran', 'unique_field', ]
         result = []
+        res_partner_obj = self.env['res.partner']
+        res_partner_payment_terms = self.env['account.payment.term']
+        account_move_obj = self.env['account.move']
+        account_move_line_obj = self.env['account.move.line']
+        product_product_obj = self.env['product.product']
+        account_tax_new = self.env['account.tax']
+        account_account_new = self.env['account.account']
+
         ir_config_parameter_fetch = self.env['ir.config_parameter'].get_param('Fetch_value')
+        account_tax_21 = account_tax_new.search([('name', '=', 'IVA 21% (Bienes)')])
+        account_tax_0 = account_tax_new.search(
+            [('name', '=', 'IVA 0% Prestación de servicios intracomunitario')])
+        account_tax_5_2 = account_tax_new.search(
+            [('name', '=', '5.2% Recargo Equivalencia Ventas')])
+        account_id = account_account_new.search([('code', '=', '700000')])
         for i in range(0, 600000, 1000):
             logging.info('unique_move_line_list-----------%s', unique_move_line_list)
             if unique_move_line_list:
@@ -235,13 +249,7 @@ class AccountMoveLineInherit(models.Model):
             for row in cursor.fetchall():
                 result.append(dict(zip(columns, row)))
 
-            res_partner_obj = self.env['res.partner']
-            res_partner_payment_terms = self.env['account.payment.term']
-            account_move_obj = self.env['account.move']
-            account_move_line_obj = self.env['account.move.line']
-            product_product_obj = self.env['product.product']
-            account_tax_new = self.env['account.tax']
-            account_account_new = self.env['account.account']
+
         for j in result:
             try:
                 product_id_search = product_product_obj.search([('default_code', '=', j['product_id'])])
@@ -249,17 +257,14 @@ class AccountMoveLineInherit(models.Model):
                     [('name', '=', j['move_id']), ('ejercicioalbaran', '=', j['EjercicioAlbaran']),
                      ('seriealbaran', '=', j['SerieAlbaran'])])
                 print('account move id ==', account_move_id)
-                account_id = account_account_new.search([('code', '=', '700000')])
                 global account_tax_1
                 partner_search = account_move_obj.search([('name', '=', j['move_id'])])
                 if j['tax_ids'] == 21:
-                    account_tax_1 = account_tax_new.search([('name', '=', 'IVA 21% (Bienes)')])
+                    account_tax_1 = account_tax_21
                 elif (j['tax_ids'] == 0):
-                    account_tax_1 = account_tax_new.search(
-                        [('name', '=', 'IVA 0% Prestación de servicios intracomunitario')])
+                    account_tax_1 = account_tax_0
                 elif (j['tax_ids_2'] == 5.2):
-                    account_tax_1 = account_tax_new.search(
-                        [('name', '=', '5.2% Recargo Equivalencia Ventas')])
+                    account_tax_1 = account_tax_5_2
                 global n, p, q
                 if str(j['discount'].to_eng_string())[0] == '0':
                     n = 0
