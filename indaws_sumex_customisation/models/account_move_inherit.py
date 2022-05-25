@@ -215,15 +215,13 @@ class AccountMoveLineInherit(models.Model):
         conn = pymssql.connect(server=server, user=username,
                                password=password, database=database)
 
-        new_v_14_db = odoorpc.ODOO('38.242.209.30', port=8069)
-        new_v_14_db.login('14_sumex', 'hola@indaws.com', 'holaindaws123!!!')
 
         cursor = conn.cursor()
         columns = ['move_id', 'name', 'product_id', 'quantity', 'quantity2', 'price_unit', 'tax_ids', 'tax_ids_2',
                    'discount',
                    'discount2', 'discount3', 'EjercicioAlbaran', 'SerieAlbaran', 'unique_field', ]
         result = []
-        ir_config_parameter_fetch = new_v_14_db.env['ir.config_parameter'].get_param('Fetch_value')
+        ir_config_parameter_fetch = self.env['ir.config_parameter'].get_param('Fetch_value')
         for i in range(0, 600000, 1000):
             logging.info('unique_move_line_list-----------%s', unique_move_line_list)
             if unique_move_line_list:
@@ -237,13 +235,13 @@ class AccountMoveLineInherit(models.Model):
             for row in cursor.fetchall():
                 result.append(dict(zip(columns, row)))
 
-            res_partner_obj = new_v_14_db.env['res.partner']
-            res_partner_payment_terms = new_v_14_db.env['account.payment.term']
-            account_move_obj = new_v_14_db.env['account.move']
-            account_move_line_obj = new_v_14_db.env['account.move.line']
-            product_product_obj = new_v_14_db.env['product.product']
-            account_tax_new = new_v_14_db.env['account.tax']
-            account_account_new = new_v_14_db.env['account.account']
+            res_partner_obj = self.env['res.partner']
+            res_partner_payment_terms = self.env['account.payment.term']
+            account_move_obj = self.env['account.move']
+            account_move_line_obj = self.env['account.move.line']
+            product_product_obj = self.env['product.product']
+            account_tax_new = self.env['account.tax']
+            account_account_new = self.env['account.account']
         for j in result:
             try:
                 product_id_search = product_product_obj.search([('default_code', '=', j['product_id'])])
