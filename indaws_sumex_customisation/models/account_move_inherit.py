@@ -232,7 +232,7 @@ class AccountMoveLineInherit(models.Model):
             [('name', '=', '5.2% Recargo Equivalencia Ventas')])
         account_id = account_account_new.search([('code', '=', '700000')])
         company_id = self.env['res.company'].browse(1)
-        min_counter = company_id.move_line_count
+        min_counter = int(company_id.move_line_count)
         for i in range(min_counter, 600000, 1000):
             cursor.execute(
                     f'select  NumeroAlbaran,DescripcionArticulo,CodigoArticulo,Unidades,UnidadesServidas,Precio,[%Iva],[%Recargo],[%Descuento],[%Descuento2],[%Descuento3],EjercicioAlbaran ,SerieAlbaran ,lineasPosicion  from LineasAlbaranCliente where EjercicioAlbaran >= 2017  order by EjercicioAlbaran,NumeroAlbaran  offset {i} rows FETCH NEXT {ir_config_parameter_fetch} ROWS ONLY;')
