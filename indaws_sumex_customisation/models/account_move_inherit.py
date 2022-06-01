@@ -278,23 +278,22 @@ class AccountMoveLineInherit(models.Model):
                     else:
                         q = float(j['discount3'].to_eng_string())
                     vals = {
-                        'move_id': account_move_id[0] if j['move_id'] else False,
+                        'move_id': account_move_id[0].id if j['move_id'] else False,
                         'name': j['name'],
-                        'product_id': product_id_search[0] if j['product_id'] else False,
+                        'product_id': product_id_search[0].id if j['product_id'] else False,
                         'quantity': float(j['quantity'].to_eng_string()),
                         'quantity_2': float(j['quantity2'].to_eng_string()),
                         'price_unit': float(j['price_unit'].to_eng_string()),
-                        'tax_ids': [(6, 0, [account_tax_1[0]])],
+                        'tax_ids': [(6, 0, [account_tax_1[0].id])],
                         'exclude_from_invoice_tab': 0,
-                        'account_id': account_id[0],
+                        'account_id': account_id[0].id,
                         'discount': n,
                         'discount2': p,
                         'discount3': q,
-
                     }
                     unique_move_line_list.append(str(j['unique_field']))
-                    browse_rec = account_move_obj.browse(account_move_id[0])
-                    account_move_new = browse_rec.invoice_line_ids = [(0, 0, vals)]
+                    #browse_rec = account_move_obj.browse(account_move_id[0])
+                    account_move_new = account_move_id[0].invoice_line_ids = [(0, 0, vals)]
                 except Exception as e:
                     logging.info('%s', e)
 
