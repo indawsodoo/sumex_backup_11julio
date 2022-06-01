@@ -235,7 +235,7 @@ class AccountMoveLineInherit(models.Model):
         min_counter = company_id.move_line_count
         for i in range(min_counter, 600000, 1000):
             cursor.execute(
-                    f'select  NumeroAlbaran,DescripcionArticulo,CodigoArticulo,Unidades,UnidadesServidas,Precio,[%Iva],[%Recargo],[%Descuento],[%Descuento2],[%Descuento3],EjercicioAlbaran ,SerieAlbaran ,lineasPosicion  from LineasAlbaranCliente where EjercicioAlbaran >= 2017  order by NumeroAlbaran,EjercicioAlbaran  offset {i} rows FETCH NEXT {ir_config_parameter_fetch} ROWS ONLY;')
+                    f'select  NumeroAlbaran,DescripcionArticulo,CodigoArticulo,Unidades,UnidadesServidas,Precio,[%Iva],[%Recargo],[%Descuento],[%Descuento2],[%Descuento3],EjercicioAlbaran ,SerieAlbaran ,lineasPosicion  from LineasAlbaranCliente where EjercicioAlbaran >= 2017  order by EjercicioAlbaran,NumeroAlbaran  offset {i} rows FETCH NEXT {ir_config_parameter_fetch} ROWS ONLY;')
             for row in cursor.fetchall():
                 j = dict(zip(columns, row))
                 try:
