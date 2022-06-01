@@ -203,7 +203,7 @@ class AccountMoveLineInherit(models.Model):
             except Exception as e:
                 print(e)
 
-    def account_move_line_cron_job_custom_stag_live_1_6(self):
+    def account_move_line_cron_job_custom_stag_live_1_6_98_m(self):
         server = '10.210.86.100'
         database = 'sage'
         username = 'consultasit'
