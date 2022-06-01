@@ -5,8 +5,6 @@ import pymssql
 import odoorpc
 import logging
 
-global unique_move_line_list
-unique_move_line_list = []
 
 
 class AccountMoveInherit(models.Model):
@@ -205,16 +203,13 @@ class AccountMoveLineInherit(models.Model):
             except Exception as e:
                 print(e)
 
-    def account_move_line_cron_job_custom_stag_live(self):
-
-
+    def account_move_line_cron_job_custom_stag_live_1_6(self):
         server = '10.210.86.100'
         database = 'sage'
         username = 'consultasit'
         password = 'Ulises-2007'
         conn = pymssql.connect(server=server, user=username,
                                password=password, database=database)
-
 
         cursor = conn.cursor()
         columns = ['move_id', 'name', 'product_id', 'quantity', 'quantity2', 'price_unit', 'tax_ids', 'tax_ids_2',
@@ -236,16 +231,11 @@ class AccountMoveLineInherit(models.Model):
         account_tax_5_2 = account_tax_new.search(
             [('name', '=', '5.2% Recargo Equivalencia Ventas')])
         account_id = account_account_new.search([('code', '=', '700000')])
-        for i in range(0, 600000, 1000):
-            logging.info('unique_move_line_list-----------%s', unique_move_line_list)
-            if unique_move_line_list:
-                unique_move_line_list_1=tuple(unique_move_line_list)
-                cursor.execute(
-                    f'select  NumeroAlbaran,DescripcionArticulo,CodigoArticulo,Unidades,UnidadesServidas,Precio,[%Iva],[%Recargo],[%Descuento],[%Descuento2],[%Descuento3],EjercicioAlbaran ,SerieAlbaran ,lineasPosicion  from LineasAlbaranCliente where EjercicioAlbaran >= 2017 and lineasPosicion not in {unique_move_line_list_1} order by NumeroAlbaran offset {i} rows FETCH NEXT {ir_config_parameter_fetch} ROWS ONLY;')
-            else:
-                print('>>> false')
-                cursor.execute(
-                    f'select  NumeroAlbaran,DescripcionArticulo,CodigoArticulo,Unidades,UnidadesServidas,Precio,[%Iva],[%Recargo],[%Descuento],[%Descuento2],[%Descuento3],EjercicioAlbaran ,SerieAlbaran ,lineasPosicion  from LineasAlbaranCliente where EjercicioAlbaran >= 2017  order by NumeroAlbaran offset {i} rows FETCH NEXT {ir_config_parameter_fetch} ROWS ONLY;')
+        company_id = self.env['res.company'].browse(1)
+        min_counter = company_id.move_line_count
+        for i in range(min_counter, 600000, 1000):
+            cursor.execute(
+                    f'select  NumeroAlbaran,DescripcionArticulo,CodigoArticulo,Unidades,UnidadesServidas,Precio,[%Iva],[%Recargo],[%Descuento],[%Descuento2],[%Descuento3],EjercicioAlbaran ,SerieAlbaran ,lineasPosicion  from LineasAlbaranCliente where EjercicioAlbaran >= 2017  order by NumeroAlbaran,EjercicioAlbaran  offset {i} rows FETCH NEXT {ir_config_parameter_fetch} ROWS ONLY;')
             for row in cursor.fetchall():
                 j = dict(zip(columns, row))
                 try:
@@ -278,75 +268,22 @@ class AccountMoveLineInherit(models.Model):
                     else:
                         q = float(j['discount3'].to_eng_string())
                     vals = {
-                        'move_id': account_move_id[0] if j['move_id'] else False,
+                        'move_id': account_move_id[0].id if j['move_id'] else False,
                         'name': j['name'],
-                        'product_id': product_id_search[0] if j['product_id'] else False,
+                        'product_id': product_id_search[0].id if j['product_id'] else False,
                         'quantity': float(j['quantity'].to_eng_string()),
                         'quantity_2': float(j['quantity2'].to_eng_string()),
                         'price_unit': float(j['price_unit'].to_eng_string()),
-                        'tax_ids': [(6, 0, [account_tax_1[0]])],
+                        'tax_ids': [(6, 0, [account_tax_1[0].id])],
                         'exclude_from_invoice_tab': 0,
-                        'account_id': account_id[0],
+                        'account_id': account_id[0].id,
                         'discount': n,
                         'discount2': p,
                         'discount3': q,
-
                     }
-                    unique_move_line_list.append(str(j['unique_field']))
-                    browse_rec = account_move_obj.browse(account_move_id[0])
-                    account_move_new = browse_rec.invoice_line_ids = [(0, 0, vals)]
+                    # browse_rec = account_move_obj.browse(account_move_id[0])
+                    account_move_new = account_move_id[0].invoice_line_ids = [(0, 0, vals)]
+                    min_counter+=1
+                    company_id.move_line_count = min_counter
                 except Exception as e:
                     logging.info('%s', e)
-
-        # for j in result:
-        #     try:
-        #         product_id_search = product_product_obj.search([('default_code', '=', j['product_id'])])
-        #         account_move_id = account_move_obj.search(
-        #             [('name', '=', j['move_id']), ('ejercicioalbaran', '=', j['EjercicioAlbaran']),
-        #              ('seriealbaran', '=', j['SerieAlbaran'])])
-        #         print('account move id ==', account_move_id)
-        #         global account_tax_1
-        #         # partner_search = account_move_obj.search([('name', '=', j['move_id'])])
-        #         if j['tax_ids'] == 21:
-        #             account_tax_1 = account_tax_21
-        #         elif (j['tax_ids'] == 0):
-        #             account_tax_1 = account_tax_0
-        #         elif (j['tax_ids_2'] == 5.2):
-        #             account_tax_1 = account_tax_5_2
-        #         global n, p, q
-        #         if str(j['discount'].to_eng_string())[0] == '0':
-        #             n = 0
-        #         else:
-        #             n = float(j['discount'].to_eng_string())
-        #
-        #         if str(j['discount2'].to_eng_string())[0] == '0':
-        #             p = 0
-        #         else:
-        #             p = float(j['discount2'].to_eng_string())
-        #
-        #         if str(j['discount3'].to_eng_string())[0] == '0':
-        #             q = 0
-        #         else:
-        #             q = float(j['discount3'].to_eng_string())
-        #         vals = {
-        #             'move_id': account_move_id[0] if j['move_id'] else False,
-        #             'name': j['name'],
-        #             'product_id': product_id_search[0] if j['product_id'] else False,
-        #             'quantity': float(j['quantity'].to_eng_string()),
-        #             'quantity_2': float(j['quantity2'].to_eng_string()),
-        #             'price_unit': float(j['price_unit'].to_eng_string()),
-        #             'tax_ids': [(6, 0, [account_tax_1[0]])],
-        #             'exclude_from_invoice_tab': 0,
-        #             'account_id': account_id[0],
-        #             'discount': n,
-        #             'discount2': p,
-        #             'discount3': q,
-        #
-        #         }
-        #         logging.info('>>>>> vals %s', vals)
-        #         unique_move_line_list.append(str(j['unique_field']))
-        #         logging.info('>>>>> unique_move_line_list neww %s', unique_move_line_list)
-        #         browse_rec = account_move_obj.browse(account_move_id[0])
-        #         account_move_new = browse_rec.invoice_line_ids = [(0, 0, vals)]
-        #     except Exception as e:
-        #         logging.info('%s', e)
