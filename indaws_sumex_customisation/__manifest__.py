@@ -13,7 +13,7 @@
     'author': "inDAWS",
     'website': "http://www.indaws.es",
     'category': 'Product',
-    'version': '14.0.1.0.40',
+    'version': '14.0.1.0.41',
     'sequence': 1,
     'installable': True,
     'application': False,
