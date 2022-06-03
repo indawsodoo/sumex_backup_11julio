@@ -13,6 +13,7 @@ class AccountMoveInherit(models.Model):
     statusfacturado = fields.Char('StatusFacturado')
     ejercicioalbaran = fields.Char('EjercicioAlbaran')
     seriealbaran = fields.Char('SerieAlbaran')
+    uid_number = fields.Char('UID')
 
     def account_move_cron_job_custom_indaws_livess(self):
 
@@ -120,6 +121,7 @@ class AccountMoveLineInherit(models.Model):
     _inherit = "account.move.line"
 
     quantity_2 = fields.Float(string='quantity 2')
+    uid_number = fields.Char('UID')
 
     def account_move_line_cron_job_custom(self):
         server = '10.210.86.100'
@@ -238,8 +240,6 @@ class AccountMoveLineInherit(models.Model):
         not_found_account_move_ids = ''
         not_found_move_year = []
         for i in range(0, 600000, 1000):
-            cursor.execute(
-                    f'select  NumeroAlbaran,DescripcionArticulo,CodigoArticulo,Unidades,UnidadesServidas,Precio,[%Iva],[%Recargo],[%Descuento],[%Descuento2],[%Descuento3],EjercicioAlbaran ,SerieAlbaran ,lineasPosicion  from LineasAlbaranCliente where EjercicioAlbaran >= 2017  order by EjercicioAlbaran,NumeroAlbaran  offset {i} rows FETCH NEXT {ir_config_parameter_fetch} ROWS ONLY;')
             vals_list = []
             counter = 0
             for index, row in enumerate(cursor.fetchall()):
@@ -317,9 +317,9 @@ class AccountMoveLineInherit(models.Model):
                                password=password, database=database)
 
         cursor = conn.cursor()
-        move_columns = ['partner_id', 'invoice_date', 'invoice_payment_term_id', 'ref', 'name', 'StatusFacturado',
+        move_columns = ['uid_number','partner_id', 'invoice_date', 'invoice_payment_term_id', 'ref', 'name', 'StatusFacturado',
                    'EjercicioAlbaran', 'SerieAlbaran']
-        move_line_columns = ['move_id', 'name', 'product_id', 'quantity', 'quantity2', 'price_unit', 'tax_ids', 'tax_ids_2',
+        move_line_columns = ['uid_number', 'move_id', 'name', 'product_id', 'quantity', 'quantity2', 'price_unit', 'tax_ids', 'tax_ids_2',
                    'discount',
                    'discount2', 'discount3', 'EjercicioAlbaran', 'SerieAlbaran', 'unique_field', ]
         import re
@@ -357,13 +357,13 @@ class AccountMoveLineInherit(models.Model):
         company_id = self.env['res.company'].browse(1)
         for i in range(0, 60000, 1000):
             cursor.execute(
-                f'select CodigoCliente,FechaAlbaran,FormadePago,Numerofactura,NumeroAlbaran,StatusFacturado,EjercicioAlbaran ,SerieAlbaran from CabeceraAlbaranCliente where EjercicioAlbaran >= 2017 and NumeroAlbaran in {move_ids} order by CodigoCliente offset {i} rows FETCH NEXT {ir_config_parameter_fetch} ROWS ONLY;')
+                f'select IdAlbaranCli,CodigoCliente,FechaAlbaran,FormadePago,Numerofactura,NumeroAlbaran,StatusFacturado,EjercicioAlbaran ,SerieAlbaran from CabeceraAlbaranCliente where EjercicioAlbaran >= 2017 order by CodigoCliente offset {i} rows FETCH NEXT {ir_config_parameter_fetch} ROWS ONLY;')
 
             move_vals_list = []
             for row in cursor.fetchall():
                 j = dict(zip(move_columns, row))
                 cursor.execute(
-                    f'select  NumeroAlbaran,DescripcionArticulo,CodigoArticulo,Unidades,UnidadesServidas,Precio,[%Iva],[%Recargo],[%Descuento],[%Descuento2],[%Descuento3],EjercicioAlbaran ,SerieAlbaran ,lineasPosicion  from LineasAlbaranCliente where EjercicioAlbaran >= 2017 and NumeroAlbaran={j["name"]} and EjercicioAlbaran={j["EjercicioAlbaran"]} order by EjercicioAlbaran,NumeroAlbaran  offset {i} rows FETCH NEXT {ir_config_parameter_fetch} ROWS ONLY;')
+                    f'select  lineasPosicion,NumeroAlbaran,DescripcionArticulo,CodigoArticulo,Unidades,UnidadesServidas,Precio,[%Iva],[%Recargo],[%Descuento],[%Descuento2],[%Descuento3],EjercicioAlbaran ,SerieAlbaran ,lineasPosicion  from LineasAlbaranCliente where EjercicioAlbaran >= 2017 and NumeroAlbaran={j["name"]} and EjercicioAlbaran={j["EjercicioAlbaran"]} order by EjercicioAlbaran,NumeroAlbaran  offset {i} rows FETCH NEXT {ir_config_parameter_fetch} ROWS ONLY;')
                 move_line_list = []
                 for line_row in cursor.fetchall():
                     move_line = dict(zip(move_line_columns, line_row))
@@ -404,6 +404,7 @@ class AccountMoveLineInherit(models.Model):
                         'discount': n,
                         'discount2': p,
                         'discount3': q,
+                        'uid_number': move_line['uid_number'],
                     }
                     move_line_list.append(vals)
                 product_pay_terms = res_partner_payment_terms.search([('name', '=', j['invoice_payment_term_id'])])
@@ -422,6 +423,7 @@ class AccountMoveLineInherit(models.Model):
                     'ejercicioalbaran': j['EjercicioAlbaran'],
                     'seriealbaran': j['SerieAlbaran'],
                     'invoice_line_ids' : [(0, 0, ml) for ml in move_line_list],
+                    'uid_number': j['uid_number'],
                 }
                 move_vals_list.append(account_move_new)
             try:
