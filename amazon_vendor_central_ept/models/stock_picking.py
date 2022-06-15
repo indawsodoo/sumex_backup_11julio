@@ -29,6 +29,12 @@ class StockPicking(models.Model):
     #                                            string='Amazon order Acknowledgement Uploaded')
     code = fields.Selection(related="picking_type_id.code", string='Code', readonly=True)
 
+    def _get_package_qty(self, package):
+        qty = 0
+        for l in self.move_line_ids:
+            if l.product_id in package.quant_ids.mapped('product_id')
+        return sum([l.quantity for l in package.quant_ids])
+
     def prepare_asn_data(self):
         """"
             Usage: Prepare the Advance Shipment Notice EDI Data for sending to the amazon vendor central

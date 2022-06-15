@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- QWeb Reports -->
+        <record id="paperformat_amazon_label" model="report.paperformat">
+	        <field name="name">Amazon Picking Label</field>
+	        <field name="default" eval="True"/>
+	        <field name="format">custom</field>
+	        <field name="page_height">150</field>
+	        <field name="page_width">120</field>
+	        <field name="orientation">Portrait</field>
+	        <field name="margin_top">5</field>
+	        <field name="margin_bottom">5</field>
+	        <field name="margin_left">0</field>
+	        <field name="margin_right">0</field>
+	        <field name="dpi">80</field>
+	    </record>
+
+        <record id="amazon_picking_label_report_action" model="ir.actions.report">
+            <field name="name">Amazon Label</field>
+            <field name="model">stock.picking</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">amazon_vendor_central_ept.report_amazon_picking_label</field>
+            <field name="report_file">amazon_vendor_central_ept.report_amazon_picking_label</field>
+            <field name="paperformat_id" ref="paperformat_amazon_label"/>
+            <field name="binding_model_id" ref="model_stock_picking"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <template id="report_amazon_picking_label">
+        	<t t-call="web.html_container">
+        		<t t-call="web.basic_layout">
+        			<style>
+        				.amazon-label-table td{
+        					border:1px solid black;
+        				}
+        				.border-bottom-none{
+        					border-bottom: none !important;
+        				}
+        			</style>
+        			<t t-foreach="docs" t-as="o">
+        				<t t-set="package_no" t-value="0"/>
+        				<t t-foreach="o.package_ids" t-as="l">
+	        				<t t-set="package_no" t-value="package_no + 1"/>
+		        			<div class="page" style="page-break-after:always;">
+ 								<table class="table amazon-label-table mb-0" style="font-size:13px;">
+			        				<tr>
+			        					<td t-if="o.sale_id" class="border-bottom-none">
+			        						<strong>SHIP FROM</strong>
+			        						<address t-field="o.sale_id.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
+			        					</td>
+			        					<td class="border-bottom-none">
+			        						<strong>SHIP TO</strong>
+			        						<address t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
+			        					</td>
+			        				</tr>
+			        			</table>
+			        			<table class="table amazon-label-table" style="font-size:13px;">
+			        				<tr>
+			        					<td t-if="o.bol_number"><img alt="barcode" t-if="o.bol_number" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.bol_number, 600, 120)" style="max-height:50pt;max-width:100%;" align="center"/>
+			        					<span>ASN: <t t-esc="o.bol_number"/></span></td>
+			        					<td>
+			        						<span t-if="o.carrier_id"><strong>Carrier Name: </strong><t t-esc="o.carrier_id.name"></t></span><br/>
+			        						<span><strong>PRO#: </strong></span><br/>
+			        						<span t-if="o.bol_number"><strong>BOL#: </strong><t t-esc="o.bol_number"/></span>
+			        					</td>
+			        				</tr>
+			        				<tr>
+			        					<td colspan="2">
+			        						<span t-if="o.amazon_vendor_order_id and o.amazon_vendor_order_id.amazon_edi_order_id">PURCHASE ORDER(S): <t t-esc="o.amazon_vendor_order_id.amazon_edi_order_id"/></span>
+			        							<img alt="barcode" t-if="o.amazon_vendor_order_id.amazon_edi_order_id" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.sale_id.name,350, 120)" style="max-height:50pt;max-width:100%;" align="center"/><br/>
+			        						<span>QTY: <t t-esc="o._get_package_qty(l)"/></span><br/>
+			        						<span>CARTON#: <t t-esc="package_no"/> of <t t-esc="len(o.package_ids)"/></span>
+			        					</td>
+			        				</tr>
+			        				<tr>
+			        					<td  t-if="o.sscc_code" colspan="2" class="text-center">
+			        						<span>Serial Shipping Container Code (SSCC)</span>
+			        						<img alt="barcode" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.sscc_code, 1000, 150)" style="max-height:50pt;max-width:100%;" align="center"/><br/>
+			        						<span t-field="o.sscc_code"></span>
+				        				</td>
+				        			</tr>
+			        			</table>
+			        		</div>
+			        	</t>
+			        </t>
+        		</t>
+        	</t>
+        </template>
+    </data>
+</odoo>
