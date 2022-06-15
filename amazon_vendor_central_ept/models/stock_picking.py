@@ -32,8 +32,9 @@ class StockPicking(models.Model):
     def _get_package_qty(self, package):
         qty = 0
         for l in self.move_line_ids:
-            if l.product_id in package.quant_ids.mapped('product_id')
-        return sum([l.quantity for l in package.quant_ids])
+            if l.product_id in package.quant_ids.mapped('product_id'):
+                qty += l.qty_done
+        return qty
 
     def prepare_asn_data(self):
         """"
