@@ -30,7 +30,8 @@
         'view/sale_order.xml',
         'view/stock_picking.xml',
         'view/account_move.xml',
-        'wizard_view/packages_confirmation.xml'
+        'wizard_view/packages_confirmation.xml',
+        'report/amazon_picking_label_report.xml'
     ],
     'installable': True,
     'auto_install': False,
